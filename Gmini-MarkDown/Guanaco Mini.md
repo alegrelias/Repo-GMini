@@ -413,15 +413,40 @@ El sistema no busca realizar un diagnóstico médico.
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                     |
 | Descripción | **El software debe ser diseñado, compilado y distribuido como una aplicación de escritorio orientada a computadoras personales y portátiles (notebooks).** |
 
-| COM-01      | **Garantizar ejecución nativa en Microsoft Windows**                                                                                                                                          |
+| COM-02      | **Garantizar ejecución nativa en Microsoft Windows**                                                                                                                                          |
 | :---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                        |
 | Descripción | **El sistema debe garantizar total compatibilidad, estabilidad y funcionalidad de todos sus módulos (especialmente la comunicación de puertos) bajo el sistema operativo Microsoft Windows.** |
 
-| COM-01      | **Proveer soporte secundario para entornos Linux**                                                                                                                |
+| COM-03      | **Proveer soporte secundario para entornos Linux**                                                                                                                |
 | :---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                            |
 | Descripción | **El sistema debe contemplar en su arquitectura la portabilidad necesaria para poder ser ejecutado en distribuciones de escritorio del sistema operativo Linux.** |
 ### Subsistema 5: Persistencia
 
 #### Módulo 1: Almacenamiento y Estructura de Datos
+
+| PER-01      | **Almacenar registros en el sistema de ficheros local**                                                                                                                  |
+| :---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                   |
+| Descripción | **El sistema debe guardar todos los resultados de las mediciones completadas directamente en el almacenamiento permanente de la computadora que ejecuta la aplicación.** |
+
+| PER-02      | **Generar nomenclatura predeterminada de archivos**                                                                                                              |
+| :---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                           |
+| Descripción | **El sistema debe asignar automáticamente a cada archivo de salida un nombre basado en la fecha y hora de la medición, utilizando el estándar ISO 8601 básico.** |
+
+| PER-03      | **Configurar directorios**                                                                                                |
+| :---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                    |
+| Descripción | **El sistema debe permitir al usuario seleccionar un directorio raíz específico para el almacenamiento de sus campañas.** |
+
+| PER-04      | **Renombramiento manual de archivos**                                                                             |
+| :---------- | ----------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                            |
+| Descripción | **El sistema debe permitir al usuario sobrescribir el nombre automático del archivo antes de su guardado final.** |
+
+| PER-05      | **Estructurar cabeceras de metadatos integrados**                                                                                                                                                                                |
+| :---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                                                           |
+| Descripción | **El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones.** |
