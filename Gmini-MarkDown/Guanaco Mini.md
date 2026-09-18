@@ -18,17 +18,17 @@ Vargas Da Silva, Eliam Joaquin**
 		- Funciones del producto
 		- Características de los usuarios
 		- Restricciones
-	- [Requisitos específicos](#requisitos-esṕecíficos)
-		- Subsistema 1: Comunicación e Interacción con el Hardware
+	- [Requisitos específicos](#requisitos-específicos)
+		- [Subsistema 1: Comunicación e Interacción con el Hardware](#subsistema-1-comunicación-e-interacción-con-el-Hardware)
 			- Modulo 1: Conectividad y Estado
 			- Modulo 2: Calibración del Dispositivo
-		- Subsistema 2: Configuración y Toma de Mediciones
+		- [Subsistema 2: Configuración y Toma de Mediciones](#subsistema-2-configuración-y-toma-de-mediciones)
 			- Modulo 1: Tipos y Estrategias de Medición
-		- Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+		- [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](subsistema-3-configuración-y-gestión-de-perfiles-setups)
 			- Modulo 1: Perfiles de Usuario y Gestión de Setups de Medición
-		- Subsistema 4: Entorno de Ejecución y Plataforma
+		- [Subsistema 4: Entorno de Ejecución y Plataforma](#subsistema-4-entorno-de-ejecución-y-plataforma)
 			- Modulo 1: Compatibilidad del Sistema
-		- Subsistema 5: Persistencia
+		- [Subsistema 5: Persistencia](#subsistema-5-persistencia)
 			- Modulo 1: Almacenamiento y Estructura de Datos
 - [**CASOS DE USO**](#casos-de-uso)
 	- Convenciones Gráficas
