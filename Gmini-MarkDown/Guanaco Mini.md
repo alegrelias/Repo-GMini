@@ -9,8 +9,8 @@ Vargas Da Silva, Eliam Joaquin**
 
 ## ÍNDICE
 
-- **INTRODUCCIÓN**
-- **ESPECIFICACIÓN DE REQUERIMIENTOS**
+- [**INTRODUCCIÓN**](#introducción)
+- [**ESPECIFICACIÓN DE REQUERIMIENTOS**](#especificación-de-requerimientos)
 	- Introducción y ámbito del sistema
 		- Definiciones, siglas y abreviaturas
 		- Referencias
@@ -30,23 +30,23 @@ Vargas Da Silva, Eliam Joaquin**
 			- Modulo 1: Compatibilidad del Sistema
 		- Subsistema 5: Persistencia
 			- Modulo 1: Almacenamiento y Estructura de Datos
-- **CASOS DE USO**
+- [**CASOS DE USO**](#casos-de-uso)
 	- Convenciones Gráficas
 	- Especificación de Casos de Uso
-- **CRONOGRAMA DE TRABAJO**
+- [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
 	- Visión general
 	- Cronograma por requerimientos
-- **METODOLOGÍA DE DESARROLLO**
+- [**METODOLOGÍA DE DESARROLLO**](#metodología-de-desarrollo)
 	- Resumen de la metodología elegida
-- **HERRAMIENTAS UTILIZADAS**
-- **ANÁLISIS Y DISEÑO**
+- [**HERRAMIENTAS UTILIZADAS**](#herramientas-utilizadas)
+- [**ANÁLISIS Y DISEÑO**](#análisis-y-diseño)
 	- Análisis
 	- Diseño
-- **SOBRE LAS ITERACIONES**
-- **SOBRE LOS ENTREGABLES**
+- [**SOBRE LAS ITERACIONES**](#sobre-las-iteraciones)
+- [**SOBRE LOS ENTREGABLES**](#sobre-los-enteregables)
 	- Aplicaciones y plataformas que forman parte del sistema
 	- Requerimientos técnicos para la instalación
-- **PRESENTACIÓN VISUAL PARA APROBAR EL FINAL**
+- [**PRESENTACIÓN VISUAL PARA APROBAR EL FINAL**](#presentación-visual-para-aprobrar-el-final)
 
 ## INTRODUCCIÓN
 El proyecto tiene como propósito el desarrollo integral de una plataforma de software y una interfaz gráfica de usuario (GUI) para el hardware "Guanaco Mini” (GMini) desarrollado por el Laboratorio de Electrónica Aplicada y Biomedicina (LEAB) del Instituto de Desarrollo Económico e Innovación de la Universidad Nacional de Tierra del Fuego AeiAS. El cliente interesado en el desarrollo de este software es el Doctor en Ciencias Biológicas e Ingeniero Biomédico Antonio Héctor Dell’osa, el cual en este contexto es miembro del LEAB, autor de la tesis “Espectroscopía de Impedancia para la Detección Rápida de Lesiones Óseas” sobre la cual este proyecto está basado y líder del proyecto GMini. Nuestro contacto con él es mediante su correo electrónico institucional [ahdellosa@untdf.edu.ar](mailto:ahdellosa@untdf.edu.ar) .
