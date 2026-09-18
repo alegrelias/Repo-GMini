@@ -119,7 +119,7 @@ Su principal objetivo es permitir a los usuarios realizar funciones como:
 Al reemplazar la actual comunicación mediante comandos a bajo nivel por esta interfaz gráfica, se elimina la barrera técnica, permitiendo explotar todo el potencial de la placa Guanaco Mini.
 El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. Entre los usuarios que harán uso del sistema se deben diferenciar entre aquellos con un rol de experto y aquellos con un uso limitado de las funciones o de operador. Los usuarios expertos serán los encargados de realizar la debida calibración del equipo, estableciendo los distintos parámetros necesarios para realizar las mediciones y los rangos de frecuencia. Por otro lado, los usuarios operadores podrán realizar las mediciones previamente parametrizadas,de manera sencilla.
 
-### Definiciones, siglas y abreviaturas
+#### Definiciones, siglas y abreviaturas
 
 - **Bioimpedancia**: Resistencia que oponen los tejidos biológicos (células, fluidos, bacterias, etc.) al paso de una corriente eléctrica alterna.
     
@@ -156,3 +156,205 @@ El proyecto está dirigido tanto para usuarios técnicos, investigadores y miemb
 - **Puerto Serial / Comunicación Serial**: Interfaz de transferencia de datos en la que la información se envía bit a bit de forma secuencial. Se utilizará (vía cable USB) como uno de los medios de comunicación principal entre la PC y el dispositivo.
     
 - **Setups (Configuraciones de medición)**: Conjunto de parámetros técnicos (tipo, rango, canales) definidos y guardados localmente por un usuario experto, que pueden ser exportados, o bien importados y aplicados por un usuario operador.
+
+#### Referencias
+
+- **Espressif Systems**: ESP32 Technical Reference Manual. Espressif Systems, Shanghái (2023). Disponible en: [https://documentation.espressif.com/esp32_datasheet_en.html?q=ESP32](https://www.espressif.com/en/support/documents/technical-documents)
+    
+- **Python Software Foundation**: Python 3 Reference Manual. Disponible en: [https://docs.python.org/3/](https://docs.python.org/3/)
+    
+- **IEEE Computer Society**: IEEE Recommended Practice for Software Requirements Specifications (IEEE Std 830-1998). IEEE, Nueva York (1998).
+    
+- **Laboratorio de Electrónica Aplicada y Biomedicina (LEAB)**: Dispositivo de medición de bioimpedancia Guanaco Mini V2.0 [Rev3]. Universidad Nacional de Tierra del Fuego, A.I.A.S. (2026).
+    
+- **The pandas development team**: pandas-dev/pandas: Pandas. Zenodo. Disponible en: [https://pandas.pydata.org/](https://pandas.pydata.org/)
+    
+- **Hunter, J. D.: Matplotlib**: A 2D graphics environment. Computing in Science & Engineering, 9(3), 90-95 (2007).
+
+## Descripción General
+
+#### Funciones del Producto
+
+**Subsistema de Comunicación e Interacción con el Hardware**
+Este subsistema agrupa las funciones encargadas de establecer y mantener el enlace de datos bidireccional entre la computadora y la placa ESP32, garantizando una transferencia estable.
+
+- Establecer conexión con el entorno de escritorio mediante conexión alámbrica.
+    
+- Establecer conexión con el entorno de escritorio mediante conexión inalámbrica.
+
+**Subsistema de Configuración y Toma de Mediciones**
+Este subsistema es el encargado de agrupar aquellas funciones que permiten a los usuarios monitorear, parametrizar, calibrar y realizar mediciones de manera controlada, pudiendo determinar aspectos como rangos de frecuencia o estrategias de medición.
+
+- Calibrar el dispositivo.
+    
+- Tomar mediciones de espectroscopía por bioimpedancia e impedancia eléctrica.
+    
+- Seleccionar una frecuencia o un espectro de frecuencias para realizar las mediciones.
+    
+- Configurar los intervalos en los que se toman las mediciones.
+    
+- Visualizar los datos desde la misma aplicación.
+    
+- Contraponer datos para realizar comparaciones.
+    
+- Realizar procesamiento de datos.
+  
+**Subsistema de Configuración y Gestión de Perfiles (Setups)**
+Este subsistema es el encargado de habilitar los distintos modos de uso (Experto y Operador) para garantizar la separación de responsabilidades, así como de gestionar la creación, guardado e importación de las configuraciones de medición.  
+  
+
+**Subsistema de Entorno de Ejecución y Plataforma**
+Este subsistema es el encargado de garantizar la disponibilidad del proyecto en sistemas operativos Microsoft Windows y ofrecer soporte secundario en kernels de Linux.
+  
+**Subsistema Persistencia**
+Este subsistema centraliza las operaciones de persistencia del sistema, garantizando que tanto los datos estructurados como las gráficas generadas se almacenen de manera ordenada y estandarizada para su posterior análisis científico.
+- Exportar datos.
+    
+- Importar datos.
+    
+- Organizar los datos en una carpeta definida.
+
+#### Características de los usuarios
+Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto. Para poder brindarles a estos mismos una herramienta que sea capaz de adecuarse a cada perfil, se contemplarán los siguientes roles de usuario:
+
+**Usuarios Expertos**: Este perfil de usuario se caracteriza por un mayor nivel técnico en cuanto a uso intensivo del dispositivo, análisis de los datos, parametrización y calibración del mismo. Los usuarios con este rol deben poder dejar preparado el entorno del sistema para que los usuarios con una menor experiencia puedan realizar mediciones sin dificultad. Esta distinción está pensada para líderes de laboratorios, jefes de proyectos de investigación, técnicos con amplia experiencia en EIS, entre otros.
+  
+**Usuarios Operadores**: Este perfil de usuario está diseñado para aquellos usuarios menos experimentados, los cuales deban realizar tareas sencillas sin enfocarse en los aspectos más complejos del sistema. Aquellos usuarios que pertenezcan a este rol solo podrán realizar mediciones previamente parametrizadas por los expertos.
+
+#### Restricciones
+  
+El software no puede modificar el comportamiento interno del dispositivo, debe limitarse a realizar la lista de comandos y eventos ya programadas y documentadas por el LEAB.
+
+El software está destinado para ser utilizado únicamente en la placa ESP32.
+
+El sistema contempla únicamente dos vías de comunicación con la placa. Bluetooth y puerto serial.
+
+El uso de funciones del software está limitado por perfiles y limitado por roles.
+  
+El sistema debe ser multiplataforma y capaz de funcionar entre distintos tipos de sistemas operativos 
+
+El sistema no busca realizar un diagnóstico médico.
+
+## Requisitos específicos
+### Subsistema 1: Comunicación e Interacción con el Hardware
+#### Módulo 1: Conectividad y Estado
+
+| CON-01      | Establecer conexión Alámbrica con el hardware                                                                          |
+| :---------- | :--------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                 |
+| Descripción | **El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión alámbrica.** |
+
+| CON-02      | **Establecer conexión inalámbrica con el hardware**                                                                      |
+| :---------- | :----------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                   |
+| Descripción | **El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica.** |
+
+| CON-03      | Notificar visualmente el estado activo de conexión                                                                         |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                     |
+| Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado activo de conexión.** |
+
+| CON-04      | **Notificar visualmente el estado Inactivo de conexión** |
+| :---------- | :------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                   |
+| Descripción |                                                          |
+
+| CON-05      | **Notificar visualmente el estado error de conexión** |
+| :---------- | :---------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                |
+| Descripción |                                                       |
+
+| CON-06      | **Traducir comandos de control**                                                              |
+| :---------- | :-------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                        |
+| Descripción | **El sistema debe permitir utilizar los comandos de la placa mediante una interfaz gráfica.** |
+
+| CON-07      | Persistir últimos datos generados ante un error                                                                                                   |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                            |
+| Descripción | **El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición.** |
+
+#### **Módulo 2: Calibración del Dispositivo**
+| CAL-01      | **Configurar la calibración electrónica del equipo**                                            |
+| :---------- | :---------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto**                                                                             |
+| Descripción | **El sistema debe permitir parametrizar la secuencia de comandos de calibración del hardware.** |
+
+| CAL-02      | **Ejecutar calibración electrónica del equipo**                                            |
+| :---------- | :----------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                     |
+| Descripción | **El sistema debe permitir iniciar la secuencia de comandos de calibración del hardware.** |
+
+| CAL-03      | Establecer conexión Alámbrica con el hardware                                                                                                                                                                         |
+| :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                                                |
+| Descripción | **El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior.** |
+### Subsistema 2: Configuración y Toma de Mediciones
+
+| MED-01      | **Configurar medición de una frecuencia  (Monofrecuencia)**                                                                         |
+| :---------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto.**                                                                                                                |
+| Descripción | **El sistema debe permitir elegir los parámetros de medición para  mediciones continuas a una única frecuencia fija seleccionada.** |
+
+| MED-02      | **Ejecutar medición de una frecuencia (Monofrecuencia)**                                             |
+| :---------- | :--------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                               |
+| Descripción | **El sistema debe permitir ejecutar mediciones continuas a una única frecuencia fija seleccionada.** |
+
+| MED-03      | **Configurar medición por espectroscopía (Barrido espectral)**                                                                                                                                      |
+| :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto.**                                                                                                                                                                                |
+| Descripción | **El sistema debe permitir elegir los parámetros de medición para realizar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado.** |
+
+| MED-04      | **Ejecutar medición por espectroscopía (Barrido espectral)**                                                                                                 |
+| :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                       |
+| Descripción | **El sistema debe permitir ejecutar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado.** |
+
+| MED-05      | **Configurar medición de multifrecuencia**                                                                               |
+| :---------- | :----------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto.**                                                                                                     |
+| Descripción | **El sistema debe permitir elegir los parámetros de medición para una cantidad de frecuencias discretas y específicas.** |
+
+| MED-06      | **Ejecutar medición multifrecuencia**                                                                                         |
+| :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                        |
+| Descripción | **El sistema permite ejecutar una cantidad de mediciones a las mismas frecuencias discretas y especificadas por el usuario.** |
+
+| MED-07      | **Mostrar progreso de la medición**                                                                                                                     |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                  |
+| Descripción | **El sistema debe proporcionar una indicación visual en pantalla que informe al usuario que un proceso de medición se encuentra actualmente en curso.** |
+
+| MED-08      | **Ejecutar mediciones en bucle**                                                               |
+| :---------- | :--------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                         |
+| Descripción | **El sistema debe permitir ejecutar mediciones continuas del mismo tipo a través del tiempo.** |
+
+| MED-09      | **Seleccionar canales de multiplexado (Llaves/Electrodos)**                                                                     |
+| :---------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| Usuarios    | **Usuario experto.**                                                                                                            |
+| Descripción | **El sistema debe permitir seleccionar qué canal de electrodos o impedancia interna se utilizará para la toma de la medición.** |
+
+| MED-10      | **Calcular estadísticos descriptivos básicos**                                                                                |
+| :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                        |
+| Descripción | **El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones.** |
+
+| MED-11      | **Presentar estadísticos descriptivos básicos**                               |
+| :---------- | :---------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                        |
+| Descripción | **El sistema debe ser capaz de presentar métricas estadísticas automáticas.** |
+#### Módulo 1: Tipos y Estrategias de Medición
+
+### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+
+#### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+
+### Subsistema 4: Entorno de Ejecución y Plataforma
+
+#### Módulo 1: Compatibilidad del Sistema
+
+### Subsistema 5: Persistencia
+
+#### Módulo 1: Almacenamiento y Estructura de Datos
