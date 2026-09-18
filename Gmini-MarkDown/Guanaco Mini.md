@@ -31,6 +31,7 @@ Vargas Da Silva, Eliam Joaquin**
 		- Subsistema 5: Persistencia
 			- Modulo 1: Almacenamiento y Estructura de Datos
 - **CASOS DE USO**
+	- Convenciones Gráficas
 	- Especificación de Casos de Uso
 - **CRONOGRAMA DE TRABAJO**
 	- Visión general
@@ -454,6 +455,62 @@ El sistema no busca realizar un diagnóstico médico.
 | Descripción | **El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones.** |
 
 ## CASOS DE USO
+### Convenciones gráficas
+
+##### Actores
+```mermaid
+flowchart LR
+Actor((Actor))
+```
+##### Casos de Uso
+```mermaid
+flowchart LR
+CU([Caso de Uso])
+```
+##### Asignaciones
+```mermaid
+flowchart
+Actor((Actor))
+CU([Caso de Uso])
+
+Actor --> CU
+```
+##### Jerarquías y Generalización
+```mermaid
+flowchart LR
+Padre((Padre))
+Hijo((Hijo))
+CU1([Caso de Uso Base])
+CU2([Caso de Uso Hijo])
+
+Hijo ==> Padre
+CU2 ==> CU1
+```
+
+##### Limites del Subsistema
+```mermaid
+flowchart LR
+Actor((Actor))
+
+subgraph Subistema
+	CU([Caso de Uso])
+end
+
+Actor --> CU
+```
+
+##### Extensiones e Inclusiones
+```mermaid
+flowchart LR
+subgraph Subsistema
+	CU1([Caso de Uso Base])
+	CU2([Caso de Uso Extensión])
+	CU3([Caso de Uso Inclusión])
+end
+
+CU2 --extend--> CU1
+CU1 --include--> CU3
+```
 
 ### Especificación de Casos de Uso
 #### Subsistema 1: Comunicación e Interacción con el Hardware
@@ -491,13 +548,15 @@ flowchart LR
 Operador((Operador))
 Experto((Experto))
 
-Experto ==> Operador
-
 subgraph Calibración del Dispositivo
 	CU1([Configurar la Calibración Electrónica])
 	CU2([Ejecutar Calibración Electrónica])
 end
 
+%% Jerarquía
+Experto ==> Operador
+
+%% Asociación
 Experto --> CU1
 Operador --> CU2
 ```
