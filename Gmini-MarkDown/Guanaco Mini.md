@@ -355,7 +355,6 @@ El sistema no busca realizar un diagnóstico médico.
 | Usuarios    | **Usuario experto**.                                                                                              |
 | Descripción | **La aplicación debe proveer un "Modo Experto" con acceso total a la configuración de parámetros y calibración.** |
 
-
 | SET-02      | **Habilitar usuario operador**                                                                                                                |
 | :---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Usuarios    | **Usuario operador.**                                                                                                                         |
@@ -409,6 +408,20 @@ El sistema no busca realizar un diagnóstico médico.
 
 #### Módulo 1: Compatibilidad del Sistema
 
+| COM-01      | **Proveer entorno de aplicación de escritorio**                                                                                                            |
+| :---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                     |
+| Descripción | **El software debe ser diseñado, compilado y distribuido como una aplicación de escritorio orientada a computadoras personales y portátiles (notebooks).** |
+
+| COM-01      | **Garantizar ejecución nativa en Microsoft Windows**                                                                                                                                          |
+| :---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                        |
+| Descripción | **El sistema debe garantizar total compatibilidad, estabilidad y funcionalidad de todos sus módulos (especialmente la comunicación de puertos) bajo el sistema operativo Microsoft Windows.** |
+
+| COM-01      | **Proveer soporte secundario para entornos Linux**                                                                                                                |
+| :---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                            |
+| Descripción | **El sistema debe contemplar en su arquitectura la portabilidad necesaria para poder ser ejecutado en distribuciones de escritorio del sistema operativo Linux.** |
 ### Subsistema 5: Persistencia
 
 #### Módulo 1: Almacenamiento y Estructura de Datos
