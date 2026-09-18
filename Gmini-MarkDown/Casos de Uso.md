@@ -1,8 +1,8 @@
 
+### Especificación de Casos de Uso
+#### Subsistema 1: Comunicación e Interacción con el Hardware
 
-# Subsistema 1: Comunicación e Interacción con el Hardware
-
-## Módulo 1: Conectividad y Estado
+##### Módulo 1: Conectividad y Estado
 ```mermaid
 flowchart LR
 %%Actores
@@ -28,7 +28,7 @@ CU2 ==> CU1
 CU3 ==> CU1
 ```
 
-## Módulo 2: Calibración del Dispositivo
+##### Módulo 2: Calibración del Dispositivo
 ```mermaid
 flowchart LR
 %% Actores
@@ -46,8 +46,8 @@ Experto --> CU1
 Operador --> CU2
 ```
 
-# Subsistema 2: Configuración y Toma de Mediciones
-## Módulo 1: Tipos y Estrategias de Medición
+#### Subsistema 2: Configuración y Toma de Mediciones
+##### Módulo 1: Tipos y Estrategias de Medición
 
 
 ```mermaid
@@ -93,9 +93,9 @@ CU2 --include--> CU4
 CU2 --include--> CU12
 ```
 
-# Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-## Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
 
 ```mermaid
@@ -112,7 +112,8 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU5([Adjuntar Observaciones])
 	CU6([Cambiar de Perfil])
 	CU7([Visualizar Advertencia por Cambio de Perfil])
-	CU8([Visualizar Configuraciónes Previas])
+	CU8([Visualizar Configuraciones Previas])
+	CU9([Crear Perfil])
 end
 
 %% Jerarquía
@@ -126,6 +127,7 @@ Operador --> CU4
 Operador --> CU8
 Operador --> CU5
 Operador --> CU6
+Operador --> CU9
 
 
 %% Relaciones Include/Extend
@@ -133,9 +135,9 @@ CU6 --include--> CU7
 CU4 --extend--> CU8
 ```
 
-# Subsistema 5: Persistencia
+#### Subsistema 5: Persistencia
 
-## Módulo 1: Almacenamiento y Estructura de Datos
+##### Módulo 1: Almacenamiento y Estructura de Datos
 ```mermaid
 flowchart LR
 %% Actores

@@ -44,7 +44,7 @@ Vargas Da Silva, Eliam Joaquin**
 - **SOBRE LAS ITERACIONES**
 - **SOBRE LOS ENTREGABLES**
 	- Aplicaciones y plataformas que forman parte del sistema
-	- Requerimientos técnicos para la isntalación
+	- Requerimientos técnicos para la instalación
 - **PRESENTACIÓN VISUAL PARA APROBAR EL FINAL**
 
 ## INTRODUCCIÓN
@@ -392,10 +392,10 @@ El sistema no busca realizar un diagnóstico médico.
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                      |
 | Descripción | **El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final.** |
 
-| SET-09      | **Cambiar entre perfiles de usuario**                                                                    |
-| :---------- | -------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                   |
-| Descripción | **El sistema tiene que permitir a un usuario poder cambiar de el tipo de perfil en el que se encuentra** |
+| SET-09      | **Cambiar entre perfiles de usuario**                                                                 |
+| :---------- | ----------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                |
+| Descripción | **El sistema tiene que permitir a un usuario poder cambiar el tipo de perfil en el que se encuentra** |
 
 | SET-10      | **Visualizar configuraciones previas**                                                          |
 | :---------- | ----------------------------------------------------------------------------------------------- |
@@ -568,7 +568,7 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU5([Adjuntar Observaciones])
 	CU6([Cambiar de Perfil])
 	CU7([Visualizar Advertencia por Cambio de Perfil])
-	CU8([Visualizar Configuraciónes Previas])
+	CU8([Visualizar Configuraciones Previas])
 	CU9([Crear Perfil])
 end
 
