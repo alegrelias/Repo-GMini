@@ -11,14 +11,14 @@ Vargas Da Silva, Eliam Joaquin**
 
 - [**INTRODUCCIÓN**](#introducción)
 - [**ESPECIFICACIÓN DE REQUERIMIENTOS**](#especificación-de-requerimientos)
-	- Introducción y ámbito del sistema
+	- [Introducción y ámbito del sistema](#introducción-y-ámbito-del-sistema)
 		- Definiciones, siglas y abreviaturas
 		- Referencias
-	- Descripción General
+	- [Descripción General](#descripción-general)
 		- Funciones del producto
 		- Características de los usuarios
 		- Restricciones
-	- Requisitos específicos
+	- [Requisitos específicos](#requisitos-esṕecíficos)
 		- Subsistema 1: Comunicación e Interacción con el Hardware
 			- Modulo 1: Conectividad y Estado
 			- Modulo 2: Calibración del Dispositivo
