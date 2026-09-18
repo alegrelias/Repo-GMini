@@ -254,15 +254,15 @@ El sistema no busca realizar un diagnóstico médico.
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                     |
 | Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado activo de conexión.** |
 
-| CON-04      | **Notificar visualmente el estado Inactivo de conexión** |
-| :---------- | :------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                   |
-| Descripción |                                                          |
+| CON-04      | **Notificar visualmente el estado Inactivo de conexión**                                                                     |
+| :---------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                       |
+| Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado inactivo de conexión.** |
 
-| CON-05      | **Notificar visualmente el estado error de conexión** |
-| :---------- | :---------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                |
-| Descripción |                                                       |
+| CON-05      | **Notificar visualmente el estado error de conexión**                                                                                                                  |
+| :---------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                 |
+| Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado de error de la comunicación con el dispositivo en todo momento.** |
 
 | CON-06      | **Traducir comandos de control**                                                              |
 | :---------- | :-------------------------------------------------------------------------------------------- |
