@@ -285,7 +285,7 @@ El sistema no busca realizar un diagnóstico médico.
 | Usuarios    | **Usuario experto, Usuario operador.**                                                     |
 | Descripción | **El sistema debe permitir iniciar la secuencia de comandos de calibración del hardware.** |
 
-| CAL-03      | Establecer conexión Alámbrica con el hardware                                                                                                                                                                         |
+| CAL-03      | **Bloquear ejecución por descalibración**                                                                                                                                                                             |
 | :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                                                |
 | Descripción | **El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior.** |
