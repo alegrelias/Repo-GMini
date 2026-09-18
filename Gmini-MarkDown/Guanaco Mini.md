@@ -290,6 +290,7 @@ El sistema no busca realizar un diagnóstico médico.
 | Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                                                |
 | Descripción | **El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior.** |
 ### Subsistema 2: Configuración y Toma de Mediciones
+#### Módulo 1: Tipos y Estrategias de Medición
 
 | MED-01      | **Configurar medición de una frecuencia  (Monofrecuencia)**                                                                         |
 | :---------- | :---------------------------------------------------------------------------------------------------------------------------------- |
@@ -345,12 +346,65 @@ El sistema no busca realizar un diagnóstico médico.
 | :---------- | :---------------------------------------------------------------------------- |
 | Usuarios    | **Usuario experto, Usuario operador.**                                        |
 | Descripción | **El sistema debe ser capaz de presentar métricas estadísticas automáticas.** |
-#### Módulo 1: Tipos y Estrategias de Medición
 
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+| SET-01      | **Habilitar usuario experto**                                                                                     |
+| :---------- | ----------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto**.                                                                                              |
+| Descripción | **La aplicación debe proveer un "Modo Experto" con acceso total a la configuración de parámetros y calibración.** |
 
+
+| SET-02      | **Habilitar usuario operador**                                                                                                                |
+| :---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario operador.**                                                                                                                         |
+| Descripción | **La aplicación debe proveer un "Modo Operador" con permisos restringidos exclusivamente a la ejecución de configuraciones predeterminadas.** |
+
+| SET-03      | **Advertir sobre cambio de perfiles**                                                                               |
+| :---------- | ------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                              |
+| Descripción | **El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre tipos de perfiles.** |
+
+| SET-04      | **Guardar configuraciones de medición**                                                                                |
+| :---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto.**                                                                                                   |
+| Descripción | **El sistema debe permitir al usuario experto guardar los parámetros localmente como una configuración reutilizable.** |
+
+| SET-05      | **Exportar configuraciones de medición**                                        |
+| :---------- | ------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario Operador.**                                          |
+| Descripción | **El sistema debe permitir al usuario exportar las configuraciones guardadas.** |
+
+| SET-06      | **Cargar configuraciones**                                                 |
+| :---------- | -------------------------------------------------------------------------- |
+| Usuarios    | **Usuario operador.**                                                      |
+| Descripción | **El sistema debe permitir al usuario operador importar configuraciones.** |
+
+| SET-07      | **Aplicar configuraciones**                                                                          |
+| :---------- | ---------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario operador.**                                                                                |
+| Descripción | **El sistema debe permitir al usuario operador seleccionar una configuración previamente guardada.** |
+
+| SET-08      | **Adjuntar metadatos y observaciones libres**                                                                                                                                               |
+| :---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                      |
+| Descripción | **El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final.** |
+
+| SET-09      | **Cambiar entre perfiles de usuario**                                                                    |
+| :---------- | -------------------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                                   |
+| Descripción | **El sistema tiene que permitir a un usuario poder cambiar de el tipo de perfil en el que se encuentra** |
+
+| SET-10      | **Visualizar configuraciones previas**                                                          |
+| :---------- | ----------------------------------------------------------------------------------------------- |
+| Usuarios    | **Usuario experto, Usuario operador.**                                                          |
+| Descripción | **El sistema debe contemplar un apartado en el que se visualicen las configuraciones previas.** |
+
+| SET-11      | **Crear Perfil de Usuario**                            |
+| :---------- | ------------------------------------------------------ |
+| Usuarios    | **Usuario experto, Usuario operador**.                 |
+| Descripción | **El sistema debe permitir crear perfiles de usuario** |
 ### Subsistema 4: Entorno de Ejecución y Plataforma
 
 #### Módulo 1: Compatibilidad del Sistema
