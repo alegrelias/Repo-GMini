@@ -249,7 +249,7 @@ El sistema no busca realizar un diagnóstico médico.
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión alámbrica. |
 
 | **CON-02**      | Establecer conexión inalámbrica con el hardware                                                                      |
-| :-------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario operador.                                                                                   |
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica. |
 
@@ -408,6 +408,11 @@ El sistema no busca realizar un diagnóstico médico.
 | :-------------- | ------------------------------------------------------ |
 | **Usuarios**    | Usuario experto, Usuario operador.                 |
 | **Descripción** | El sistema debe permitir crear perfiles de usuario |
+
+| **SET-12**      | Iniciar Sesión                                         |
+| :-------------- | ------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                     |
+| **Descripción** | El sistema debe permitir a los usuarios iniciar sesión |
 ### Subsistema 4: Entorno de Ejecución y Plataforma
 
 #### Módulo 1: Compatibilidad del Sistema
@@ -630,6 +635,7 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU7([Visualizar Advertencia por Cambio de Perfil])
 	CU8([Visualizar Configuraciones Previas])
 	CU9([Crear Perfil])
+	CU10([Iniciar Sesión])
 end
 
 %% Jerarquía
@@ -644,6 +650,7 @@ Operador --> CU8
 Operador --> CU5
 Operador --> CU6
 Operador --> CU9
+Operador --> CU10
 
 
 %% Relaciones Include/Extend
@@ -674,12 +681,36 @@ CU2 --extend--> CU4
 ```
 ### Especificación de Casos de Uso
 
-| Nombre                           |     |
-| :------------------------------- | --- |
-| **Tipo**                         |     |
-| **Actor Primario**               |     |
-| **Alcance**                      |     |
-| **Precondiciones**               |     |
-| **Escenario principal de éxito** |     |
-| **Postcondiciones**              |     |
-| **Extensiones**                  |     |
+| **Nombre**                       | Establecer Conexión con el Dispositivo                                                                                                                                                                                                                                           |
+| :------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tipo**                         | Abstracto                                                                                                                                                                                                                                                                        |
+| **Objetivo**                     | Define los pasos específicos para establecer la conexión con la placa ESP32                                                                                                                                                                                                      |
+| **Actor Primario**               | Operador                                                                                                                                                                                                                                                                         |
+| **Alcance**                      | Subsistema 1: Comunicación e Interacción con el Hardware                                                                                                                                                                                                                         |
+| **Precondiciones**               | Debe haberse registrado el inicio de sesión del usuario                                                                                                                                                                                                                          |
+| **Escenario principal de éxito** | 1. Desde la pantalla principal el operador accede al panel de "Conexión".<br><br>2. El Operador elije el canal de comunicacion.<br><br>3. El Sistema acepta el canal de comunicación elegido.<br><br>4. El sistema arroja un mensaje de exito "Conexión {Tipo_Conexión} exitosa" |
+| **Postcondiciones**              | El sistema permite la comunicación con el dispositivo                                                                                                                                                                                                                            |
+| **Extensiones**                  | 3.a. El sistema no reconoce la placa.<br>3.a.1. El sistema arroja un mensaje de error: "ERROR: No se reconoce el dispositivo, intente nuevamente."                                                                                                                               |
+
+
+| **Nombre**                                                | Establecer Conexión Inalámbrica                                                                                                                                                                                                                                                                               |
+| :-------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Hereda de**                                             | Establecer Conexión con el Dispositivo                                                                                                                                                                                                                                                                        |
+| **Objetivo**                                              | Define los pasos específicos para establecer conexión inalámbrica con la placa ESP32                                                                                                                                                                                                                          |
+| **Actor Primario**                                        | Operador                                                                                                                                                                                                                                                                                                      |
+| **Alcance**                                               | Subsistema 1: Comunicación e Interacción con el Hardware                                                                                                                                                                                                                                                      |
+| **Precondiciones**                                        | Debe haberse registrado el inicio de sesión del usuario                                                                                                                                                                                                                                                       |
+| **Escenario principal de éxito** (Sobreescribe el paso 3) | 1. El sistema solicita el medio de comunicación inalámbrica elegido.<br><br>2. El Operador selecciona el medio de comunicación inalámbrica.<br><br>3. El Sistema acepta el canal de comunicación elegido.<br><br>4. El sistema intenta localizar el dispositivo.<br><br>5. El sistema establece comunicación. |
+| **Postcondiciones**                                       | El sistema permite la comunicación con el dispositivo                                                                                                                                                                                                                                                         |
+| **Extensiones**                                           | 4. El sistema no logra encontrar la placa.<br>4.a.1. El sistema arroja un mensaje de error: "ERROR: No se encuentra el dispositivo, intente nuevamente."                                                                                                                                                      |
+
+| **Nombre**                                                | Establecer Conexión Alámbrica                                                                                                                                                                                                                                                                                   |
+| :-------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Hereda de**                                             | Establecer Conexión con el Dispositivo                                                                                                                                                                                                                                                                          |
+| **Objetivo**                                              | Define los pasos específicos para establecer conexión alámbrica con la placa ESP32                                                                                                                                                                                                                              |
+| **Actor Primario**                                        | Operador                                                                                                                                                                                                                                                                                                        |
+| **Alcance**                                               | Subsistema 1: Comunicación e Interacción con el Hardware                                                                                                                                                                                                                                                        |
+| **Precondiciones**                                        | Debe haberse registrado el inicio de sesión del usuario                                                                                                                                                                                                                                                         |
+| **Escenario principal de éxito** (Sobreescribe el paso 3) | 1. El sistema solicita el medio de comunicación alámbrica elegido.<br><br>2. El Operador selecciona el medio de comunicación alámbrica.<br><br>3. El Sistema acepta el canal de comunicación elegido.<br><br>4. El sistema intenta comunicarse con el dispositivo.<br><br>5. El sistema establece comunicación. |
+| **Postcondiciones**                                       | El sistema permite la comunicación con el dispositivo                                                                                                                                                                                                                                                           |
+| **Extensiones**                                           | 4. El sistema no logra comunicarse con la placa.<br>4.a.1. El sistema arroja un mensaje de error: "ERROR DE CONEXIÓN: No es posible comunicarse con el dispositivo, intente nuevamente."                                                                                                                        |
