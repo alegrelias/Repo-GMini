@@ -1,5 +1,17 @@
+##### Extensiones e Inclusiones
+```mermaid
+flowchart LR
+subgraph Subsistema
+	CU1([Caso de Uso Base])
+	CU2([Caso de Uso Extensión])
+	CU3([Caso de Uso Inclusión])
+end
 
-### Especificación de Casos de Uso
+CU2 --extend--> CU1
+CU1 --include--> CU3
+```
+
+### Diagramas de Casos de Uso
 #### Subsistema 1: Comunicación e Interacción con el Hardware
 
 ##### Módulo 1: Conectividad y Estado
@@ -13,15 +25,11 @@ subgraph Conectividad y Estado
 	CU2([Establecer Conexión Inalámbrica])
 	CU3([Establecer Conexión Alámbrica])
 	CU4([Visualizar Estado de Conexión])
-	CU5([Visualizar Estado de Error])
 end
 
 %%Asignación
 Operador --> CU1
 Operador --> CU4
-
-%%Relación
-CU5 --extend--> CU4
 
 %%Jerarquía
 CU2 ==> CU1
@@ -35,13 +43,15 @@ flowchart LR
 Operador((Operador))
 Experto((Experto))
 
-Experto ==> Operador
-
 subgraph Calibración del Dispositivo
 	CU1([Configurar la Calibración Electrónica])
 	CU2([Ejecutar Calibración Electrónica])
 end
 
+%% Jerarquía
+Experto ==> Operador
+
+%% Asociación
 Experto --> CU1
 Operador --> CU2
 ```
@@ -114,6 +124,7 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU7([Visualizar Advertencia por Cambio de Perfil])
 	CU8([Visualizar Configuraciones Previas])
 	CU9([Crear Perfil])
+	CU10([Iniciar Sesión])
 end
 
 %% Jerarquía
@@ -128,6 +139,7 @@ Operador --> CU8
 Operador --> CU5
 Operador --> CU6
 Operador --> CU9
+Operador --> CU10
 
 
 %% Relaciones Include/Extend

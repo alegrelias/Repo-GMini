@@ -532,15 +532,11 @@ subgraph Conectividad y Estado
 	CU2([Establecer Conexión Inalámbrica])
 	CU3([Establecer Conexión Alámbrica])
 	CU4([Visualizar Estado de Conexión])
-	CU5([Visualizar Estado de Error])
 end
 
 %%Asignación
 Operador --> CU1
 Operador --> CU4
-
-%%Relación
-CU5 --extend--> CU4
 
 %%Jerarquía
 CU2 ==> CU1
