@@ -32,6 +32,7 @@ Vargas Da Silva, Eliam Joaquin**
 			- Modulo 1: Almacenamiento y Estructura de Datos
 - [**CASOS DE USO**](#casos-de-uso)
 	- Convenciones Gráficas
+	- Diagramas de Casos de Uso
 	- Especificación de Casos de Uso
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
 	- Visión general
@@ -242,217 +243,217 @@ El sistema no busca realizar un diagnóstico médico.
 ### Subsistema 1: Comunicación e Interacción con el Hardware
 #### Módulo 1: Conectividad y Estado
 
-| CON-01      | Establecer conexión Alámbrica con el hardware                                                                          |
+| **CON-01**      | Establecer conexión Alámbrica con el hardware                                                                      |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                 |
+| **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión alámbrica. |
+
+| **CON-02**      | Establecer conexión inalámbrica con el hardware                                                                      |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                   |
+| **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica. |
+
+| **CON-03**      | Notificar visualmente el estado activo de conexión                                                                     |
 | :---------- | :--------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                 |
-| Descripción | **El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión alámbrica.** |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                     |
+| **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado activo de conexión. |
 
-| CON-02      | **Establecer conexión inalámbrica con el hardware**                                                                      |
-| :---------- | :----------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                   |
-| Descripción | **El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica.** |
+| **CON-04**      | Notificar visualmente el estado Inactivo de conexión                                                                     |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                       |
+| **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado inactivo de conexión. |
 
-| CON-03      | Notificar visualmente el estado activo de conexión                                                                         |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                     |
-| Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado activo de conexión.** |
+| **CON-05**      | Notificar visualmente el estado error de conexión                                                                                                                  |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                 |
+| **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado de error de la comunicación con el dispositivo en todo momento. |
 
-| CON-04      | **Notificar visualmente el estado Inactivo de conexión**                                                                     |
-| :---------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                       |
-| Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado inactivo de conexión.** |
+| **CON-06**      | Traducir comandos de control                                                              |
+| :-------------- | :-------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                        |
+| **Descripción** | El sistema debe permitir utilizar los comandos de la placa mediante una interfaz gráfica. |
 
-| CON-05      | **Notificar visualmente el estado error de conexión**                                                                                                                  |
-| :---------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                 |
-| Descripción | **El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado de error de la comunicación con el dispositivo en todo momento.** |
-
-| CON-06      | **Traducir comandos de control**                                                              |
-| :---------- | :-------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                        |
-| Descripción | **El sistema debe permitir utilizar los comandos de la placa mediante una interfaz gráfica.** |
-
-| CON-07      | Persistir últimos datos generados ante un error                                                                                                   |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                            |
-| Descripción | **El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición.** |
+| **CON-07**      | Persistir últimos datos generados ante un error                                                                                               |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                            |
+| **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
 
 #### **Módulo 2: Calibración del Dispositivo**
-| CAL-01      | **Configurar la calibración electrónica del equipo**                                            |
-| :---------- | :---------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto**                                                                             |
-| Descripción | **El sistema debe permitir parametrizar la secuencia de comandos de calibración del hardware.** |
+| **CAL-01**      | Configurar la calibración electrónica del equipo                                            |
+| :-------------- | :---------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto                                                                             |
+| **Descripción** | El sistema debe permitir parametrizar la secuencia de comandos de calibración del hardware. |
 
-| CAL-02      | **Ejecutar calibración electrónica del equipo**                                            |
-| :---------- | :----------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                     |
-| Descripción | **El sistema debe permitir iniciar la secuencia de comandos de calibración del hardware.** |
+| **CAL-02**      | Ejecutar calibración electrónica del equipo                                            |
+| :-------------- | :----------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                     |
+| **Descripción** | El sistema debe permitir iniciar la secuencia de comandos de calibración del hardware. |
 
-| CAL-03      | **Bloquear ejecución por descalibración**                                                                                                                                                                             |
-| :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                                                |
-| Descripción | **El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior.** |
+| **CAL-03**      | Bloquear ejecución por descalibración                                                                                                                                                                             |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                                                |
+| **Descripción** | El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior. |
 ### Subsistema 2: Configuración y Toma de Mediciones
 #### Módulo 1: Tipos y Estrategias de Medición
 
-| MED-01      | **Configurar medición de una frecuencia  (Monofrecuencia)**                                                                         |
-| :---------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto.**                                                                                                                |
-| Descripción | **El sistema debe permitir elegir los parámetros de medición para  mediciones continuas a una única frecuencia fija seleccionada.** |
+| **MED-01**      | Configurar medición de una frecuencia  (Monofrecuencia)                                                                         |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto.                                                                                                                |
+| **Descripción** | El sistema debe permitir elegir los parámetros de medición para  mediciones continuas a una única frecuencia fija seleccionada. |
 
-| MED-02      | **Ejecutar medición de una frecuencia (Monofrecuencia)**                                             |
-| :---------- | :--------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                               |
-| Descripción | **El sistema debe permitir ejecutar mediciones continuas a una única frecuencia fija seleccionada.** |
+| **MED-02**      | Ejecutar medición de una frecuencia (Monofrecuencia)                                             |
+| :-------------- | :--------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                               |
+| **Descripción** | El sistema debe permitir ejecutar mediciones continuas a una única frecuencia fija seleccionada. |
 
-| MED-03      | **Configurar medición por espectroscopía (Barrido espectral)**                                                                                                                                      |
-| :---------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto.**                                                                                                                                                                                |
-| Descripción | **El sistema debe permitir elegir los parámetros de medición para realizar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado.** |
+| **MED-03**      | Configurar medición por espectroscopía (Barrido espectral)                                                                                                                                      |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto.                                                                                                                                                                                |
+| **Descripción** | El sistema debe permitir elegir los parámetros de medición para realizar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado. |
 
-| MED-04      | **Ejecutar medición por espectroscopía (Barrido espectral)**                                                                                                 |
-| :---------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                       |
-| Descripción | **El sistema debe permitir ejecutar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado.** |
+| **MED-04**      | Ejecutar medición por espectroscopía (Barrido espectral)                                                                                                 |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                       |
+| **Descripción** | El sistema debe permitir ejecutar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado. |
 
-| MED-05      | **Configurar medición de multifrecuencia**                                                                               |
-| :---------- | :----------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto.**                                                                                                     |
-| Descripción | **El sistema debe permitir elegir los parámetros de medición para una cantidad de frecuencias discretas y específicas.** |
+| **MED-05**      | Configurar medición de multifrecuencia                                                                               |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto.                                                                                                     |
+| **Descripción** | El sistema debe permitir elegir los parámetros de medición para una cantidad de frecuencias discretas y específicas. |
 
-| MED-06      | **Ejecutar medición multifrecuencia**                                                                                         |
+| **MED-06**      | Ejecutar medición multifrecuencia                                                                                         |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                        |
+| **Descripción** | El sistema permite ejecutar una cantidad de mediciones a las mismas frecuencias discretas y especificadas por el usuario. |
+
+| **MED-07**      | Mostrar progreso de la medición                                                                                                                     |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                  |
+| **Descripción** | El sistema debe proporcionar una indicación visual en pantalla que informe al usuario que un proceso de medición se encuentra actualmente en curso. |
+
+| **MED-08**      | Ejecutar mediciones en bucle                                                               |
+| :-------------- | :--------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                         |
+| **Descripción** | El sistema debe permitir ejecutar mediciones continuas del mismo tipo a través del tiempo. |
+
+| **MED-09**      | Seleccionar canales de multiplexado (Llaves/Electrodos)                                                                     |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario experto.                                                                                                            |
+| **Descripción** | El sistema debe permitir seleccionar qué canal de electrodos o impedancia interna se utilizará para la toma de la medición. |
+
+| **MED-10**      | Calcular estadísticos descriptivos básicos                                                                                |
 | :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                        |
-| Descripción | **El sistema permite ejecutar una cantidad de mediciones a las mismas frecuencias discretas y especificadas por el usuario.** |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                        |
+| **Descripción** | El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones. |
 
-| MED-07      | **Mostrar progreso de la medición**                                                                                                                     |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                  |
-| Descripción | **El sistema debe proporcionar una indicación visual en pantalla que informe al usuario que un proceso de medición se encuentra actualmente en curso.** |
-
-| MED-08      | **Ejecutar mediciones en bucle**                                                               |
-| :---------- | :--------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                         |
-| Descripción | **El sistema debe permitir ejecutar mediciones continuas del mismo tipo a través del tiempo.** |
-
-| MED-09      | **Seleccionar canales de multiplexado (Llaves/Electrodos)**                                                                     |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| Usuarios    | **Usuario experto.**                                                                                                            |
-| Descripción | **El sistema debe permitir seleccionar qué canal de electrodos o impedancia interna se utilizará para la toma de la medición.** |
-
-| MED-10      | **Calcular estadísticos descriptivos básicos**                                                                                |
-| :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                        |
-| Descripción | **El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones.** |
-
-| MED-11      | **Presentar estadísticos descriptivos básicos**                               |
-| :---------- | :---------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                        |
-| Descripción | **El sistema debe ser capaz de presentar métricas estadísticas automáticas.** |
+| **MED-11**      | Presentar estadísticos descriptivos básicos                               |
+| :---------- | :------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                                        |
+| **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas automáticas. |
 
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
-| SET-01      | **Habilitar usuario experto**                                                                                     |
-| :---------- | ----------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto**.                                                                                              |
-| Descripción | **La aplicación debe proveer un "Modo Experto" con acceso total a la configuración de parámetros y calibración.** |
+| **SET-01**      | Habilitar usuario experto                                                                                     |
+| :-------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto.                                                                                              |
+| **Descripción** | La aplicación debe proveer un "Modo Experto" con acceso total a la configuración de parámetros y calibración. |
 
-| SET-02      | **Habilitar usuario operador**                                                                                                                |
-| :---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario operador.**                                                                                                                         |
-| Descripción | **La aplicación debe proveer un "Modo Operador" con permisos restringidos exclusivamente a la ejecución de configuraciones predeterminadas.** |
+| **SET-02**      | Habilitar usuario operador                                                                                                                |
+| :-------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario operador.                                                                                                                         |
+| **Descripción** | La aplicación debe proveer un "Modo Operador" con permisos restringidos exclusivamente a la ejecución de configuraciones predeterminadas. |
 
-| SET-03      | **Advertir sobre cambio de perfiles**                                                                               |
-| :---------- | ------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                              |
-| Descripción | **El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre tipos de perfiles.** |
+| **SET-03**      | Advertir sobre cambio de perfiles                                                                               |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                              |
+| **Descripción** | El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre tipos de perfiles. |
 
-| SET-04      | **Guardar configuraciones de medición**                                                                                |
-| :---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto.**                                                                                                   |
-| Descripción | **El sistema debe permitir al usuario experto guardar los parámetros localmente como una configuración reutilizable.** |
+| **SET-04**      | Guardar configuraciones de medición                                                                                |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto.                                                                                                   |
+| **Descripción** | El sistema debe permitir al usuario experto guardar los parámetros localmente como una configuración reutilizable. |
 
-| SET-05      | **Exportar configuraciones de medición**                                        |
-| :---------- | ------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario Operador.**                                          |
-| Descripción | **El sistema debe permitir al usuario exportar las configuraciones guardadas.** |
+| **SET-05**      | Exportar configuraciones de medición                                        |
+| :-------------- | ------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario Operador.                                          |
+| **Descripción** | El sistema debe permitir al usuario exportar las configuraciones guardadas. |
 
-| SET-06      | **Cargar configuraciones**                                                 |
-| :---------- | -------------------------------------------------------------------------- |
-| Usuarios    | **Usuario operador.**                                                      |
-| Descripción | **El sistema debe permitir al usuario operador importar configuraciones.** |
+| **SET-06**      | Cargar configuraciones                                                 |
+| :-------------- | -------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario operador.                                                      |
+| **Descripción** | El sistema debe permitir al usuario operador importar configuraciones. |
 
-| SET-07      | **Aplicar configuraciones**                                                                          |
-| :---------- | ---------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario operador.**                                                                                |
-| Descripción | **El sistema debe permitir al usuario operador seleccionar una configuración previamente guardada.** |
+| **SET-07**      | Aplicar configuraciones                                                                          |
+| :-------------- | ---------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario operador.                                                                                |
+| **Descripción** | El sistema debe permitir al usuario operador seleccionar una configuración previamente guardada. |
 
-| SET-08      | **Adjuntar metadatos y observaciones libres**                                                                                                                                               |
-| :---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                      |
-| Descripción | **El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final.** |
+| **SET-08**      | Adjuntar metadatos y observaciones libres                                                                                                                                               |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                      |
+| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final. |
 
-| SET-09      | **Cambiar entre perfiles de usuario**                                                                 |
-| :---------- | ----------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                |
-| Descripción | **El sistema tiene que permitir a un usuario poder cambiar el tipo de perfil en el que se encuentra** |
+| **SET-09**      | Cambiar entre perfiles de usuario                                                                 |
+| :-------------- | ----------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                |
+| **Descripción** | El sistema tiene que permitir a un usuario poder cambiar el tipo de perfil en el que se encuentra |
 
-| SET-10      | **Visualizar configuraciones previas**                                                          |
-| :---------- | ----------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                          |
-| Descripción | **El sistema debe contemplar un apartado en el que se visualicen las configuraciones previas.** |
+| **SET-10**      | Visualizar configuraciones previas                                                          |
+| :-------------- | ----------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                          |
+| **Descripción** | El sistema debe contemplar un apartado en el que se visualicen las configuraciones previas. |
 
-| SET-11      | **Crear Perfil de Usuario**                            |
-| :---------- | ------------------------------------------------------ |
-| Usuarios    | **Usuario experto, Usuario operador**.                 |
-| Descripción | **El sistema debe permitir crear perfiles de usuario** |
+| **SET-11**      | Crear Perfil de Usuario                            |
+| :-------------- | ------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                 |
+| **Descripción** | El sistema debe permitir crear perfiles de usuario |
 ### Subsistema 4: Entorno de Ejecución y Plataforma
 
 #### Módulo 1: Compatibilidad del Sistema
 
-| COM-01      | **Proveer entorno de aplicación de escritorio**                                                                                                            |
-| :---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                     |
-| Descripción | **El software debe ser diseñado, compilado y distribuido como una aplicación de escritorio orientada a computadoras personales y portátiles (notebooks).** |
+| **COM-01**      | Proveer entorno de aplicación de escritorio                                                                                                            |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                     |
+| **Descripción** | El software debe ser diseñado, compilado y distribuido como una aplicación de escritorio orientada a computadoras personales y portátiles (notebooks). |
 
-| COM-02      | **Garantizar ejecución nativa en Microsoft Windows**                                                                                                                                          |
-| :---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                        |
-| Descripción | **El sistema debe garantizar total compatibilidad, estabilidad y funcionalidad de todos sus módulos (especialmente la comunicación de puertos) bajo el sistema operativo Microsoft Windows.** |
+| **COM-02**      | Garantizar ejecución nativa en Microsoft Windows                                                                                                                                          |
+| :-------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                        |
+| **Descripción** | El sistema debe garantizar total compatibilidad, estabilidad y funcionalidad de todos sus módulos (especialmente la comunicación de puertos) bajo el sistema operativo Microsoft Windows. |
 
-| COM-03      | **Proveer soporte secundario para entornos Linux**                                                                                                                |
-| :---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                            |
-| Descripción | **El sistema debe contemplar en su arquitectura la portabilidad necesaria para poder ser ejecutado en distribuciones de escritorio del sistema operativo Linux.** |
+| **COM-03**      | Proveer soporte secundario para entornos Linux                                                                                                                |
+| :-------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                            |
+| **Descripción** | El sistema debe contemplar en su arquitectura la portabilidad necesaria para poder ser ejecutado en distribuciones de escritorio del sistema operativo Linux. |
 ### Subsistema 5: Persistencia
 
 #### Módulo 1: Almacenamiento y Estructura de Datos
 
-| PER-01      | **Almacenar registros en el sistema de ficheros local**                                                                                                                  |
-| :---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                   |
-| Descripción | **El sistema debe guardar todos los resultados de las mediciones completadas directamente en el almacenamiento permanente de la computadora que ejecuta la aplicación.** |
+| **PER-01**      | Almacenar registros en el sistema de ficheros local                                                                                                                  |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                   |
+| **Descripción** | El sistema debe guardar todos los resultados de las mediciones completadas directamente en el almacenamiento permanente de la computadora que ejecuta la aplicación. |
 
-| PER-02      | **Generar nomenclatura predeterminada de archivos**                                                                                                              |
-| :---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                           |
-| Descripción | **El sistema debe asignar automáticamente a cada archivo de salida un nombre basado en la fecha y hora de la medición, utilizando el estándar ISO 8601 básico.** |
+| **PER-02**      | Generar nomenclatura predeterminada de archivos                                                                                                              |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                           |
+| **Descripción** | El sistema debe asignar automáticamente a cada archivo de salida un nombre basado en la fecha y hora de la medición, utilizando el estándar ISO 8601 básico. |
 
-| PER-03      | **Configurar directorios**                                                                                                |
-| :---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                    |
-| Descripción | **El sistema debe permitir al usuario seleccionar un directorio raíz específico para el almacenamiento de sus campañas.** |
+| **PER-03**      | Configurar directorios                                                                                                |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                    |
+| **Descripción** | El sistema debe permitir al usuario seleccionar un directorio raíz específico para el almacenamiento de sus campañas. |
 
-| PER-04      | **Renombramiento manual de archivos**                                                                             |
-| :---------- | ----------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                            |
-| Descripción | **El sistema debe permitir al usuario sobrescribir el nombre automático del archivo antes de su guardado final.** |
+| **PER-04**      | Renombramiento manual de archivos                                                                             |
+| :-------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                            |
+| **Descripción** | El sistema debe permitir al usuario sobrescribir el nombre automático del archivo antes de su guardado final. |
 
-| PER-05      | **Estructurar cabeceras de metadatos integrados**                                                                                                                                                                                |
-| :---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Usuarios    | **Usuario experto, Usuario operador.**                                                                                                                                                                                           |
-| Descripción | **El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones.** |
+| **PER-05**      | Estructurar cabeceras de metadatos integrados                                                                                                                                                                                |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                                                           |
+| **Descripción** | El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones. |
 
 ## CASOS DE USO
 ### Convenciones gráficas
@@ -512,7 +513,7 @@ CU2 --extend--> CU1
 CU1 --include--> CU3
 ```
 
-### Especificación de Casos de Uso
+### Diagramas de Casos de Uso
 #### Subsistema 1: Comunicación e Interacción con el Hardware
 
 ##### Módulo 1: Conectividad y Estado
@@ -671,3 +672,14 @@ Operador --> CU4
 %% Relaciones Include/Extend
 CU2 --extend--> CU4
 ```
+### Especificación de Casos de Uso
+
+| Nombre                           |     |
+| :------------------------------- | --- |
+| **Tipo**                         |     |
+| **Actor Primario**               |     |
+| **Alcance**                      |     |
+| **Precondiciones**               |     |
+| **Escenario principal de éxito** |     |
+| **Postcondiciones**              |     |
+| **Extensiones**                  |     |
