@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
 
+
+"""
+NOTA: las fuciones 'do_measure' solo son de referencia
+"""
 class Measure(ABC):
     def __init__(self, measure_setup):
         self.measure_setup = measure_setup
