@@ -40,6 +40,7 @@ Vargas Da Silva, Eliam Joaquin**
 - [**METODOLOGÍA DE DESARROLLO**](#metodología-de-desarrollo)
 	- Resumen de la metodología elegida
 - [**HERRAMIENTAS UTILIZADAS**](#herramientas-utilizadas)
+	- Diagrama de Arquitectura de Software
 - [**ANÁLISIS Y DISEÑO**](#análisis-y-diseño)
 	- Análisis
 	- Diseño
@@ -872,3 +873,37 @@ CU2 --extend--> CU4
 | **Escenario principal de éxito** | 1. El Experto ingresa a la sección "Ruteo / Multiplexor" dentro de la configuración del sistema.<br><br>2. El Sistema presenta una representación visual de los terminales correspondientes a los 4 canales multiplexados disponibles en la placa.<br><br>3. El Experto selecciona (marca) los canales físicos (ej. CH1 y CH3) que estarán conectados a las muestras.<br><br>4. El Experto presiona el botón "Guardar Canales".<br><br>5. El Sistema verifica que al menos un (1) canal físico haya sido seleccionado.<br><br>6. El Sistema asocia esta configuración de enrutamiento al setup activo en memoria.<br><br>7. El Sistema muestra un aviso de confirmación temporal: "Canales de multiplexado asignados exitosamente" y actualiza los indicadores visuales en la interfaz. |
 | **Postcondiciones**              | El sistema sabe a qué canales físicos de la placa debe enviar los comandos de conmutación (MUX) antes de iniciar cualquier recolección de datos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Extensiones**                  | 5.a El Experto intenta guardar sin seleccionar ningún canal:<br> 5.a.1. El Sistema detecta que las 4 opciones se encuentran desmarcadas.<br>5.a.2. El Sistema intercepta la acción de guardado, impidiendo que el setup quede sin vía física de lectura.<br>5.a.3. El Sistema resalta en rojo el área de selección y emite un mensaje de error: "Error: Debe habilitar al menos un canal operativo para poder medir."<br>5.a.4. El flujo retorna al Paso 3, a la espera de que el Experto realice una selección válida.                                                                                                                                                                                                                                                                 |
+
+## HERRAMIENTAS UTILIZADAS
+### Diagrama de Arquitectura de Software
+
+```mermaid
+flowchart TD
+    %% Definición de estilos
+    classDef frontend fill:#2b5c8f,stroke:#1a3a5c,stroke-width:2px,color:#fff
+    classDef backend fill:#278f56,stroke:#175c35,stroke-width:2px,color:#fff
+    classDef database fill:#b06c13,stroke:#7a4a0c,stroke-width:2px,color:#fff
+    classDef hardware fill:#666666,stroke:#333333,stroke-width:2px,color:#fff
+    classDef user fill:#8c3b3b,stroke:#5c2424,stroke-width:2px,color:#fff
+
+    Actor((Usuario\nExperto / Operador)):::user
+
+    subgraph Entorno Cliente [PC / Notebook con Microsoft Windows]
+        UI[Frontend de Escritorio\nPyQt6]:::frontend
+        
+        subgraph Motor Lógico Local
+            API[API Orquestador\nFastAPI]:::backend
+            DB[(Persistencia\nSQLite)]:::database
+        end
+    end
+
+    subgraph Entorno Físico
+        ESP[Hardware Guanaco Mini\nESP32]:::hardware
+    end
+
+    %% Relaciones y Flujos de Información
+    Actor -->|Interactúa con| UI
+    UI <-->|Peticiones HTTP / WebSockets| API
+    API <-->|Lectura / Escritura SQL| DB
+    API <-->|Puerto Serial USB / Bluetooth| ESP
+```
