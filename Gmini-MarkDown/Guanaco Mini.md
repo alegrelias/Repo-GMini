@@ -24,7 +24,7 @@ Vargas Da Silva, Eliam Joaquin**
 			- Modulo 2: Calibración del Dispositivo
 		- [Subsistema 2: Configuración y Toma de Mediciones](#subsistema-2-configuración-y-toma-de-mediciones)
 			- Modulo 1: Tipos y Estrategias de Medición
-		- [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](subsistema-3-configuración-y-gestión-de-perfiles-setups)
+		- [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](#subsistema-3-configuración-y-gestión-de-perfiles-setups)
 			- Modulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 		- [Subsistema 4: Entorno de Ejecución y Plataforma](#subsistema-4-entorno-de-ejecución-y-plataforma)
 			- Modulo 1: Compatibilidad del Sistema
