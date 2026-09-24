@@ -45,6 +45,10 @@ SetupMedicion <|-- SetupMultifrecuencia
 TipoConexion <|-- Alambrica
 TipoConexion <|-- Inalambrica
 
+Medicion <|-- Espectroscopia
+Medicion <|-- Monofrecuencia
+Medicion <|-- Multifrecuencia
+
 
     class Usuario {
         <<abstract>>
