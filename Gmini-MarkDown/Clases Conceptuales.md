@@ -32,6 +32,20 @@ NOTA: hay una regla de seguridad inquebrantable para aplicaciones locales: las c
 
 ```mermaid
 classDiagram
+direction LR
+
+%% jerarquias
+Usuario <|-- Experto
+Usuario <|-- Operador
+
+SetupMedicion <|-- SetupEspectroscopia
+SetupMedicion <|-- SetupMonofrecuencia
+SetupMedicion <|-- SetupMultifrecuencia
+
+TipoConexion <|-- Alambrica
+TipoConexion <|-- Inalambrica
+
+
     class Usuario {
         <<abstract>>
     }
