@@ -174,7 +174,7 @@ class WireLess{
 %% servicios
 
 class MeasureService{
-	+ execute_measure(setup) : MeasureResult
+	+ execute_measure(measure : Measure) : MeasureResult
 }
 class PersistanceService{
 	- db_root : str
@@ -216,13 +216,13 @@ class ConnectionState{
 	class DisconnectedState
 	class ConnectionErrorState
 	
-	class MeasureState{
-		 <<abstract>>
-	}
-	class PendingState
-	class ExecutingState
-	class CompleteState
-	class ErrorState
+class MeasureState{
+	 <<abstract>>
+}
+class PendingState
+class ExecutingState
+class CompleteState
+class ErrorState
 	    
 %% relaciones 
 
@@ -400,49 +400,100 @@ CalibrationService "1"-->"1" CalibrationSetup
 classDiagram
 
 %% jerarquias
-Usuario <|-- Experto
-Usuario <|-- Operador
+User <|-- Expert
+User <|-- Operator
 
-Medicion <|-- Espectroscopia
-Medicion <|-- Monofrecuencia
-Medicion <|-- Multifrecuencia
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
 
-SetupMedicion <|-- SetupEspectroscopia
-SetupMedicion <|-- SetupMonofrecuencia
-SetupMedicion <|-- SetupMultifrecuencia
+MeasureState <|-- PendingState
+MeasureState <|-- ExecutingState
+MeasureState <|-- CompleteState
+MeasureState <|-- ErrorState
 
 %% clases
-class Usuario {
+class User {
         <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + has_permission(action : str)
     }
-class Experto
-class Operador
+    
 
-class Medicion{
+    
+class Operator{
+
+}
+class Expert{
+
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class MeasureSetup {
 		<<abstract>>
-	}
-class Espectroscopia
-class Monofrecuencia
-class Multifrecuencia
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
 
-class SetupMedicion{
-		<<abstract>>
-	}
-class SetupEspectroscopia
-class SetupMonofrecuencia
-class SetupMultifrecuencia
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
 
-class Placa
-class ServicioMedicion
-class ResultadoMedicion
+class MeasureService{
+	+ execute_measure(measure : Measure) : MeasureResult
+}
+
+class MeasureState{
+	 <<abstract>>
+}
+class PendingState
+class ExecutingState
+class CompleteState
+class ErrorState
 
 %% relaciones
-Usuario -- ServicioMedicion
-ServicioMedicion -- Placa
-ServicioMedicion -- Medicion
+User "1"-->"1" MeasureService
 
-Medicion -- SetupMedicion
-Medicion -- ResultadoMedicion
+Measure "1"o--"1" MeasureSetup
+Measure "1"*--"1" MeasureResult
+Measure "1"*--"1" MeasureState
+
+MeasureService "1"-->"1" Measure
 ```
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
