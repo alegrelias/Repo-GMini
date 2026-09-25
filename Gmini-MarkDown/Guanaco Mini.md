@@ -34,6 +34,9 @@ Vargas Da Silva, Eliam Joaquin**
 	- Convenciones Gráficas
 	- Diagramas de Casos de Uso
 	- Especificación de Casos de Uso
+- [**CLASES SOFTWARE**](#clases-software)
+	- Lista de Clases
+	- Diagramas de Clases
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
 	- Visión general
 	- Cronograma por requerimientos
@@ -873,6 +876,606 @@ CU2 --extend--> CU4
 | **Escenario principal de éxito** | 1. El Experto ingresa a la sección "Ruteo / Multiplexor" dentro de la configuración del sistema.<br><br>2. El Sistema presenta una representación visual de los terminales correspondientes a los 4 canales multiplexados disponibles en la placa.<br><br>3. El Experto selecciona (marca) los canales físicos (ej. CH1 y CH3) que estarán conectados a las muestras.<br><br>4. El Experto presiona el botón "Guardar Canales".<br><br>5. El Sistema verifica que al menos un (1) canal físico haya sido seleccionado.<br><br>6. El Sistema asocia esta configuración de enrutamiento al setup activo en memoria.<br><br>7. El Sistema muestra un aviso de confirmación temporal: "Canales de multiplexado asignados exitosamente" y actualiza los indicadores visuales en la interfaz. |
 | **Postcondiciones**              | El sistema sabe a qué canales físicos de la placa debe enviar los comandos de conmutación (MUX) antes de iniciar cualquier recolección de datos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Extensiones**                  | 5.a El Experto intenta guardar sin seleccionar ningún canal:<br> 5.a.1. El Sistema detecta que las 4 opciones se encuentran desmarcadas.<br>5.a.2. El Sistema intercepta la acción de guardado, impidiendo que el setup quede sin vía física de lectura.<br>5.a.3. El Sistema resalta en rojo el área de selección y emite un mensaje de error: "Error: Debe habilitar al menos un canal operativo para poder medir."<br>5.a.4. El flujo retorna al Paso 3, a la espera de que el Experto realice una selección válida.                                                                                                                                                                                                                                                                 |
+
+## CLASES SOFTWARE
+### Lista de Clases
+
+```mermaid
+classDiagram
+direction LR
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+MeasureState <|-- PendingState
+MeasureState <|-- ExecutingState
+MeasureState <|-- CompleteState
+MeasureState <|-- ErrorState
+
+ConnectionState <|-- ConnectedState
+ConnectionState <|-- DisconnectedState
+ConnectionState <|-- ConnectionErrorState
+
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratingState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+
+%% clases
+
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect(device)
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+%% servicios
+
+class MeasureService{
+	+ execute_measure(measure : Measure) : MeasureResult
+}
+class PersistanceService{
+	- db_root : str
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
+class AuthService{
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+	
+}
+class ConnectionService{
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect()
+}
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+%% state patern
+
+class DeviceState{
+		<<abstract>>
+	}
+	class FreeDeviceState
+	class CalibratingState
+	class MeasuringState
+	class DeviceErrorState
+	
+class ConnectionState{
+		<<abstract>>
+	}
+	class ConnectedState
+	class DisconnectedState
+	class ConnectionErrorState
+	
+class MeasureState{
+	 <<abstract>>
+}
+class PendingState
+class ExecutingState
+class CompleteState
+class ErrorState
+	    
+%% relaciones 
+
+```
+
+### Diagramas de Clases
+##### Subsistema 1: Comunicación e Interacción con el Hardware
+
+##### Módulo 1: Conectividad y Estado
+
+```mermaid
+classDiagram
+
+%% jerarquias
+
+User <|-- Operator
+User <|-- Expert
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratingState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+
+ConnectionState <|-- ConnectedState
+ConnectionState <|-- DisconnectedState
+ConnectionState <|-- ConnectionErrorState
+
+%% clases
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect(device)
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+class User {
+        <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + has_permission(action : str)
+    }
+    
+class Operator{
+
+}
+class Expert{
+
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class ConnectionService{
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect()
+}
+
+class DeviceState{
+		<<abstract>>
+	}
+class FreeDeviceState
+class CalibratingState
+class MeasuringState
+class DeviceErrorState
+	
+class ConnectionState{
+		<<abstract>>
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
+
+%% relaciones
+
+User "1"-->"1" Device : conecta
+
+Device "1" o-- "1" ConnectionType
+Device "1" *-- "1" DeviceState
+
+ConnectionService "1" ..> "1" Device
+
+ConnectionType "1" *-- "1" ConnectionState
+```
+
+
+##### Módulo 2: Calibración del Dispositivo
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+%% clases
+class User {
+        <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + has_permission(action : str)
+    }
+    
+class Operator{
+
+}
+class Expert{
+
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+class PersistanceService{
+	- db_root : str
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
+
+%% relaciones
+User "1"-->"1" Device : calibra
+
+PersistanceService "1"..>"1" CalibrationSetup
+
+CalibrationService "1"..>"1" Device
+CalibrationService "1"..>"1" CalibrationSetup
+```
+
+#### Subsistema 2: Configuración y Toma de Mediciones
+##### Módulo 1: Tipos y Estrategias de Medición
+
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+MeasureState <|-- PendingState
+MeasureState <|-- ExecutingState
+MeasureState <|-- CompleteState
+MeasureState <|-- ErrorState
+
+%% clases
+class User {
+        <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + has_permission(action : str)
+    }
+    
+
+    
+class Operator{
+
+}
+class Expert{
+
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class MeasureService{
+	+ execute_measure(measure : Measure) : MeasureResult
+}
+
+class MeasureState{
+	 <<abstract>>
+}
+class PendingState
+class ExecutingState
+class CompleteState
+class ErrorState
+
+%% relaciones
+User "1"-->"1" Measure : mide
+
+Measure "1"o--"1" MeasureSetup
+Measure "1"*--"1" MeasureResult
+Measure "1"*--"1" MeasureState
+
+MeasureService "1"..>"1" Measure
+```
+#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+
+##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+```mermaid
+classDiagram
+direction LR
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+
+}
+
+class AuthService{
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+}
+
+class PersistanceService{
+	- db_root : str
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+%% relaciones
+
+Expert "1"-->"0..*" MeasureSetup : crea
+Expert "1"-->"0..*" CalibrationSetup : crea
+
+User "1"-->"0..*" MeasureSetup : gestiona
+User "1"-->"0..*" CalibrationSetup : gestiona
+
+AuthService "1"..>"1" User
+
+PersistanceService "1"..>"1" MeasureSetup
+PersistanceService "1"..>"1" CalibrationSetup
+
+```
+
+#### Subsistema 5: Persistencia
+
+##### Módulo 1: Almacenamiento y Estructura de Datos
+
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+%% clases
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class PersistanceService{
+	- db_root : str
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
+
+%% relaciones
+User "1"-->"0..*" Measure : guarda
+
+PersistanceService "1"..>"1" Measure
+```
+
 
 ## HERRAMIENTAS UTILIZADAS
 ### Diagrama de Arquitectura de Software

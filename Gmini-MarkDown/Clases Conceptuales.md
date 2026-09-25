@@ -1,51 +1,5 @@
-NOTA: hay una regla de seguridad inquebrantable para aplicaciones locales: las contraseñas nunca deben guardarse en texto plano en la base de datos. Debés aplicar una función de hash (como _bcrypt_) antes de guardarlas en SQLite. De esta forma, si el archivo `.db` de la aplicación se copia o transfiere, las credenciales de los miembros del laboratorio permanecen protegidas.
-# Patrones a mirar
-- Builder
-- Strategy
-- Decorator
-- Facade
-- Proxy
-- Memento
-- Template
-- State
-# Clases Identificadas
-
-+ Usuario (Abstracto)
-	+ Operador
-	+ Experto
-+ Medicion (Abstracto) la `Medicion` representa la acción de medir
-	+ Espectroscopia
-	+ Monofrecuencia
-	+ Multifrecuencia
-+ SetupMedicion (Abstracto) El `SetupMedicion` tiene los parámetros (frecuencias, retardos)
-	+ SetupEspectroscopia
-	+ SetupMonofrecuencia
-	+ SetupMultifrecuencia
-+ SetupCalibracion
-+ Placa
-+ ResultadoMedicion `ResultadosMedicion` tiene los números crudos.
-+ TipoConexion (Interfaz)
-	+ Alambrica
-	+ Inalambrica
-+ ServicioMedicion
-+ ServicioCalibracion
-+ ServicioConexion
-+ ServicioPersistencia
-+ ServicioAutenticacion
-+ EstadoMedicion
-	+ EstadoPendiente
-	+ EstadoEjecutando
-	+ EstadoCompletado
-	+ EstadoError
-+ EstadoConexion
-	+ EstadoConectado
-	+ EstadoDesconectado
-	+ EstadoErrorDeConeccion
-+ EstadoPlaca
-	+ EstadoPlacaLIbre
-	+ EstadoCalibrando
-	+ EstadoMidiendo
-	+ EstadoError
+## CLASES SOFTWARE
+### Lista de Clases
 
 ```mermaid
 classDiagram
@@ -178,8 +132,8 @@ class MeasureService{
 }
 class PersistanceService{
 	- db_root : str
-	+ save_measure(result : Measure)
-	+ import_result() : MeasureResult
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
@@ -228,6 +182,7 @@ class ErrorState
 
 ```
 
+### Diagramas de Clases
 ##### Subsistema 1: Comunicación e Interacción con el Hardware
 
 ##### Módulo 1: Conectividad y Estado
@@ -376,8 +331,8 @@ class CalibrationService{
 
 class PersistanceService{
 	- db_root : str
-	+ save_measure(result : Measure)
-	+ import_result() : MeasureResult
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
@@ -534,8 +489,8 @@ class AuthService{
 
 class PersistanceService{
 	- db_root : str
-	+ save_measure(result : Measure)
-	+ import_result() : MeasureResult
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
@@ -628,8 +583,8 @@ class Measure {
 
 class PersistanceService{
 	- db_root : str
-	+ save_measure(result : Measure)
-	+ import_result() : MeasureResult
+	+ save_measure(measure : Measure)
+	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
