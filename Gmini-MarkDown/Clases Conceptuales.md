@@ -7,6 +7,7 @@ NOTA: hay una regla de seguridad inquebrantable para aplicaciones locales: las c
 - Proxy
 - Memento
 - Template
+- State
 # Clases Identificadas
 
 + Usuario (Abstracto)
@@ -29,60 +30,170 @@ NOTA: hay una regla de seguridad inquebrantable para aplicaciones locales: las c
 + ServicioMedicion
 + ServicioPersistencia
 + ServicioAutenticacion
++ EstadoMedicion
+	+ EstadoPendiente
+	+ EstadoEjecutando
+	+ EstadoCompletado
+	+ EstadoError
++ EstadoConexion
+	+ EstadoConectado
+	+ EstadoDesconectado
+	+ EstadoErrorDeConeccion
++ EstadoPlaca
+	+ EstadoPlacaLIbre
+	+ EstadoCalibrando
+	+ EstadoMidiendo
+	+ EstadoError
 
 ```mermaid
 classDiagram
 direction LR
 
 %% jerarquias
-Usuario <|-- Experto
-Usuario <|-- Operador
+User <|-- Expert
+User <|-- Operator
 
-SetupMedicion <|-- SetupEspectroscopia
-SetupMedicion <|-- SetupMonofrecuencia
-SetupMedicion <|-- SetupMultifrecuencia
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
 
-TipoConexion <|-- Alambrica
-TipoConexion <|-- Inalambrica
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
 
-Medicion <|-- Espectroscopia
-Medicion <|-- Monofrecuencia
-Medicion <|-- Multifrecuencia
+Measure <|-- Spectroscopy
+Measure <|-- SingleFreq
+Measure <|-- MultiFreq
 
+MeasureState <|-- PendingState
+MeasureState <|-- ExecutingState
+MeasureState <|-- CompleteState
+MeasureState <|-- ErrorState
 
-    class Usuario {
+ConnectionState <|-- ConnectedState
+ConnectionState <|-- DisconnectedState
+ConnectionState <|-- ConnectionErrorState
+
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratingState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+
+%% clases
+
+    class User {
         <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + get_role()
     }
-    class Operador
-    class Experto
-
-    class Medicion {
-        <<abstract>>
-    }
-    class Espectroscopia
-    class Monofrecuencia
-    class Multifrecuencia
-
-    class SetupMedicion {
-        <<abstract>>
-    }
-    class SetupEspectroscopia
-    class SetupMonofrecuencia
-    class SetupMultifrecuencia
     
-    class SetupCalibracion
-    class Placa
-    class ResultadoMedicion
+    class Operator{
 
-    class TipoConexion {
-        <<interface>>
     }
-    class Alambrica
-    class Inalambrica
+    class Expert{
+	
+    }
 
-    class ServicioMedicion
-    class ServicioPersistencia
-    class ServicioAutenticacion
+    class Measure {
+        <<abstract>>
+        - measureSetup : MeasureSetup
+        - date : str
+        - state : MeasureState
+        - device_temp : float
+    }
+    class Spectroscopy
+    class SingleFreq
+    class MultiFreq
+
+    class MeasureSetup {
+        <<abstract>>
+        - exitation_voltage : float
+        - gain : float
+        - rfbvalue : float
+        - settcycles : int
+        - mux_channel : [0, 1, 2, 3]
+    }
+    class SpecMeasureSetup{
+	    - startfreq : float
+	    - incfreq : float
+	    - steps : int
+	    - repeat : int
+    }
+	class SingleMeasureSetup{
+		- freq : float
+		- delay : int
+		- count : int
+	}
+	class MultiMeasureSetup{
+		- freq_list :[float]
+	}
+    
+    class CalibrationSetup{
+	    - channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	    - z_calc_value_real : float
+	    - z_calc_value_imag : float
+    }
+    
+    class Device{
+		- device_id : int
+		- connection_type : ConnectionType
+		- device_state : DeviceState
+    }
+    
+    class DeviceState{
+	    <<abstract>>
+    }
+    class FreeDeviceState
+    class CalibratingState
+    class MeasuringState
+    class DeviceErrorState
+    
+    class MeasureResult{
+	    - frequencies : [float]
+	    - amplitudes : [float]
+	    - phases : [float]
+	    - impedances : [complex]
+	    + measure_mean() : [float]
+	    + measure_std() : [float]
+    }
+
+    class ConnectionType {
+        <<abstract>>
+        - connection_state : ConnectionState
+        + connect(device)
+        + disconnect()
+        + send(data : str)
+        + receive() : str
+    }
+    class Wire{
+	    - baudrate : int
+	    - port_name : str
+	    - timeout : int
+    }
+    class WireLess{
+	    - protocol : str
+    }
+    
+    class ConnectionState{
+	    <<abstract>>
+    }
+    class ConnectedState
+    class DisconnectedState
+    class ConnectionErrorState
+
+    class MeasureService
+    class PersistanceService
+    class AuthService
+    
+    class MeasureState{
+	     <<abstract>>
+    }
+    class PendingState
+    class ExecutingState
+    class CompleteState
+    class ErrorState
 ```
 
 ##### Subsistema 1: Comunicación e Interacción con el Hardware
