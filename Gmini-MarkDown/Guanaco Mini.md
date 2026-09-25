@@ -1547,8 +1547,9 @@ MEASURE_RESULT{
 MEASURE_SETUP{
 	int measure_setup_id PK
 	int user_id FK
+	float exitation_voltage
 	float gain
-	float rfvalue
+	float rfbvalue
 	float settcycles
 	int mux_channel
 }
@@ -1589,6 +1590,7 @@ MEASURE_SETUP o|--|| SPEC_MEASURE_SETUP : es_un
 MEASURE_SETUP o|--|| SINGLE_MEASURE_SETUP : es_un
 MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 ```
+
 
 
 ## HERRAMIENTAS UTILIZADAS
