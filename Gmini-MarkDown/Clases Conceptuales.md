@@ -78,151 +78,151 @@ DeviceState <|-- DeviceErrorState
 
 %% clases
 
-    class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
-    
-    class Operator{
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	+ has_permission(action : str)
+}
 
-    }
-    class Expert{
-	
-    }
+class Operator{
 
-    class Measure {
-        - measureSetup : MeasureSetup
-        - date : DateTime
-        - state : MeasureState
-        - device_temp : float
-        - result : MeasureResult
-        + set_state(new_state : MeasureState)
-		+ get_state() : MeasureState
-    }
+}
+class Expert{
 
-	class MeasureSetup {
-	        <<abstract>>
-	        - exitation_voltage : float
-	        - gain : float
-	        - rfbvalue : float
-	        - settcycles : int
-	        - mux_channel : [0, 1, 2, 3]
-	        + get_command() : str
-	}
-    class SpecMeasureSetup{
-	    - startfreq : float
-	    - incfreq : float
-	    - steps : int
-	    - repeat : int
-    }
-	class SingleMeasureSetup{
-		- freq : float
-		- delay : int
-		- count : int
-	}
-	class MultiMeasureSetup{
-		- freq_list :[float]
-	}
-    
-    class CalibrationSetup{
-	    - channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
-	    - z_calc_value_real : float
-	    - z_calc_value_imag : float
-	    + get_command() : str
-    }
-    
-    class Device{
-		- device_id : int
-		- connection_type : ConnectionType
-		- device_state : DeviceState
-		+ set_state(new_state : DeviceState)
-		+ get_state() : DeviceState
-    }
-    
-    class MeasureResult{
-	    - frequencies : [float]
-	    - amplitudes : [float]
-	    - phases : [float]
-	    - impedances : [complex]
-	    + measure_mean() : [float]
-	    + measure_std() : [float]
-    }
+}
 
-    class ConnectionType {
-        <<abstract>>
-        - connection_state : ConnectionState
-        + connect(device)
-        + disconnect()
-        + send(data : str)
-        + receive() : str
-        + set_state(new_state : ConnectionState)
-		+ get_state() : ConnectionState
-    }
-    class Wire{
-	    - baudrate : int
-	    - port_name : str
-	    - timeout : int
-    }
-    class WireLess{
-	    - protocol : str
-    }
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect(device)
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
 
 %% servicios
 
-    class MeasureService{
-	    + execute_measure(setup) : MeasureResult
-    }
-    class PersistanceService{
-	    - db_root : str
-	    + save_result(result : MeasureResult)
-	    + import_result() : MeasureResult
-	    + save_calibration_setup(cal_setup : CalibrationSetup)
-	    + import_calibration_setup() : CalibrationSetup
-	    + save_measure_setup(m_setup : MeasureSetup)
-	    + import_measure_setup() : MeasureSetup
-    }
-    class AuthService{
-	    + login(user_name, email, password) : Token
-	    + logout()
-	    + register(user_name, email, password) : Token
-	    
-    }
-    class ConnectionService{
-	    + connect(connection_type : ConnectionType)
-	    + disconnect()
-    }
-    class CalibrationService{
-	    + calibrate_device(device : Device, cal_setup : CalibrationSetup)
-    }
+class MeasureService{
+	+ execute_measure(setup) : MeasureResult
+}
+class PersistanceService{
+	- db_root : str
+	+ save_result(result : MeasureResult)
+	+ import_result() : MeasureResult
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
+class AuthService{
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+	
+}
+class ConnectionService{
+	+ connect(connection_type : ConnectionType)
+	+ disconnect()
+}
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
 
 %% state patern
 
-	class DeviceState{
-		    <<abstract>>
-	    }
-	    class FreeDeviceState
-	    class CalibratingState
-	    class MeasuringState
-	    class DeviceErrorState
-	    
-	class ConnectionState{
-		    <<abstract>>
-	    }
-	    class ConnectedState
-	    class DisconnectedState
-	    class ConnectionErrorState
-	    
-	    class MeasureState{
-		     <<abstract>>
-	    }
-	    class PendingState
-	    class ExecutingState
-	    class CompleteState
-	    class ErrorState
+class DeviceState{
+		<<abstract>>
+	}
+	class FreeDeviceState
+	class CalibratingState
+	class MeasuringState
+	class DeviceErrorState
+	
+class ConnectionState{
+		<<abstract>>
+	}
+	class ConnectedState
+	class DisconnectedState
+	class ConnectionErrorState
+	
+	class MeasureState{
+		 <<abstract>>
+	}
+	class PendingState
+	class ExecutingState
+	class CompleteState
+	class ErrorState
 	    
 %% relaciones 
 
@@ -335,25 +335,62 @@ ConnectionType "1" *-- "1" ConnectionState
 classDiagram
 
 %% jerarquias
-Usuario <|-- Experto
-Usuario <|-- Operador
+User <|-- Expert
+User <|-- Operator
 
 %% clases
-class Usuario {
+class User {
         <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + has_permission(action : str)
     }
-class Experto
-class Operador
-class SetupCalibracion
-class Placa
-class ServicioMedicion
-class ServicioPersistencia
+    
+class Operator{
+
+}
+class Expert{
+
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+class PersistanceService{
+	- db_root : str
+	+ save_result(result : MeasureResult)
+	+ import_result() : MeasureResult
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
 
 %% relaciones
-Usuario -- ServicioMedicion
-Placa -- ServicioMedicion
-ServicioMedicion -- SetupCalibracion
-SetupCalibracion -- ServicioPersistencia
+User "1"-->"1" CalibrationService
+
+PersistanceService "1"-->"1" CalibrationSetup
+
+CalibrationService "1"-->"1" Device
+CalibrationService "1"-->"1" CalibrationSetup
 ```
 
 #### Subsistema 2: Configuración y Toma de Mediciones
