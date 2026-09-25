@@ -178,7 +178,7 @@ class MeasureService{
 }
 class PersistanceService{
 	- db_root : str
-	+ save_result(result : MeasureResult)
+	+ save_measure(result : Measure)
 	+ import_result() : MeasureResult
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ import_calibration_setup() : CalibrationSetup
@@ -192,7 +192,7 @@ class AuthService{
 	
 }
 class ConnectionService{
-	+ connect(connection_type : ConnectionType)
+	+ connect(device : Device, connection_type : ConnectionType)
 	+ disconnect()
 }
 class CalibrationService{
@@ -298,7 +298,7 @@ class Device{
 }
 
 class ConnectionService{
-	+ connect(connection_type : ConnectionType)
+	+ connect(device : Device, connection_type : ConnectionType)
 	+ disconnect()
 }
 
@@ -319,12 +319,12 @@ class ConnectionErrorState
 
 %% relaciones
 
-User "1"-->"1" ConnectionService
+User "1"-->"1" Device : conecta
 
 Device "1" o-- "1" ConnectionType
 Device "1" *-- "1" DeviceState
 
-ConnectionService "1" --> "1" Device
+ConnectionService "1" ..> "1" Device
 
 ConnectionType "1" *-- "1" ConnectionState
 ```
@@ -376,7 +376,7 @@ class CalibrationService{
 
 class PersistanceService{
 	- db_root : str
-	+ save_result(result : MeasureResult)
+	+ save_measure(result : Measure)
 	+ import_result() : MeasureResult
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ import_calibration_setup() : CalibrationSetup
@@ -385,12 +385,12 @@ class PersistanceService{
 }
 
 %% relaciones
-User "1"-->"1" CalibrationService
+User "1"-->"1" Device : calibra
 
-PersistanceService "1"-->"1" CalibrationSetup
+PersistanceService "1"..>"1" CalibrationSetup
 
-CalibrationService "1"-->"1" Device
-CalibrationService "1"-->"1" CalibrationSetup
+CalibrationService "1"..>"1" Device
+CalibrationService "1"..>"1" CalibrationSetup
 ```
 
 #### Subsistema 2: Configuración y Toma de Mediciones
@@ -487,49 +487,105 @@ class CompleteState
 class ErrorState
 
 %% relaciones
-User "1"-->"1" MeasureService
+User "1"-->"1" Measure : mide
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
 Measure "1"*--"1" MeasureState
 
-MeasureService "1"-->"1" Measure
+MeasureService "1"..>"1" Measure
 ```
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 ##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 ```mermaid
 classDiagram
+direction LR
 
 %% jerarquias
-Usuario <|-- Experto
-Usuario <|-- Operador
+User <|-- Expert
+User <|-- Operator
 
-SetupMedicion <|-- SetupEspectroscopia
-SetupMedicion <|-- SetupMonofrecuencia
-SetupMedicion <|-- SetupMultifrecuencia
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
 
-%% clases
-class Usuario {
-        <<abstract>>
-    }
-class Experto
-class Operador
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	+ has_permission(action : str)
+}
 
-class SetupMedicion{
+class Operator{
+
+}
+class Expert{
+
+}
+
+class AuthService{
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+}
+
+class PersistanceService{
+	- db_root : str
+	+ save_measure(result : Measure)
+	+ import_result() : MeasureResult
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
+
+class MeasureSetup {
 		<<abstract>>
-	}
-class SetupEspectroscopia
-class SetupMonofrecuencia
-class SetupMultifrecuencia
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
 
-class ServicioAutenticacion
-class ServicioPersistencia
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
 
 %% relaciones
-Usuario -- ServicioPersistencia
-Usuario -- ServicioAutenticacion
-SetupMedicion -- ServicioPersistencia
+
+Expert "1"-->"0..*" MeasureSetup : crea
+Expert "1"-->"0..*" CalibrationSetup : crea
+
+User "1"-->"0..*" MeasureSetup : gestiona
+User "1"-->"0..*" CalibrationSetup : gestiona
+
+AuthService "1"..>"1" User
+
+PersistanceService "1"..>"1" MeasureSetup
+PersistanceService "1"..>"1" CalibrationSetup
+
 ```
 
 #### Subsistema 5: Persistencia
@@ -540,33 +596,48 @@ SetupMedicion -- ServicioPersistencia
 classDiagram
 
 %% jerarquias
-Medicion <|-- Espectroscopia
-Medicion <|-- Monofrecuencia
-Medicion <|-- Multifrecuencia
+User <|-- Expert
+User <|-- Operator
 
 %% clases
-class Usuario
-class ServicioPersistencia
-class ServicioMedicion
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	+ has_permission(action : str)
+}
 
-class Medicion{
-		<<abstract>>
-	}
-class Espectroscopia
-class Monofrecuencia
-class Multifrecuencia
+class Operator{
 
-class ResultadoMedicion
+}
+class Expert{
+
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class PersistanceService{
+	- db_root : str
+	+ save_measure(result : Measure)
+	+ import_result() : MeasureResult
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ import_calibration_setup() : CalibrationSetup
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ import_measure_setup() : MeasureSetup
+}
 
 %% relaciones
-Usuario -- ServicioMedicion
-Usuario -- ServicioPersistencia
+User "1"-->"0..*" Measure : guarda
 
-ServicioMedicion -- Medicion
-Medicion -- ResultadoMedicion
-
-%% Nuevas relaciones clave para la persistencia
-ServicioMedicion -- ServicioPersistencia
-Medicion -- ServicioPersistencia
-ResultadoMedicion -- ServicioPersistencia
+PersistanceService "1"..>"1" Measure
 ```
