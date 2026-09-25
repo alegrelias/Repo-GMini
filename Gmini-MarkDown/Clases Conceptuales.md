@@ -28,6 +28,8 @@ NOTA: hay una regla de seguridad inquebrantable para aplicaciones locales: las c
 	+ Alambrica
 	+ Inalambrica
 + ServicioMedicion
++ ServicioCalibracion
++ ServicioConexion
 + ServicioPersistencia
 + ServicioAutenticacion
 + EstadoMedicion
@@ -183,9 +185,30 @@ DeviceState <|-- DeviceErrorState
     class DisconnectedState
     class ConnectionErrorState
 
-    class MeasureService
-    class PersistanceService
-    class AuthService
+    class MeasureService{
+	    + execute_measure(setup) : MeasureResult
+    }
+    class PersistanceService{
+	    + save_result(result : MeasureResult)
+	    + import_result() : MeasureResult
+	    + save_calibration_setup(cal_setup : CalibrationSetup)
+	    + import_calibration_setup() : CalibrationSetup
+	    + save_measure_setup(m_setup : MeasureSetup)
+	    + import_measure_setup() : MeasureSetup
+    }
+    class AuthService{
+	    + login(user_name, email, password) : Token
+	    + logout()
+	    + register(user_name, email, password) : Token
+	    
+    }
+    class ConnectionService{
+	    + connect(connection_type : ConnectionType)
+	    + disconnect()
+    }
+    class CalibrationService{
+	    + calibrate_device(device : Device, cal_setup : CalibrationSetup)
+    }
     
     class MeasureState{
 	     <<abstract>>
