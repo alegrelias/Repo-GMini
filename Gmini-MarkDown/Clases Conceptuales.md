@@ -237,29 +237,98 @@ classDiagram
 
 %% jerarquias
 
-TipoConexion <|-- Alambrica
-TipoConexion <|-- Inalambrica
+User <|-- Operator
+User <|-- Expert
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratingState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+
+ConnectionState <|-- ConnectedState
+ConnectionState <|-- DisconnectedState
+ConnectionState <|-- ConnectionErrorState
 
 %% clases
 
-class TipoConexion {
-        <<interface>>
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect(device)
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+class User {
+        <<abstract>>
+        - user_id : int
+        - user_name : str
+        - email : str
+        - password : str
+        + has_permission(action : str)
     }
-    class Alambrica
-    class Inalambrica
+    
+class Operator{
 
-class Operador
+}
+class Expert{
 
-class Placa
+}
 
-ServicioMedicion
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class ConnectionService{
+	+ connect(connection_type : ConnectionType)
+	+ disconnect()
+}
+
+class DeviceState{
+		<<abstract>>
+	}
+class FreeDeviceState
+class CalibratingState
+class MeasuringState
+class DeviceErrorState
+	
+class ConnectionState{
+		<<abstract>>
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
 
 %% relaciones
 
-Operador -- ServicioMedicion
-Placa -- TipoConexion
-Placa -- ServicioMedicion
+User "1"-->"1" ConnectionService
+
+Device "1" o-- "1" ConnectionType
+Device "1" *-- "1" DeviceState
+
+ConnectionService "1" --> "1" Device
+
+ConnectionType "1" *-- "1" ConnectionState
 ```
+
 
 ##### Módulo 2: Calibración del Dispositivo
 ```mermaid
