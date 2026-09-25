@@ -62,10 +62,6 @@ MeasureSetup <|-- MultiMeasureSetup
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
-Measure <|-- Spectroscopy
-Measure <|-- SingleFreq
-Measure <|-- MultiFreq
-
 MeasureState <|-- PendingState
 MeasureState <|-- ExecutingState
 MeasureState <|-- CompleteState
@@ -88,7 +84,7 @@ DeviceState <|-- DeviceErrorState
         - user_name : str
         - email : str
         - password : str
-        + get_role()
+        + has_permission(action : str)
     }
     
     class Operator{
@@ -99,24 +95,24 @@ DeviceState <|-- DeviceErrorState
     }
 
     class Measure {
-        <<abstract>>
         - measureSetup : MeasureSetup
-        - date : str
+        - date : DateTime
         - state : MeasureState
         - device_temp : float
+        - result : MeasureResult
+        + set_state(new_state : MeasureState)
+		+ get_state() : MeasureState
     }
-    class Spectroscopy
-    class SingleFreq
-    class MultiFreq
 
-    class MeasureSetup {
-        <<abstract>>
-        - exitation_voltage : float
-        - gain : float
-        - rfbvalue : float
-        - settcycles : int
-        - mux_channel : [0, 1, 2, 3]
-    }
+	class MeasureSetup {
+	        <<abstract>>
+	        - exitation_voltage : float
+	        - gain : float
+	        - rfbvalue : float
+	        - settcycles : int
+	        - mux_channel : [0, 1, 2, 3]
+	        + get_command() : str
+	}
     class SpecMeasureSetup{
 	    - startfreq : float
 	    - incfreq : float
@@ -136,21 +132,16 @@ DeviceState <|-- DeviceErrorState
 	    - channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	    - z_calc_value_real : float
 	    - z_calc_value_imag : float
+	    + get_command() : str
     }
     
     class Device{
 		- device_id : int
 		- connection_type : ConnectionType
 		- device_state : DeviceState
+		+ set_state(new_state : DeviceState)
+		+ get_state() : DeviceState
     }
-    
-    class DeviceState{
-	    <<abstract>>
-    }
-    class FreeDeviceState
-    class CalibratingState
-    class MeasuringState
-    class DeviceErrorState
     
     class MeasureResult{
 	    - frequencies : [float]
@@ -168,6 +159,8 @@ DeviceState <|-- DeviceErrorState
         + disconnect()
         + send(data : str)
         + receive() : str
+        + set_state(new_state : ConnectionState)
+		+ get_state() : ConnectionState
     }
     class Wire{
 	    - baudrate : int
@@ -177,18 +170,14 @@ DeviceState <|-- DeviceErrorState
     class WireLess{
 	    - protocol : str
     }
-    
-    class ConnectionState{
-	    <<abstract>>
-    }
-    class ConnectedState
-    class DisconnectedState
-    class ConnectionErrorState
+
+%% servicios
 
     class MeasureService{
 	    + execute_measure(setup) : MeasureResult
     }
     class PersistanceService{
+	    - db_root : str
 	    + save_result(result : MeasureResult)
 	    + import_result() : MeasureResult
 	    + save_calibration_setup(cal_setup : CalibrationSetup)
@@ -209,14 +198,34 @@ DeviceState <|-- DeviceErrorState
     class CalibrationService{
 	    + calibrate_device(device : Device, cal_setup : CalibrationSetup)
     }
-    
-    class MeasureState{
-	     <<abstract>>
-    }
-    class PendingState
-    class ExecutingState
-    class CompleteState
-    class ErrorState
+
+%% state patern
+
+	class DeviceState{
+		    <<abstract>>
+	    }
+	    class FreeDeviceState
+	    class CalibratingState
+	    class MeasuringState
+	    class DeviceErrorState
+	    
+	class ConnectionState{
+		    <<abstract>>
+	    }
+	    class ConnectedState
+	    class DisconnectedState
+	    class ConnectionErrorState
+	    
+	    class MeasureState{
+		     <<abstract>>
+	    }
+	    class PendingState
+	    class ExecutingState
+	    class CompleteState
+	    class ErrorState
+	    
+%% relaciones 
+
 ```
 
 ##### Subsistema 1: Comunicación e Interacción con el Hardware
@@ -404,4 +413,3 @@ ServicioMedicion -- ServicioPersistencia
 Medicion -- ServicioPersistencia
 ResultadoMedicion -- ServicioPersistencia
 ```
-
