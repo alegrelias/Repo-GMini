@@ -1069,6 +1069,7 @@ class User {
 	- user_name : str
 	- email : str
 	- password : str
+	- root_directory : str
 	+ has_permission(action : str)
 }
 
@@ -1082,9 +1083,13 @@ class Expert{
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
+	- file_name : str
 	- state : MeasureState
 	- device_temp : float
 	- result : MeasureResult
+	- observations : str
+	+ do_measure()
+	+ cancel_measure()
 	+ set_state(new_state : MeasureState)
 	+ get_state() : MeasureState
 }
@@ -1159,7 +1164,9 @@ class WireLess{
 %% servicios
 
 class MeasureService{
-	+ execute_measure(measure : Measure) : MeasureResult
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
 }
 class PersistanceService{
 	- db_root : str
@@ -1169,6 +1176,8 @@ class PersistanceService{
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ import_measure_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ load_setup_from_file(root : str)
 }
 class AuthService{
 	+ login(user_name, email, password) : Token
@@ -1187,7 +1196,7 @@ class CalibrationService{
 %% state patern
 
 class DeviceState{
-		<<abstract>>
+		<<interface>>
 	}
 	class FreeDeviceState
 	class CalibratingState
@@ -1195,14 +1204,20 @@ class DeviceState{
 	class DeviceErrorState
 	
 class ConnectionState{
-		<<abstract>>
+		<<interface>>
+		+ connect(context : ConnectionType, device : Device)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
 	}
 	class ConnectedState
 	class DisconnectedState
 	class ConnectionErrorState
 	
 class MeasureState{
-	 <<abstract>>
+	 <<interface>>
+	 + do_measure(context : Measure)
+	 + cancel_measure(context : Measure)
 }
 class PendingState
 class ExecutingState
@@ -1260,13 +1275,14 @@ class WireLess{
 }
 
 class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
     
 class Operator{
 
@@ -1289,7 +1305,7 @@ class ConnectionService{
 }
 
 class DeviceState{
-		<<abstract>>
+		<<interface>>
 	}
 class FreeDeviceState
 class CalibratingState
@@ -1297,7 +1313,11 @@ class MeasuringState
 class DeviceErrorState
 	
 class ConnectionState{
-		<<abstract>>
+		<<interface>>
+		+ connect(context : ConnectionType, device : Device)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
 	}
 class ConnectedState
 class DisconnectedState
@@ -1326,13 +1346,14 @@ User <|-- Operator
 
 %% clases
 class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
     
 class Operator{
 
@@ -1368,6 +1389,8 @@ class PersistanceService{
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ import_measure_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ load_setup_from_file(root : str)
 }
 
 %% relaciones
@@ -1400,13 +1423,14 @@ MeasureState <|-- ErrorState
 
 %% clases
 class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
     
 
     
@@ -1420,9 +1444,13 @@ class Expert{
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
+	- file_name : str
 	- state : MeasureState
 	- device_temp : float
 	- result : MeasureResult
+	- observations : str
+	+ do_measure()
+	+ cancel_measure()
 	+ set_state(new_state : MeasureState)
 	+ get_state() : MeasureState
 }
@@ -1461,11 +1489,15 @@ class MeasureResult{
 }
 
 class MeasureService{
-	+ execute_measure(measure : Measure) : MeasureResult
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
 }
 
 class MeasureState{
-	 <<abstract>>
+	 <<interface>>
+	 + do_measure(context : Measure)
+	 + cancel_measure(context : Measure)
 }
 class PendingState
 class ExecutingState
@@ -1502,6 +1534,7 @@ class User {
 	- user_name : str
 	- email : str
 	- password : str
+	- root_directory : str
 	+ has_permission(action : str)
 }
 
@@ -1526,6 +1559,8 @@ class PersistanceService{
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ import_measure_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ load_setup_from_file(root : str)
 }
 
 class MeasureSetup {
@@ -1592,6 +1627,7 @@ class User {
 	- user_name : str
 	- email : str
 	- password : str
+	- root_directory : str
 	+ has_permission(action : str)
 }
 
@@ -1605,9 +1641,13 @@ class Expert{
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
+	- file_name : str
 	- state : MeasureState
 	- device_temp : float
 	- result : MeasureResult
+	- observations : str
+	+ do_measure()
+	+ cancel_measure()
 	+ set_state(new_state : MeasureState)
 	+ get_state() : MeasureState
 }
@@ -1620,6 +1660,8 @@ class PersistanceService{
 	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ import_measure_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ load_setup_from_file(root : str)
 }
 
 %% relaciones
