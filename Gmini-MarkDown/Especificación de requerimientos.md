@@ -129,47 +129,52 @@
 | **Usuarios**    | Usuario experto, Usuario operador.                      |
 | **Descripción** | El sistema debe permitir a los usuarios iniciar sesión. |
 
-| **SET-03**      | Habilitar usuario experto                                                                                     |
+| **SET-03**      | Cerrar Sesión                                          |
+| :-------------- | ------------------------------------------------------ |
+| **Usuarios**    | Usuario experto, Usuario operador.                     |
+| **Descripción** | El sistema debe permitir a los usuarios cerrar sesión. |
+
+| **SET-04**      | Habilitar usuario experto                                                                                     |
 | :-------------- | ----------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto.                                                                                              |
 | **Descripción** | La aplicación debe proveer un "Modo Experto" con acceso total a la configuración de parámetros y calibración. |
 
-| **SET-04**      | Habilitar usuario operador                                                                                                                                                                       |
+| **SET-05**      | Habilitar usuario operador                                                                                                                                                                       |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario operador.                                                                                                                                                                                |
 | **Descripción** | La aplicación debe proveer un "Modo Operador" con permisos restringidos exclusivamente a la ejecución de mediciones y ejecución de calibración (con los parámetros predefinidos por el experto). |
 
-| **SET-05**      | Cambiar entre perfiles de usuario                                                  |
+| **SET-06**      | Cambiar entre perfiles de usuario                                                  |
 | :-------------- | ---------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario operado                                                   |
 | **Descripción** | El sistema tiene que permitir a un usuario realizar cambios de perfiles dinámicos. |
 
-| **SET-06**      | Advertir sobre cambio de perfiles                                                                               |
+| **SET-07**      | Advertir sobre cambio de perfiles                                                                               |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario operador.                                                                              |
 | **Descripción** | El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre tipos de perfiles. |
 
-| **SET-07**      | Aplicar configuraciones                                                                 |
+| **SET-08**      | Aplicar configuraciones                                                                 |
 | :-------------- | --------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario Operador.                                                      |
 | **Descripción** | El sistema debe permitir al usuario seleccionar una configuración previamente guardada. |
 
-| **SET-08**      | Cargar configuraciones                                                                                                                |
+| **SET-09**      | Cargar configuraciones                                                                                                                |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario Operador.                                                                                                    |
 | **Descripción** | El sistema debe permitir al usuario operador importar configuraciones desde el almacenamiento local y guardarlos en la base de datos. |
 
-| **SET-09**      | Exportar configuraciones de medición                                                                                      |
+| **SET-10**      | Exportar configuraciones de medición                                                                                      |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario Operador.                                                                                        |
 | **Descripción** | El sistema debe permitir al usuario exportar las configuraciones guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-10**      | Adjuntar metadatos y observaciones libres                                                                                                                                               |
+| **SET-11**      | Adjuntar metadatos y observaciones libres                                                                                                                                               |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                      |
 | **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final. |
 
-| **SET-11**      | Visualizar datos guardados                                                                                               |
+| **SET-12**      | Visualizar datos guardados                                                                                               |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario experto, Usuario operador.                                                                                       |
 | **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas y setups) anteriores aunque la placa no esté conectada. |

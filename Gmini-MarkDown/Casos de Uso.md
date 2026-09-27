@@ -67,40 +67,45 @@ Operador((Operador))
 Experto((Experto))
 
 subgraph Configuración y Toma de Mediciones
-	CU1([Configurar Medición])
-	CU2([Ejecutar Medición])
-	CU3([Ejecutar Medición en Bucle])
-	CU4([Mostrar Progreso de la Medición])
-	CU5([Ejecutar Medición de Monofrecuencia])
-	CU6([Ejecutar Medición de Espectroscopía])
-	CU7([Ejecutar Medición de Multifrecuencia])
-	CU8([Configurar Medición de Monofrecuencia])
-	CU9([Configurar Medición de Espectroscopía])
-	CU10([Configurar Medición de Multifrecuencia])
-	CU11([Seleccionar Canales de Multiplexado])
-	CU12([Presentar Estadísticos Descriptivos])
+	CU1([Seleccionar canales de multiplexado])
+	CU2([Configurar medición])
+	CU3([Configurar medición de monofrecuencia])
+	CU4([Configurar medición de multifrecuencia])
+	CU5([Configurar medición de espectroscopía])
+	CU6([Ejecutar medición])
+	CU7([Ejecutar medición de monofrecuencia])
+	CU8([Ejecutar medición de multifrecuencia])
+	CU9([Ejecutar medición de espectroscopía])
+	CU10([Visualizar Progreso de medición])
+	CU11([Visualizar Resultados intermedios])
+	CU12([Visualizar estadísticos descriptivos básicos])
+	CU13([Ejecutar medición en bucle])
+	
 end
 
 %% Jerarquía
 Experto ==> Operador
 
 %% Generalización
+CU3 ==> CU2
+CU4 ==> CU2
 CU5 ==> CU2
-CU6 ==> CU2
-CU7 ==> CU2
-CU8 ==> CU1
-CU9 ==> CU1
-CU10 ==> CU1
+CU7 ==> CU6
+CU8 ==> CU6
+CU9 ==> CU6
+
 
 %% Asociaciones
 Experto --> CU1
-Experto --> CU11
-Operador --> CU2
+Experto --> CU2
+Operador --> CU6
 
 %% Relaciones Include/Extend
-CU3 --extend--> CU2
-CU2 --include--> CU4
-CU2 --include--> CU12
+CU6 -.include.-> CU10
+CU6 -.include.-> CU11
+CU6 -.include.-> CU12
+
+CU13 -.extend.-> CU6
 ```
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
@@ -112,39 +117,33 @@ CU2 --include--> CU12
 flowchart LR
 %% Actores
 Operador((Operador))
-Experto((Experto))
 
 subgraph Perfiles de Usuario y Gestión de Setups de Medición
-	CU1([Guardar Configuración])
-	CU2([Exportar Configuración])
-	CU3([Importar Configuración])
-	CU4([Aplicar Configuración])
-	CU5([Adjuntar Observaciones])
-	CU6([Cambiar de Perfil])
-	CU7([Visualizar Advertencia por Cambio de Perfil])
-	CU8([Visualizar Configuraciones Previas])
-	CU9([Crear Perfil])
-	CU10([Iniciar Sesión])
+	CU1([Crear Perfil de Usuario])
+	CU2([Iniciar sesión])
+	CU3([Cambiar entre perfiles])
+	CU4([Cerrar sesión])
+	CU5([Visualizar advertencia por cambio de perfil])
+	CU6([Aplicar configuraciones])
+	CU7([Importar configuraciones])
+	CU8([Exportar configuraciones])
+	CU9([Visualizar datos guardados])
 end
 
-%% Jerarquía
-Experto ==> Operador
-
 %% Asociaciones
-Experto --> CU1
+Operador --> CU1
 Operador --> CU2
 Operador --> CU3
 Operador --> CU4
-Operador --> CU8
-Operador --> CU5
 Operador --> CU6
+Operador --> CU7
+Operador --> CU8
 Operador --> CU9
-Operador --> CU10
 
 
 %% Relaciones Include/Extend
-CU6 --include--> CU7
-CU4 --extend--> CU8
+
+CU3 -.include.-> CU5
 ```
 
 #### Subsistema 5: Persistencia
@@ -154,18 +153,26 @@ CU4 --extend--> CU8
 flowchart LR
 %% Actores
 Operador((Operador))
+Experto((Experto))
+
+%% Jerarquía
+Experto ==> Operador
 
 subgraph Almacenamiento y Estructura de Datos
-	CU1([Configurar Directorio Raíz])
-	CU2([Renombrar Archivo Manualmente])
-	CU4([Guardar Medición])
+	CU1([Guardar Setups de calibración])
+	CU2([Guardar Setups de medición])
+	CU3([Guardar mediciones con sus resultados])
+	CU4([Configurar directorio raíz])
+	CU5([Renombrar archivo manualmente])
 end
 
 %% Asociaciones
-Operador --> CU1
+Experto --> CU1
+Experto --> CU2
+Operador --> CU3
 Operador --> CU4
 
 %% Relaciones Include/Extend
-CU2 --extend--> CU4
+CU5 -.extend.-> CU3
 ```
 
