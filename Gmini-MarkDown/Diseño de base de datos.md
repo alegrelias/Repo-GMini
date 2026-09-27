@@ -56,6 +56,8 @@ MEASURE{
 	date date
 	string file_name
 	string observations
+	string loop_group_id
+	int iteration_number
 }
 
 MEASURE_RESULT{
@@ -95,7 +97,7 @@ SINGLE_MEASURE_SETUP{
 MULTI_MEASURE_SETUP{
 	int multi_ms_id PK
 	int m_setup FK
-	float frequencies
+	string frequencies_list
 }
 
 USER ||--|{ MEASURE : realiza

@@ -29,6 +29,7 @@ DeviceState <|-- FreeDeviceState
 DeviceState <|-- CalibratingState
 DeviceState <|-- MeasuringState
 DeviceState <|-- DeviceErrorState
+DeviceState <|-- UncalibratedState
 
 %% clases
 
@@ -38,6 +39,7 @@ class User {
 	- user_name : str
 	- email : str
 	- password : str
+	- root_directory : str
 	+ has_permission(action : str)
 }
 
@@ -45,15 +47,20 @@ class Operator{
 
 }
 class Expert{
-
 }
 
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
+	- file_name : str
 	- state : MeasureState
 	- device_temp : float
 	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ do_measure()
+	+ cancel_measure()
 	+ set_state(new_state : MeasureState)
 	+ get_state() : MeasureState
 }
@@ -128,16 +135,28 @@ class WireLess{
 %% servicios
 
 class MeasureService{
-	+ execute_measure(measure : Measure) : MeasureResult
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
 }
 class PersistanceService{
 	- db_root : str
+	  
+	%% operaciones en db
 	+ save_measure(measure : Measure)
-	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
-	+ import_measure_setup() : MeasureSetup
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
 }
 class AuthService{
 	+ login(user_name, email, password) : Token
@@ -145,6 +164,12 @@ class AuthService{
 	+ register(user_name, email, password) : Token
 	
 }
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
 class ConnectionService{
 	+ connect(device : Device, connection_type : ConnectionType)
 	+ disconnect()
@@ -156,7 +181,7 @@ class CalibrationService{
 %% state patern
 
 class DeviceState{
-		<<abstract>>
+		<<interface>>
 	}
 	class FreeDeviceState
 	class CalibratingState
@@ -164,22 +189,38 @@ class DeviceState{
 	class DeviceErrorState
 	
 class ConnectionState{
-		<<abstract>>
+		<<interface>>
+		+ connect(context : ConnectionType, device : Device)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
 	}
-	class ConnectedState
-	class DisconnectedState
-	class ConnectionErrorState
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
 	
 class MeasureState{
-	 <<abstract>>
+	 <<interface>>
+	 + do_measure(context : Measure)
+	 + cancel_measure(context : Measure)
 }
 class PendingState
 class ExecutingState
 class CompleteState
 class ErrorState
-	    
-%% relaciones 
 
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
 ```
 
 ### Diagramas de Clases
@@ -202,6 +243,7 @@ DeviceState <|-- FreeDeviceState
 DeviceState <|-- CalibratingState
 DeviceState <|-- MeasuringState
 DeviceState <|-- DeviceErrorState
+DeviceState <|-- UncalibratedState
 
 ConnectionState <|-- ConnectedState
 ConnectionState <|-- DisconnectedState
@@ -229,19 +271,19 @@ class WireLess{
 }
 
 class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
-    
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+
 class Operator{
 
 }
 class Expert{
-
 }
 
 class Device{
@@ -252,25 +294,70 @@ class Device{
 	+ get_state() : DeviceState
 }
 
-class ConnectionService{
-	+ connect(device : Device, connection_type : ConnectionType)
-	+ disconnect()
-}
+%% state patern
+	
+class ConnectionState{
+		<<interface>>
+		+ connect(context : ConnectionType, device : Device)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
 
 class DeviceState{
-		<<abstract>>
+		<<interface>>
 	}
 class FreeDeviceState
 class CalibratingState
 class MeasuringState
 class DeviceErrorState
-	
-class ConnectionState{
-		<<abstract>>
-	}
-class ConnectedState
-class DisconnectedState
-class ConnectionErrorState
+
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
+%% servicios
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
+}
+class PersistanceService{
+	- db_root : str
+	  
+	%% operaciones en db
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+
+class ConnectionService{
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect()
+}
 
 %% relaciones
 
@@ -278,8 +365,14 @@ User "1"-->"1" Device : conecta
 
 Device "1" o-- "1" ConnectionType
 Device "1" *-- "1" DeviceState
+Device ..|> IObservable
 
-ConnectionService "1" ..> "1" Device
+MeasureService ..|> IObserver
+MeasureService .. Device : observa
+MeasureService ..> PersistanceService : invoca guardado de emergencia
+
+
+ConnectionService ..>  Device
 
 ConnectionType "1" *-- "1" ConnectionState
 ```
@@ -295,13 +388,14 @@ User <|-- Operator
 
 %% clases
 class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
     
 class Operator{
 
@@ -329,14 +423,29 @@ class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
 
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
 class PersistanceService{
 	- db_root : str
+	  
+	%% operaciones en db
 	+ save_measure(measure : Measure)
-	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
-	+ import_measure_setup() : MeasureSetup
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
 }
 
 %% relaciones
@@ -344,8 +453,9 @@ User "1"-->"1" Device : calibra
 
 PersistanceService "1"..>"1" CalibrationSetup
 
-CalibrationService "1"..>"1" Device
-CalibrationService "1"..>"1" CalibrationSetup
+CalibrationService ..> Device
+CalibrationService ..> CalibrationSetup
+CalibrationService ..> SessionManager
 ```
 
 #### Subsistema 2: Configuración y Toma de Mediciones
@@ -369,31 +479,40 @@ MeasureState <|-- ErrorState
 
 %% clases
 class User {
-        <<abstract>>
-        - user_id : int
-        - user_name : str
-        - email : str
-        - password : str
-        + has_permission(action : str)
-    }
-    
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
 
-    
 class Operator{
 
 }
 class Expert{
-
 }
 
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
+	- file_name : str
 	- state : MeasureState
 	- device_temp : float
 	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ do_measure()
+	+ cancel_measure()
 	+ set_state(new_state : MeasureState)
 	+ get_state() : MeasureState
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
 }
 
 class MeasureSetup {
@@ -430,11 +549,15 @@ class MeasureResult{
 }
 
 class MeasureService{
-	+ execute_measure(measure : Measure) : MeasureResult
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
 }
 
 class MeasureState{
-	 <<abstract>>
+	 <<interface>>
+	 + do_measure(context : Measure)
+	 + cancel_measure(context : Measure)
 }
 class PendingState
 class ExecutingState
@@ -442,20 +565,20 @@ class CompleteState
 class ErrorState
 
 %% relaciones
-User "1"-->"1" Measure : mide
+User "1"-->"1..*" Measure : mide
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
 Measure "1"*--"1" MeasureState
 
-MeasureService "1"..>"1" Measure
+MeasureService ..> Measure
+MeasureService ..> SessionManager
 ```
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 ##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 ```mermaid
 classDiagram
-direction LR
 
 %% jerarquias
 User <|-- Expert
@@ -471,6 +594,7 @@ class User {
 	- user_name : str
 	- email : str
 	- password : str
+	- root_directory : str
 	+ has_permission(action : str)
 }
 
@@ -478,7 +602,6 @@ class Operator{
 
 }
 class Expert{
-
 }
 
 class AuthService{
@@ -489,12 +612,22 @@ class AuthService{
 
 class PersistanceService{
 	- db_root : str
+	  
+	%% operaciones en db
 	+ save_measure(measure : Measure)
-	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
-	+ import_measure_setup() : MeasureSetup
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
 }
 
 class MeasureSetup {
@@ -528,6 +661,11 @@ class CalibrationSetup{
 	+ get_command() : str
 }
 
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
 %% relaciones
 
 Expert "1"-->"0..*" MeasureSetup : crea
@@ -536,11 +674,17 @@ Expert "1"-->"0..*" CalibrationSetup : crea
 User "1"-->"0..*" MeasureSetup : gestiona
 User "1"-->"0..*" CalibrationSetup : gestiona
 
-AuthService "1"..>"1" User
+AuthService ..> User
+AuthService ..>  PersistanceService
+AuthService ..>  SessionManager
 
-PersistanceService "1"..>"1" MeasureSetup
-PersistanceService "1"..>"1" CalibrationSetup
+PersistanceService ..> MeasureSetup
+PersistanceService ..> CalibrationSetup
+PersistanceService ..> SessionManager
 
+CalibrationSetup ..> SessionManager
+
+MeasureSetup ..> SessionManager
 ```
 
 #### Subsistema 5: Persistencia
@@ -554,6 +698,10 @@ classDiagram
 User <|-- Expert
 User <|-- Operator
 
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
 %% clases
 class User {
 	<<abstract>>
@@ -561,6 +709,7 @@ class User {
 	- user_name : str
 	- email : str
 	- password : str
+	- root_directory : str
 	+ has_permission(action : str)
 }
 
@@ -568,31 +717,85 @@ class Operator{
 
 }
 class Expert{
-
 }
 
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
+	- file_name : str
 	- state : MeasureState
 	- device_temp : float
 	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ do_measure()
+	+ cancel_measure()
 	+ set_state(new_state : MeasureState)
 	+ get_state() : MeasureState
 }
 
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
 class PersistanceService{
 	- db_root : str
+	  
+	%% operaciones en db
 	+ save_measure(measure : Measure)
-	+ import_measure() : Measure
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ import_calibration_setup() : CalibrationSetup
 	+ save_measure_setup(m_setup : MeasureSetup)
-	+ import_measure_setup() : MeasureSetup
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
 }
 
 %% relaciones
 User "1"-->"0..*" Measure : guarda
+User "1"-->"0..*" MeasureSetup : guarda
+User "1"-->"0..*" CalibrationSetup : guarda
 
-PersistanceService "1"..>"1" Measure
+PersistanceService ..> Measure
+PersistanceService ..> SessionManager
 ```
