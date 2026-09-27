@@ -37,6 +37,7 @@ USER{
 	string email
 	string user_name
 	string password
+	string root_directory
 }
 
 CALIBRATION_SETUP{
@@ -53,6 +54,8 @@ MEASURE{
 	int measure_setup FK
 	int result FK
 	date date
+	string file_name
+	string observations
 }
 
 MEASURE_RESULT{
