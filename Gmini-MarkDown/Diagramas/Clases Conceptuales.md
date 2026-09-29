@@ -1,0 +1,801 @@
+## CLASES SOFTWARE
+### Lista de Clases
+
+```mermaid
+classDiagram
+direction LR
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+MeasureState <|-- PendingState
+MeasureState <|-- ExecutingState
+MeasureState <|-- CompleteState
+MeasureState <|-- ErrorState
+
+ConnectionState <|-- ConnectedState
+ConnectionState <|-- DisconnectedState
+ConnectionState <|-- ConnectionErrorState
+
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratingState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+DeviceState <|-- UncalibratedState
+
+%% clases
+
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ do_measure()
+	+ cancel_measure()
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect(device)
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+%% servicios
+
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
+}
+class PersistanceService{
+	- db_root : str
+	  
+	%% operaciones en db
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+class AuthService{
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+	
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
+class ConnectionService{
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect()
+}
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+%% state patern
+
+class DeviceState{
+		<<interface>>
+	}
+	class FreeDeviceState
+	class CalibratingState
+	class MeasuringState
+	class DeviceErrorState
+	
+class ConnectionState{
+		<<interface>>
+		+ connect(context : ConnectionType, device : Device)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
+	
+class MeasureState{
+	 <<interface>>
+	 + do_measure(context : Measure)
+	 + cancel_measure(context : Measure)
+}
+class PendingState
+class ExecutingState
+class CompleteState
+class ErrorState
+
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+```
+
+### Diagramas de Clases
+##### Subsistema 1: Comunicación e Interacción con el Hardware
+
+##### Módulo 1: Conectividad y Estado
+
+```mermaid
+classDiagram
+
+%% jerarquias
+
+User <|-- Operator
+User <|-- Expert
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratingState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+DeviceState <|-- UncalibratedState
+
+ConnectionState <|-- ConnectedState
+ConnectionState <|-- DisconnectedState
+ConnectionState <|-- ConnectionErrorState
+
+%% clases
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect(device)
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+%% state patern
+	
+class ConnectionState{
+		<<interface>>
+		+ connect(context : ConnectionType, device : Device)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
+
+class DeviceState{
+		<<interface>>
+	}
+class FreeDeviceState
+class CalibratingState
+class MeasuringState
+class DeviceErrorState
+
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
+%% servicios
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
+}
+class PersistanceService{
+	- db_root : str
+	  
+	%% operaciones en db
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+
+class ConnectionService{
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect()
+}
+
+%% relaciones
+
+User "1"-->"1" Device : conecta
+
+Device "1" o-- "1" ConnectionType
+Device "1" *-- "1" DeviceState
+Device ..|> IObservable
+
+MeasureService ..|> IObserver
+MeasureService .. Device : observa
+MeasureService ..> PersistanceService : invoca guardado de emergencia
+
+
+ConnectionService ..>  Device
+
+ConnectionType "1" *-- "1" ConnectionState
+```
+
+
+##### Módulo 2: Calibración del Dispositivo
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+%% clases
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+    
+class Operator{
+
+}
+class Expert{
+
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class Device{
+	- device_id : int
+	- connection_type : ConnectionType
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
+class PersistanceService{
+	- db_root : str
+	  
+	%% operaciones en db
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+
+%% relaciones
+User "1"-->"1" Device : calibra
+
+PersistanceService "1"..>"1" CalibrationSetup
+
+CalibrationService ..> Device
+CalibrationService ..> CalibrationSetup
+CalibrationService ..> SessionManager
+```
+
+#### Subsistema 2: Configuración y Toma de Mediciones
+##### Módulo 1: Tipos y Estrategias de Medición
+
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+MeasureState <|-- PendingState
+MeasureState <|-- ExecutingState
+MeasureState <|-- CompleteState
+MeasureState <|-- ErrorState
+
+%% clases
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ do_measure()
+	+ cancel_measure()
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
+}
+
+class MeasureState{
+	 <<interface>>
+	 + do_measure(context : Measure)
+	 + cancel_measure(context : Measure)
+}
+class PendingState
+class ExecutingState
+class CompleteState
+class ErrorState
+
+%% relaciones
+User "1"-->"1..*" Measure : mide
+
+Measure "1"o--"1" MeasureSetup
+Measure "1"*--"1" MeasureResult
+Measure "1"*--"1" MeasureState
+
+MeasureService ..> Measure
+MeasureService ..> SessionManager
+```
+#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+
+##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+}
+
+class AuthService{
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+}
+
+class PersistanceService{
+	- db_root : str
+	  
+	%% operaciones en db
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
+%% relaciones
+
+Expert "1"-->"0..*" MeasureSetup : crea
+Expert "1"-->"0..*" CalibrationSetup : crea
+
+User "1"-->"0..*" MeasureSetup : gestiona
+User "1"-->"0..*" CalibrationSetup : gestiona
+
+AuthService ..> User
+AuthService ..>  PersistanceService
+AuthService ..>  SessionManager
+
+PersistanceService ..> MeasureSetup
+PersistanceService ..> CalibrationSetup
+PersistanceService ..> SessionManager
+
+CalibrationSetup ..> SessionManager
+
+MeasureSetup ..> SessionManager
+```
+
+#### Subsistema 5: Persistencia
+
+##### Módulo 1: Almacenamiento y Estructura de Datos
+
+```mermaid
+classDiagram
+
+%% jerarquias
+User <|-- Expert
+User <|-- Operator
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+%% clases
+class User {
+	<<abstract>>
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	+ has_permission(action : str)
+}
+
+class Operator{
+
+}
+class Expert{
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : MeasureState
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ do_measure()
+	+ cancel_measure()
+	+ set_state(new_state : MeasureState)
+	+ get_state() : MeasureState
+}
+
+class MeasureSetup {
+		<<abstract>>
+		- exitation_voltage : float
+		- gain : float
+		- rfbvalue : float
+		- settcycles : int
+		- mux_channel : [0, 1, 2, 3]
+		+ get_command() : str
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+	+ get_command() : str
+}
+
+class PersistanceService{
+	- db_root : str
+	  
+	%% operaciones en db
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	  
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+
+class SessionManager{
+	- current_user : User
+	- active_token : Token
+}
+
+%% relaciones
+User "1"-->"0..*" Measure : guarda
+User "1"-->"0..*" MeasureSetup : guarda
+User "1"-->"0..*" CalibrationSetup : guarda
+
+PersistanceService ..> Measure
+PersistanceService ..> SessionManager
+```
