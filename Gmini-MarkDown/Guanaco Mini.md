@@ -51,10 +51,10 @@ Vargas Da Silva, Eliam Joaquin**
 	- Análisis
 	- Diseño
 - [**SOBRE LAS ITERACIONES**](#sobre-las-iteraciones)
-- [**SOBRE LOS ENTREGABLES**](#sobre-los-enteregables)
+- [**SOBRE LOS ENTREGABLES**](#sobre-los-entregables)
 	- Aplicaciones y plataformas que forman parte del sistema
 	- Requerimientos técnicos para la instalación
-- [**PRESENTACIÓN VISUAL PARA APROBAR EL FINAL**](#presentación-visual-para-aprobrar-el-final)
+- [**PRESENTACIÓN VISUAL PARA APROBAR EL FINAL**](#presentación-visual-para-aprobar-el-final)
 
 ## INTRODUCCIÓN
 El proyecto tiene como propósito el desarrollo integral de una plataforma de software y una interfaz gráfica de usuario (GUI) para el hardware "Guanaco Mini” (GMini) desarrollado por el Laboratorio de Electrónica Aplicada y Biomedicina (LEAB) del Instituto de Desarrollo Económico e Innovación de la Universidad Nacional de Tierra del Fuego AeiAS. El cliente interesado en el desarrollo de este software es el Doctor en Ciencias Biológicas e Ingeniero Biomédico Antonio Héctor Dell’osa, el cual en este contexto es miembro del LEAB, autor de la tesis “Espectroscopía de Impedancia para la Detección Rápida de Lesiones Óseas” sobre la cual este proyecto está basado y líder del proyecto GMini. Nuestro contacto con él es mediante su correo electrónico institucional [ahdellosa@untdf.edu.ar](mailto:ahdellosa@untdf.edu.ar) .
@@ -71,7 +71,7 @@ Desde nuestra formación en Sistemas, el problema resulta especialmente interesa
 
 Actualmente, la comunicación a bajo nivel con la placa GMini está resuelta y documentada, sin embargo, carece de una plataforma que permita a los usuarios no especializados utilizarla. La solución provisional existente, que parte de una implementación anterior, presenta múltiples problemas estructurales, errores de ejecución y limitaciones operativas, como la incapacidad de realizar muestreos continuos prolongados (sólo es posible ser utilizada para realizar mediciones por sus propios desarrolladores o usuarios entrenados específicamente). Por lo tanto, el desarrollo de una interfaz para el nuevo dispositivo es fundamental para explotar todas las capacidades del hardware, permitiendo su uso en entornos de campo y laboratorio sin requerir que el operador posea conocimientos técnicos en electrónica o programación a bajo nivel. Esta solución permitiría que los 5 dispositivos que actualmente se encuentran sin uso puedan ser puestos en común a partir del producto de software que se propone.
 
-El objetivo principal de nuestro proyecto es desarrollar una aplicación que controle las distintas instrucciones de la placa (de las que disponemos una lista de comandos), mejore y agregue nuevas funcionalidades, implemente las claves para la calidad de software como la robustez, mantenibilidad, usabilidad y portabilidad.
+El objetivo principal de nuestro proyecto es desarrollar una aplicación que controle las distintas instrucciones de la placa (de las que disponemos una lista de comandos), mejore y agregue nuevas funcionalidades, implemente las claves para la calidad de software como la robustez, mantenibilidad, usabilidad y portabilidad.==\[Agregar los formatos en los que la placa arroja los resultados\]==
 
 Por otro lado, la bioimpedancia se ha utilizado o investigado en distintos problemas médicos. Algunas de sus aplicaciones más conocidas son la estimación de la composición corporal, como porcentaje de grasa, masa muscular y cantidad de agua corporal, y el seguimiento de cambios en la distribución de líquidos.
 
@@ -114,6 +114,8 @@ Su principal objetivo es permitir a los usuarios realizar funciones como:
 - Tomar mediciones de espectroscopía por bioimpedancia e impedancia eléctrica con una frecuencia o un espectro de frecuencias.
     
 - Configurar los intervalos en los que se toman las mediciones.
+
+- Traducir y procesar los resultados arrojados por la placa.
   
 - Permitir visualizar, modificar y exportar.
 	- Configuraciones de cada medición.
@@ -134,7 +136,11 @@ Su principal objetivo es permitir a los usuarios realizar funciones como:
 - Realizar labores de calibración del dispositivo.
 
 Al reemplazar la actual comunicación mediante comandos a bajo nivel por esta interfaz gráfica, se elimina la barrera técnica, permitiendo explotar todo el potencial de la placa Guanaco Mini.
-El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. Entre los usuarios que harán uso del sistema se deben diferenciar entre aquellos con un rol de experto y aquellos con un uso limitado de las funciones o de operador. Los usuarios expertos serán los encargados de realizar la debida calibración del equipo, estableciendo los distintos parámetros necesarios para realizar las mediciones y los rangos de frecuencia. Por otro lado, los usuarios operadores podrán realizar las mediciones previamente parametrizadas,de manera sencilla.
+El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. Entre los usuarios que harán uso del sistema se deben diferenciar entre aquellos con un rol de experto y aquellos con un uso limitado de las funciones o de operador ==\[Modificar en caso de que Antonio acepte el modo "Avanzado"\]== . Los usuarios expertos serán los encargados de:
+- Configurar los parámetros de calibración y mediciones.
+- Dejar establecidos dichos parámetros en el sistema como setups reutilizables.
+Por otro lado, los usuarios operadores podrán realizar las mediciones previamente parametrizadas de manera sencilla y a su vez ejecutar la calibración previamente parametrizada por un experto.
+El usuario operador no puede modificar los parámetros de calibración, pero puede ejecutar una calibración previamente configurada por un usuario experto.
 
 #### Definiciones, siglas y abreviaturas
 
@@ -217,21 +223,24 @@ Este subsistema es el encargado de agrupar aquellas funciones que permiten a los
 - Realizar procesamiento de datos.
   
 **Subsistema de Configuración y Gestión de Perfiles (Setups)**
-Este subsistema es el encargado de habilitar los distintos modos de uso (Experto y Operador) para garantizar la separación de responsabilidades, así como de gestionar la creación, guardado e importación de las configuraciones de medición.  
+Este subsistema es el encargado de habilitar los distintos modos de uso (Experto y Operador) ==\[Modificar en caso de implementar el modo avanzado\]== para garantizar la separación de responsabilidades, así como de gestionar la creación, guardado e importación de las configuraciones de medición.  
   
 
 **Subsistema de Entorno de Ejecución y Plataforma**
 Este subsistema es el encargado de garantizar la disponibilidad del proyecto en sistemas operativos Microsoft Windows y ofrecer soporte secundario en kernels de Linux.
   
 **Subsistema Persistencia**
-Este subsistema centraliza las operaciones de persistencia del sistema, garantizando que tanto los datos estructurados como las gráficas generadas se almacenen de manera ordenada y estandarizada para su posterior análisis científico.
+Este subsistema centraliza las operaciones de persistencia del sistema, garantizando que tanto los datos estructurados como la información de los usuarios se almacenen de manera ordenada y estandarizada.
 - Exportar datos.
     
 - Importar datos.
     
 - Organizar los datos en una carpeta definida.
 
+- Almacenar resultados e información en una Base de Datos
+
 #### Características de los usuarios
+==\[Modificar en caso de implementar el modo avanzado\]==
 Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto. Para poder brindarles a estos mismos una herramienta que sea capaz de adecuarse a cada perfil, se contemplarán los siguientes roles de usuario:
 
 **Usuarios Expertos**: Este perfil de usuario se caracteriza por un mayor nivel técnico en cuanto a uso intensivo del dispositivo, análisis de los datos, parametrización y calibración del mismo. Los usuarios con este rol deben poder dejar preparado el entorno del sistema para que los usuarios con una menor experiencia puedan realizar mediciones sin dificultad. Esta distinción está pensada para líderes de laboratorios, jefes de proyectos de investigación, técnicos con amplia experiencia en EIS, entre otros.
@@ -246,11 +255,12 @@ El software está destinado para ser utilizado únicamente en la placa ESP32.
 
 El sistema contempla únicamente dos vías de comunicación con la placa. Alámbrica e inalámbrica.
 
+==\[Modificar en caso de implementar el modo avanzado\]==
 El uso de funciones del software está limitado por perfiles y limitado por roles.
   
-El sistema debe ser multiplataforma y capaz de funcionar entre distintos tipos de sistemas operativos.
+El sistema debe garantizar la funcionalidad en el sistema operativo Microsoft Windows.
 
-El sistema deberá ser capaz de funcionar sin acceso a intenet.
+El sistema deberá ser capaz de funcionar sin acceso a internet.
 
 El sistema no busca realizar un diagnóstico médico.
 
@@ -360,7 +370,7 @@ El sistema no busca realizar un diagnóstico médico.
 | **MED-10**      | Mostrar resultados intermedios                                                                                                 |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto, Usuario operador.                                                                                             |
-| **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición ciclicos. |
+| **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición cíclicos. |
 
 | **MED-11**      | Calcular estadísticos descriptivos básicos                                                                                |
 | :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
@@ -390,6 +400,8 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario experto, Usuario operador.                     |
 | **Descripción** | El sistema debe permitir a los usuarios cerrar sesión. |
 
+==\[Modificar en caso de implementar el modo avanzado\]==
+
 | **SET-04**      | Habilitar usuario experto                                                                                     |
 | :-------------- | ----------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario experto.                                                                                              |
@@ -400,9 +412,11 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario operador.                                                                                                                                                                                |
 | **Descripción** | La aplicación debe proveer un "Modo Operador" con permisos restringidos exclusivamente a la ejecución de mediciones y ejecución de calibración (con los parámetros predefinidos por el experto). |
 
+==\[Modificar en caso de implementar el modo avanzado\]==
+
 | **SET-06**      | Cambiar entre perfiles de usuario                                                  |
 | :-------------- | ---------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operado                                                   |
+| **Usuarios**    | Usuario experto, Usuario operador.                                                 |
 | **Descripción** | El sistema tiene que permitir a un usuario realizar cambios de perfiles dinámicos. |
 
 | **SET-07**      | Advertir sobre cambio de perfiles                                                                               |
@@ -774,18 +788,18 @@ CU5 -.extend.-> CU3
 | **Postcondiciones**              | Se aplican los nuevos parámetros de calibración                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **Extensiones**                  | 4.a. No se completan todos los apartados obligatorios.<br>4.a.1. El sistema presenta un indicador visual de color rojo en cada apartado sin completar, junto con un mensaje: "Es necesario rellenar todos los campos obligatorios"                                                                                                                                                                                                                                       |
 
-| **Nombre**                       | Ejecutar Calibración Electrónica                                                                                                                                                                                                                                                                                                                                                                                                     |
-| :------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Objetivo**                     | Define los pasos específicos para ejecutar los comandos de calibración de la placa.                                                                                                                                                                                                                                                                                                                                                  |
-| **Actor Primario**               | Operador, Experto                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **Alcance**                      | Subsistema 1: Comunicación e Interacción con el Hardware                                                                                                                                                                                                                                                                                                                                                                             |
-| **Precondiciones**               | Deben haberse configurado los parámetros de calibración                                                                                                                                                                                                                                                                                                                                                                              |
-| **Escenario principal de éxito** | 1. El operador accede a la pantalla principal del sistema.<br><br>2.  El operador selecciona un botón con el mensaje "Calibrar".<br><br>3. El sistema procesa y envía la secuencia de comandos de calibración a la placa ESP32<br><br>4. El sistema arroja un mensaje de éxito: "Calibración Exitosa"<br><br>5. El botón "Calibrar" se bloquea hasta que se realice una medición.<br><br>6. El sistema desbloque el boton de "Medir" |
-| **Postcondiciones**              | - Se realiza la calibración del equipo<br>- El sistema permite a los usuarios medir                                                                                                                                                                                                                                                                                                                                                  |
-| **Extensiones**                  | 3.a. La placa no responde a la secuencia de comandos o se pierde la conexión física.<br>3.a.1. El sistema arroja un mensaje de error en pantalla y aborta el proceso de calibración.                                                                                                                                                                                                                                                 |
+| **Nombre**                       | Ejecutar Calibración Electrónica                                                                                                                                                                                                                                                                                                                                                                                                      |
+| :------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Objetivo**                     | Define los pasos específicos para ejecutar los comandos de calibración de la placa.                                                                                                                                                                                                                                                                                                                                                   |
+| **Actor Primario**               | Operador, Experto                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Alcance**                      | Subsistema 1: Comunicación e Interacción con el Hardware                                                                                                                                                                                                                                                                                                                                                                              |
+| **Precondiciones**               | Deben haberse configurado los parámetros de calibración                                                                                                                                                                                                                                                                                                                                                                               |
+| **Escenario principal de éxito** | 1. El operador accede a la pantalla principal del sistema.<br><br>2.  El operador selecciona un botón con el mensaje "Calibrar".<br><br>3. El sistema procesa y envía la secuencia de comandos de calibración a la placa ESP32<br><br>4. El sistema arroja un mensaje de éxito: "Calibración Exitosa"<br><br>5. El botón "Calibrar" se bloquea hasta que se realice una medición.<br><br>6. El sistema desbloquea el boton de "Medir" |
+| **Postcondiciones**              | - Se realiza la calibración del equipo<br>- El sistema permite a los usuarios medir                                                                                                                                                                                                                                                                                                                                                   |
+| **Extensiones**                  | 3.a. La placa no responde a la secuencia de comandos o se pierde la conexión física.<br>3.a.1. El sistema arroja un mensaje de error en pantalla y aborta el proceso de calibración.                                                                                                                                                                                                                                                  |
 #### Subsistema 2: Configuración y Toma de Mediciones
 
-| **Nombre**                       | Ejecutar Medicion                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Nombre**                       | Ejecutar medición                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | :------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Tipo**                         | Abstracto                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **Objetivo**                     | Iniciar, coordinar y validar el proceso de toma de datos desde la placa Guanaco Mini según los parámetros establecidos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -794,7 +808,7 @@ CU5 -.extend.-> CU3
 | **Precondiciones**               | -La placa debe estar conectada <br><br>-La placa debe estar calibrada <br><br>-Debe existir una configuración de medición previamente seleccionada.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Escenario principal de éxito** | 1. El Usuario ingresa al panel principal de "Medición" en la interfaz.  <br>2. El Sistema presenta la información de la configuración activa y un botón etiquetado como "Iniciar Medición", el cual se encuentra habilitado.<br><br>3. El Usuario hace clic en el botón "Iniciar Medición". <br><br>4. Punto de Inclusión: El Sistema invoca inmediatamente al caso de uso CU “Mostrar Progreso de la Medición” para dar retroalimentación visual al usuario.<br><br>5. (Herencia): El Sistema procesa la solicitud según el tipo de medición configurada<br><br>6. El Sistema recibe exitosamente la respuesta de la placa con los datos complejos.<br><br>7. Una vez completada la recolección, el Sistema invoca al caso de uso CU “Presentar Estadísticos Descriptivos” para procesar los datos matemáticamente.<br><br>8. El Sistema habilita el botón "Guardar Resultados" y finaliza el estado de ejecución |
 | **Postcondiciones**              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **Extensiones**                  | 5.a. El sistema recibe que el tipo de medición es en “bucle” (EXTEND)<br>5.a.1. El sistema se redirige al CU “Ejecutar medicion en bucle”<br><br>6.a. El sistema no recibe correctamente los datos complejos.<br>6.a.1. El sistema aborta el proceso de medicion.<br>6.a.2. El sistema libera el puerto de comunicacion.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Extensiones**                  | 5.a. El sistema recibe que el tipo de medición es en “bucle” (EXTEND)<br>5.a.1. El sistema se redirige al CU “Ejecutar mediciónen bucle”<br><br>6.a. El sistema no recibe correctamente los datos complejos.<br>6.a.1. El sistema aborta el proceso de medicion.<br>6.a.2. El sistema libera el puerto de comunicacion.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 | **Nombre**                       | Ejecutar Medición de Espectroscopía                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -868,7 +882,7 @@ CU5 -.extend.-> CU3
 | **Actor Primario**               | Experto                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **Alcance**                      | Subsistema 2: Configuración y Toma de Mediciones                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Precondiciones**               | El usuario debe haber iniciado sesión con el rol de Experto.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| **Escenario principal de éxito** | 1. El usuario Experto ingresa a la pestaña o panel de “Nueva configuración” en la interfaz<br>    <br>2. El sistema presenta una lista desplegable para elegir el modo de medición<br>    <br>3. El Experto selecciona el modo deseado<br><br>4. (Herencia) El sistema despliega los campos dinámicos correspondientes con una checkbox “En Bucle”<br><br>5. El Experto hace click en aplicar Configuración<br><br>6. El sistema valida que los parámetros ingresados se encuentren dentro de los límites<br><br>7. El sistema almacena la temporalmente la configuración como setup activo y muestra un mensaje de éxito “configuracion aplicada correctamente” |
+| **Escenario principal de éxito** | 1. El usuario Experto ingresa a la pestaña o panel de “Nueva configuración” en la interfaz<br>    <br>2. El sistema presenta una lista desplegable para elegir el modo de medición<br>    <br>3. El Experto selecciona el modo deseado<br><br>4. (Herencia) El sistema despliega los campos dinámicos correspondientes con una checkbox “En Bucle”<br><br>5. El Experto hace click en aplicar Configuración<br><br>6. El sistema valida que los parámetros ingresados se encuentren dentro de los límites<br><br>7. El sistema almacena la temporalmente la configuración como setup activo y muestra un mensaje de éxito “configuraciónaplicada correctamente” |
 | **Postcondiciones**              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **Extensiones**                  | 4.a El usuario activa la opcion de “En Bucle”<br>4.a.1 El Experto hace click en la checkbox de “En bucle”<br>4.a.2 El sistema despliega los campos “Retardo” y “Ciclos”<br>4.a.3 El flujo retorna al paso 4 esperando a que los valores activados sean rellenados por el Experto<br><br>6.a Los valores ingresados están fuera de los límites del hardware<br> 6.a.1 El sistema detecta que uno de los valores no son soportados por la placa<br>6.a.2 El sistema aborta el guardado de memoria<br>6.a.3 El sistema resalta en color rojo los campos invalidos en el formulario<br>6.a.4 El flujo retorna al Paso 4                                              |
 
@@ -881,7 +895,7 @@ CU5 -.extend.-> CU3
 | **Precondiciones**               | El Experto seleccionó el modo "Espectroscopía" en el Paso 3 del caso padre                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Escenario principal de éxito** | 4.1 El sistema actualiza el panel de configuración desplegando los campos obligatorios específicos para un barrido espectral: “Frecuencia Inicial”, incremento de frecuencia, cantidad de pasos y promedios por paso<br><br>4.2 El experto ingresa los valores correspondientes<br><br>4.3 El sistema calcula en tiempo real la frecuencia final proyectada (Frecuencia inicial +(Incremento + pasos)) y la muestra en pantalla<br><br>4.4 El sistema valida internamente que la frecuencia final calculada no supere el limite maximo<br><br>4.5 El flujo retorna al paso 5 del caso base, permitiendo al experto continuar con la configuración general      |
 | **Postcondiciones**              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| **Extensiones**                  | 4.4.a La frecuencia final calculada excede el límite del hardware<br>4.4.a.1 El sistema detecta que la matematica de la configuracion genera una frecuencia superior a los 100khz o inferior a los 0.5khz <br>4.4.a.2 El Sistema resalta en color rojo el texto de la Frecuencia Final proyectada y deshabilita preventivamente el botón "Aplicar Configuración". <br>4.4.a.3 El Sistema muestra un mensaje de ayuda: "La frecuencia final excede el límite operativo del equipo. Reduzca el incremento o la cantidad de pasos."<br>4.4.a.4 El Sistema se mantiene a la espera (Paso 4.2) hasta que el Experto ingrese valores válidos que restauren el botón. |
+| **Extensiones**                  | 4.4.a La frecuencia final calculada excede el límite del hardware<br>4.4.a.1 El sistema detecta que la matematica de la configuracióngenera una frecuencia superior a los 100khz o inferior a los 0.5khz <br>4.4.a.2 El Sistema resalta en color rojo el texto de la Frecuencia Final proyectada y deshabilita preventivamente el botón "Aplicar Configuración". <br>4.4.a.3 El Sistema muestra un mensaje de ayuda: "La frecuencia final excede el límite operativo del equipo. Reduzca el incremento o la cantidad de pasos."<br>4.4.a.4 El Sistema se mantiene a la espera (Paso 4.2) hasta que el Experto ingrese valores válidos que restauren el botón. |
 
 | **Nombre**                       | Configurar Medición de Monofrecuencia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1005,7 +1019,7 @@ CU5 -.extend.-> CU3
 | **Precondición**                 | - El usuario tiene una sesion activa                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **Escenario principal de éxito** | 1. El usuario se encuentra en la pestaña de "Configuraciones guardadas".<br><br>2. El sistema muestra una lista de todas las configuraciones con su nombre, su tipo de medición, su creador y su fecha de creación.<br><br>3. El sistema muestra al lado de cada ítem el boton de "Editar" y "Cargar" como opciones rápidas.<br><br>4. El sistema muestra en el panel superior opciones extra de la configuración: "Importar" "Exportar" y "Borrar"<br><br>5. El usuario selecciona el boton "Editar".<br><br>6. El sistema lleva al usuario a la pestaña de configurar mediciones, con la configuración ya cargada.                                                                                                                                                                                                                                                                        |
 | **Postcondición**                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| **Extensiones**                  | 5.a. El usuario selecciona el boton "Cargar"<br>5.a.1. El usuario es llevado al panel de ejecución de medición, con la configuración ya cargada.<br><br>5.b. El usuario selecciona el botón "Importar"<br>5.b.1. El Sistema invoca al caso de uso CU Importar configuración<br>5.c. El usuario selecciona el botón "Exportar"<br>5.c.1. El Sistema invoca al caso de uso CU Exportar configuración<br><br>5.d. El usuario seleccinoa el botón "Borrar"<br>5.d.1. El sistema muestar un panel de confirmacion "¿Estas seguro que desea borrar esta configuracion? Esta accion no es reversible."<br>5.d.2. El usuario selecciona "Aceptar"<br>5.d.3. El sistema borra la configuración.<br>5.d.4. El sistema vuelve al panel de visualización de configuraciones.<br>5.d.2.a. El usuario selecciona "Cancelar"<br>5.d.2.a.1. El sistema vuelve al panel de visualización de configuraciones. |
+| **Extensiones**                  | 5.a. El usuario selecciona el boton "Cargar"<br>5.a.1. El usuario es llevado al panel de ejecución de medición, con la configuración ya cargada.<br><br>5.b. El usuario selecciona el botón "Importar"<br>5.b.1. El Sistema invoca al caso de uso CU Importar configuración<br>5.c. El usuario selecciona el botón "Exportar"<br>5.c.1. El Sistema invoca al caso de uso CU Exportar configuración<br><br>5.d. El usuario seleccinoa el botón "Borrar"<br>5.d.1. El sistema muestra un panel de confirmacion "¿Estas seguro que desea borrar esta configuracion? Esta accion no es reversible."<br>5.d.2. El usuario selecciona "Aceptar"<br>5.d.3. El sistema borra la configuración.<br>5.d.4. El sistema vuelve al panel de visualización de configuraciones.<br>5.d.2.a. El usuario selecciona "Cancelar"<br>5.d.2.a.1. El sistema vuelve al panel de visualización de configuraciones. |
 
 #### Subsistema 5: Persistencia
 
@@ -1045,7 +1059,7 @@ MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
 
 ConnectionType <|-- Wire
-ConnectionType <|-- WireLess
+ConnectionType <|-- Wireless
 
 MeasureState <|-- PendingState
 MeasureState <|-- ExecutingState
@@ -1098,7 +1112,7 @@ class Measure {
 
 class MeasureSetup {
 		<<abstract>>
-		- exitation_voltage : float
+		- excitation_voltage : float
 		- gain : float
 		- rfbvalue : float
 		- settcycles : int
@@ -1159,7 +1173,7 @@ class Wire{
 	- port_name : str
 	- timeout : int
 }
-class WireLess{
+class Wireless{
 	- protocol : str
 }
 
@@ -1170,7 +1184,7 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
 }
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -1209,7 +1223,7 @@ class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
 
-%% state patern
+%% state pattern
 
 class DeviceState{
 		<<interface>>
@@ -1240,7 +1254,7 @@ class ExecutingState
 class CompleteState
 class ErrorState
 
-%% observer patern
+%% observer pattern
 class IObserver{
 	<<interface>>
 	+ update(observable : IObservable, event_info : str)
@@ -1268,7 +1282,7 @@ User <|-- Operator
 User <|-- Expert
 
 ConnectionType <|-- Wire
-ConnectionType <|-- WireLess
+ConnectionType <|-- Wireless
 
 DeviceState <|-- FreeDeviceState
 DeviceState <|-- CalibratingState
@@ -1297,7 +1311,7 @@ class Wire{
 	- port_name : str
 	- timeout : int
 }
-class WireLess{
+class Wireless{
 	- protocol : str
 }
 
@@ -1325,7 +1339,7 @@ class Device{
 	+ get_state() : DeviceState
 }
 
-%% state patern
+%% state pattern
 	
 class ConnectionState{
 		<<interface>>
@@ -1346,7 +1360,7 @@ class CalibratingState
 class MeasuringState
 class DeviceErrorState
 
-%% observer patern
+%% observer pattern
 class IObserver{
 	<<interface>>
 	+ update(observable : IObservable, event_info : str)
@@ -1365,7 +1379,7 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
 }
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -1400,7 +1414,7 @@ Device ..|> IObservable
 
 MeasureService ..|> IObserver
 MeasureService .. Device : observa
-MeasureService ..> PersistanceService : invoca guardado de emergencia
+MeasureService ..> PersistenceService : invoca guardado de emergencia
 
 
 ConnectionService ..>  Device
@@ -1459,7 +1473,7 @@ class SessionManager{
 	- active_token : Token
 }
 
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -1482,7 +1496,7 @@ class PersistanceService{
 %% relaciones
 User "1"-->"1" Device : calibra
 
-PersistanceService "1"..>"1" CalibrationSetup
+PersistenceService "1"..>"1" CalibrationSetup
 
 CalibrationService ..> Device
 CalibrationService ..> CalibrationSetup
@@ -1548,7 +1562,7 @@ class SessionManager{
 
 class MeasureSetup {
 		<<abstract>>
-		- exitation_voltage : float
+		- excitation_voltage : float
 		- gain : float
 		- rfbvalue : float
 		- settcycles : int
@@ -1641,7 +1655,7 @@ class AuthService{
 	+ register(user_name, email, password) : Token
 }
 
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -1663,7 +1677,7 @@ class PersistanceService{
 
 class MeasureSetup {
 		<<abstract>>
-		- exitation_voltage : float
+		- excitation_voltage : float
 		- gain : float
 		- rfbvalue : float
 		- settcycles : int
@@ -1706,12 +1720,12 @@ User "1"-->"0..*" MeasureSetup : gestiona
 User "1"-->"0..*" CalibrationSetup : gestiona
 
 AuthService ..> User
-AuthService ..>  PersistanceService
+AuthService ..>  PersistenceService
 AuthService ..>  SessionManager
 
-PersistanceService ..> MeasureSetup
-PersistanceService ..> CalibrationSetup
-PersistanceService ..> SessionManager
+PersistenceService ..> MeasureSetup
+PersistenceService ..> CalibrationSetup
+PersistenceService ..> SessionManager
 
 CalibrationSetup ..> SessionManager
 
@@ -1768,7 +1782,7 @@ class Measure {
 
 class MeasureSetup {
 		<<abstract>>
-		- exitation_voltage : float
+		- excitation_voltage : float
 		- gain : float
 		- rfbvalue : float
 		- settcycles : int
@@ -1797,7 +1811,7 @@ class CalibrationSetup{
 	+ get_command() : str
 }
 
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -1827,8 +1841,8 @@ User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
 User "1"-->"0..*" CalibrationSetup : guarda
 
-PersistanceService ..> Measure
-PersistanceService ..> SessionManager
+PersistenceService ..> Measure
+PersistenceService ..> SessionManager
 ```
 
 ## BASE DE DATOS
@@ -1933,11 +1947,11 @@ MULTI_MEASURE_SETUP{
 	string frequencies_list
 }
 
-USER ||--|{ MEASURE : realiza
+USER ||--o{ MEASURE : realiza
 
-USER ||--|{ CALIBRATION_SETUP : crea
+USER ||--o{ CALIBRATION_SETUP : crea
 
-USER ||--|{ MEASURE_SETUP : configura
+USER ||--o{ MEASURE_SETUP : configura
 
 MEASURE ||--|| MEASURE_RESULT : arroja
 
