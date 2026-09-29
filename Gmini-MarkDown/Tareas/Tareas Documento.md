@@ -13,6 +13,7 @@ kanban-plugin: board
 - [ ] Justificar Patrones de Diseño
 - [ ] Definir claramente que el sistema NO VA A SER MULTIPLATAFORMA
 - [ ] Agregar justificacion para las tecnologias
+- [ ] Empezar a hacer pantallas (No hace falta programar)
 
 
 ## En Progreso
