@@ -6,6 +6,7 @@ kanban-plugin: board
 
 ## Pendientes
 
+- [ ] Pasar el documento md a docs
 - [ ] Verificar cardinalidad en BD
 - [ ] Definir si solo los expertos pueden crear perfiles (incluyendo el de operador)
 - [ ] Agregar definiciones
