@@ -10,6 +10,7 @@ kanban-plugin: board
 - [ ] Agregar clases Builder
 - [ ] Darle mas forma a los permisos de usuario en las clases (has_permition)
 - [ ] Definir si la clase Measure mantiene metodos
+- [ ] Definir si conviene dividir la clase PersistenceService en LocalService y DataBaseService
 
 
 ## En Progreso
