@@ -14,6 +14,7 @@ kanban-plugin: board
 - [ ] Definir claramente que el sistema NO VA A SER MULTIPLATAFORMA
 - [ ] Agregar justificacion para las tecnologias
 - [ ] Empezar a hacer pantallas (No hace falta programar)
+- [ ] Agregar en el area de referencias FastAPI y demas
 
 
 ## En Progreso
