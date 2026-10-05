@@ -12,6 +12,7 @@ kanban-plugin: board
 - [ ] Verificar concordancia con clases/reqs/diagrama de CU para el subsistema 5
 - [ ] Agregar las observaciones a la extension del guardado de mediciones
 - [ ] Verificar si realmente "Ver resultados intermedios" debería ser un include de ejecutar medicion. Sino que sea una extension
+- [ ] Verificar si Seleccionar Canales es un CU aparte o simplemente un apartado en el formulario de setup
 
 
 ## En progreso
