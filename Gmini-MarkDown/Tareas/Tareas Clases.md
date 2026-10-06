@@ -8,7 +8,6 @@ kanban-plugin: board
 
 - [ ] Agregar clases Factory
 - [ ] Agregar clases Builder
-- [ ] Darle mas forma a los permisos de usuario en las clases (has_permition)
 - [ ] Definir si la clase Measure mantiene metodos
 - [ ] Definir si conviene dividir la clase PersistenceService en LocalService y DataBaseService
 
@@ -21,6 +20,7 @@ kanban-plugin: board
 ## Terminadas
 
 - [ ] Agregar atributo "observaciones" en el resultado de una medicion como valor opcional
+- [ ] Darle mas forma a los permisos de usuario en las clases (has_permition)
 - [ ] Agregar clases Observer
 
 
