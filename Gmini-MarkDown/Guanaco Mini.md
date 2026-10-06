@@ -136,11 +136,8 @@ Su principal objetivo es permitir a los usuarios realizar funciones como:
 - Realizar labores de calibración del dispositivo.
 
 Al reemplazar la actual comunicación mediante comandos a bajo nivel por esta interfaz gráfica, se elimina la barrera técnica, permitiendo explotar todo el potencial de la placa Guanaco Mini.
-El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. Entre los usuarios que harán uso del sistema se deben diferenciar entre aquellos con un rol de experto y aquellos con un uso limitado de las funciones o de operador ==\[Modificar en caso de que Antonio acepte el modo "Avanzado"\]== . Los usuarios expertos serán los encargados de:
-- Configurar los parámetros de calibración y mediciones.
-- Dejar establecidos dichos parámetros en el sistema como setups reutilizables.
-Por otro lado, los usuarios operadores podrán realizar las mediciones previamente parametrizadas de manera sencilla y a su vez ejecutar la calibración previamente parametrizada por un experto.
-El usuario operador no puede modificar los parámetros de calibración, pero puede ejecutar una calibración previamente configurada por un usuario experto.
+El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. El sistema contemplará un único tipo de usuario con acceso a dos modalidades de trabajo intercambiables desde la interfaz: "Modo Avanzado" y "Modo Básico".
+Los usuarios en "Modo Avanzado" tendrán total acceso al sistema, pudiendo configurar la calibración del dispositivo y los parámetros de las mediciones, pudiendo persistir estos cambios como setups reutilizables. En el "Modo Básico" se ocultarán las herramientas de edición de configuración, con el objetivo de agilizar el flujo de trabajo y prevenir alteraciones accidentales. Los usuarios en este modo estarán restringidos a realizar mediciones y labores de calibración preconfiguradas.
 
 #### Definiciones, siglas y abreviaturas
 
@@ -223,7 +220,7 @@ Este subsistema es el encargado de agrupar aquellas funciones que permiten a los
 - Realizar procesamiento de datos.
   
 **Subsistema de Configuración y Gestión de Perfiles (Setups)**
-Este subsistema es el encargado de habilitar los distintos modos de uso (Experto y Operador) ==\[Modificar en caso de implementar el modo avanzado\]== para garantizar la separación de responsabilidades, así como de gestionar la creación, guardado e importación de las configuraciones de medición.  
+Este subsistema es el encargado de habilitar los distintos usuarios para garantizar la seguridad entre perfiles, los datos almacenados y sus configuraciones.
   
 
 **Subsistema de Entorno de Ejecución y Plataforma**
@@ -240,12 +237,12 @@ Este subsistema centraliza las operaciones de persistencia del sistema, garantiz
 - Almacenar resultados e información en una Base de Datos
 
 #### Características de los usuarios
-==\[Modificar en caso de implementar el modo avanzado\]==
-Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto. Para poder brindarles a estos mismos una herramienta que sea capaz de adecuarse a cada perfil, se contemplarán los siguientes roles de usuario:
 
-**Usuarios Expertos**: Este perfil de usuario se caracteriza por un mayor nivel técnico en cuanto a uso intensivo del dispositivo, análisis de los datos, parametrización y calibración del mismo. Los usuarios con este rol deben poder dejar preparado el entorno del sistema para que los usuarios con una menor experiencia puedan realizar mediciones sin dificultad. Esta distinción está pensada para líderes de laboratorios, jefes de proyectos de investigación, técnicos con amplia experiencia en EIS, entre otros.
+Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto. Para poder brindarles a estos mismos una herramienta que sea capaz de adecuarse a cada perfil, se contemplarán los siguientes modos de uso:
+
+**Modo Avanzado**: Este modo de uso está pensado para aquellos usuarios con un mayor nivel técnico en cuanto a uso intensivo del dispositivo, análisis de los datos, parametrización y calibración del mismo. Los usuarios con este modo activado podrán dejar preparado el entorno del sistema para que los usuarios en modo básico puedan realizar mediciones sin dificultad. Esta distinción está pensada para líderes de laboratorios, jefes de proyectos de investigación, técnicos con amplia experiencia en EIS, entre otros.
   
-**Usuarios Operadores**: Este perfil de usuario está diseñado para aquellos usuarios menos experimentados, los cuales deban realizar tareas sencillas sin enfocarse en los aspectos más complejos del sistema. Aquellos usuarios que pertenezcan a este rol solo podrán realizar mediciones previamente parametrizadas por los expertos.
+**Modo Básico**: Este modo de uso está diseñado para aquellos usuarios menos experimentados, los cuales deban realizar tareas sencillas sin enfocarse en los aspectos más complejos del sistema. Aquellos usuarios que utilicen este modo solo podrán realizar mediciones previamente preconfiguradas.
 
 #### Restricciones
   
@@ -255,8 +252,7 @@ El software está destinado para ser utilizado únicamente en la placa ESP32.
 
 El sistema contempla únicamente dos vías de comunicación con la placa. Alámbrica e inalámbrica.
 
-==\[Modificar en caso de implementar el modo avanzado\]==
-El uso de funciones del software está limitado por perfiles y limitado por roles.
+El uso de funciones del software está limitado por modos de uso.
   
 El sistema debe garantizar la funcionalidad en el sistema operativo Microsoft Windows.
 
@@ -270,184 +266,209 @@ El sistema no busca realizar un diagnóstico médico.
 
 | **CON-01**      | Establecer conexión Alámbrica con el hardware                                                                      |
 | :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                 |
+| **Usuarios**    | Usuario Registrado.                                                                                 |
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión alámbrica. |
 
 | **CON-02**      | Establecer conexión inalámbrica con el hardware                                                                      |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                   |
+| **Usuarios**    | Usuario Registrado.                                                                                                  |
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica. |
 
 | **CON-03**      | Traducir comandos de control                                                              |
-| :-------------- | :-------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                        |
+| :-------------- | :---------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                       |
 | **Descripción** | El sistema debe permitir utilizar los comandos de la placa mediante una interfaz gráfica. |
 
 | **CON-04**      | Notificar visualmente el estado activo de conexión                                                                     |
 | :---------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                     |
+| **Usuarios**    | Usuario Registrado.                                                                                     |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado activo de conexión. |
 
 | **CON-05**      | Notificar visualmente el estado Inactivo de conexión                                                                     |
 | :-------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                       |
+| **Usuarios**    | Usuario Registrado.                                                                                       |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado inactivo de conexión. |
 
 | **CON-06**      | Notificar visualmente el estado error de conexión                                                                                                                  |
 | :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                 |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                 |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado de error de la comunicación con el dispositivo en todo momento. |
 
 | **CON-07**      | Persistir últimos datos generados ante un error                                                                                               |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                            |
+| **Usuarios**    | Usuario Registrado.                                                                                                            |
 | **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
 
 #### **Módulo 2: Calibración del Dispositivo**
 | **CAL-01**      | Configurar la calibración electrónica del equipo                                            |
-| :-------------- | :---------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto                                                                             |
+| :-------------- | :------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                         |
 | **Descripción** | El sistema debe permitir parametrizar la secuencia de comandos de calibración del hardware. |
 
 | **CAL-02**      | Ejecutar calibración electrónica del equipo                                            |
 | :-------------- | :----------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                     |
+| **Usuarios**    | Usuario Registrado.                                                     |
 | **Descripción** | El sistema debe permitir iniciar la secuencia de comandos de calibración del hardware. |
 
 | **CAL-03**      | Bloquear ejecución por descalibración                                                                                                                                                                             |
-| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                                                |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                |
 | **Descripción** | El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior. |
+
+| **CAL-04**      | Limitar la configuración de calibración al Modo Avanzado                                                                                   |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                        |
+| **Descripción** | El sistema solo debe permitir parametrizar la secuencia de comandos de calibración del hardware si se encuentra activado el Modo Avanzado. |
 ### Subsistema 2: Configuración y Toma de Mediciones
 #### Módulo 1: Tipos y Estrategias de Medición
 
 
-| **MED-01**      | Seleccionar canales de multiplexado (Llaves/Electrodos)                                                                     |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto.                                                                                                            |
-| **Descripción** | El sistema debe permitir seleccionar qué canal de electrodos o impedancia interna se utilizará para la toma de la medición. |
+| **MED-01**      | Configurar apartados comunes a una medición                                                                                                                                |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                        |
+| **Descripción** | El sistema debe permitir establecer los apartados comunes a todos los tipos de medición (voltaje de excitación, ganancia, ciclos, canales de multiplexado y valor de rfb). |
 
 | **MED-02**      | Configurar medición de una frecuencia  (Monofrecuencia)                                                                         |
-| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto.                                                                                                                |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                             |
 | **Descripción** | El sistema debe permitir elegir los parámetros de medición para  mediciones continuas a una única frecuencia fija seleccionada. |
 
 | **MED-03**      | Ejecutar medición de una frecuencia (Monofrecuencia)                                             |
 | :-------------- | :--------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                               |
+| **Usuarios**    | Usuario Registrado.                                                               |
 | **Descripción** | El sistema debe permitir ejecutar mediciones continuas a una única frecuencia fija seleccionada. |
 
 | **MED-04**      | Configurar medición por espectroscopía (Barrido espectral)                                                                                                                                      |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto.                                                                                                                                                                                |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                              |
 | **Descripción** | El sistema debe permitir elegir los parámetros de medición para realizar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado. |
 
 | **MED-05**      | Ejecutar medición por espectroscopía (Barrido espectral)                                                                                                 |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                       |
+| **Usuarios**    | Usuario Registrado.                                                                                                                       |
 | **Descripción** | El sistema debe permitir ejecutar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado. |
 
 | **MED-06**      | Configurar medición de multifrecuencia                                                                               |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto.                                                                                                     |
+| **Usuarios**    | Usuario Registrado.                                                                                                   |
 | **Descripción** | El sistema debe permitir elegir los parámetros de medición para una cantidad de frecuencias discretas y específicas. |
 
 | **MED-07**      | Ejecutar medición multifrecuencia                                                                                         |
 | :-------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                        |
+| **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema permite ejecutar una cantidad de mediciones a las mismas frecuencias discretas y especificadas por el usuario. |
 
 | **MED-08**      | Ejecutar mediciones en bucle                                                               |
 | :-------------- | :--------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                         |
+| **Usuarios**    | Usuario Registrado.                                                         |
 | **Descripción** | El sistema debe permitir ejecutar mediciones continuas del mismo tipo a través del tiempo. |
 
 | **MED-09**      | Mostrar progreso de la medición                                                                                                                     |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                  |
+| **Usuarios**    | Usuario Registrado.                                                                                                                  |
 | **Descripción** | El sistema debe proporcionar una indicación visual en pantalla que informe al usuario que un proceso de medición se encuentra actualmente en curso. |
 
 | **MED-10**      | Mostrar resultados intermedios                                                                                                 |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                             |
-| **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición cíclicos. |
+| **Usuarios**    | Usuario Registrado.                                                                                             |
+| **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición ciclicos. |
 
 | **MED-11**      | Calcular estadísticos descriptivos básicos                                                                                |
 | :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                        |
+| **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones. |
 
 | **MED-12**      | Presentar estadísticos descriptivos básicos                               |
 | :---------- | :------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto, Usuario operador.                                        |
+| **Usuarios**    | Usuario Registrado.                                        |
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas automáticas. |
 
+| **MED-13**      | Limitar configuración de mediciones al Modo Avanzado                                                                              |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                               |
+| **Descripción** | El sistema solo debe permitir configurar setups de medición (independientemente del tipo) si se encuentra activo el Modo Avanzado |
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 | **SET-01**      | Crear Perfil de Usuario                             |
 | :-------------- | --------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                  |
+| **Usuarios**    | Usuario Registrado.                  |
 | **Descripción** | El sistema debe permitir crear perfiles de usuario. |
 
 | **SET-02**      | Iniciar Sesión                                          |
 | :-------------- | ------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                      |
+| **Usuarios**    | Usuario Registrado.                                     |
 | **Descripción** | El sistema debe permitir a los usuarios iniciar sesión. |
 
 | **SET-03**      | Cerrar Sesión                                          |
 | :-------------- | ------------------------------------------------------ |
-| **Usuarios**    | Usuario experto, Usuario operador.                     |
+| **Usuarios**    | Usuario Registrado.                                    |
 | **Descripción** | El sistema debe permitir a los usuarios cerrar sesión. |
 
-==\[Modificar en caso de implementar el modo avanzado\]==
+| **SET-04**      | Habilitar Modos de Uso                                                                                                                 |
+| :-------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                    |
+| **Descripción** | La aplicación debe proveer dos modos de uso intercambiables desde la interfaz gráfica, definidos como "Modo Avanzado" y "Modo Básico". |
 
-| **SET-04**      | Habilitar usuario experto                                                                                     |
-| :-------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto.                                                                                              |
-| **Descripción** | La aplicación debe proveer un "Modo Experto" con acceso total a la configuración de parámetros y calibración. |
+| **SET-05**      | Habilitar Modo Avanzado                                                                                        |
+| :-------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                            |
+| **Descripción** | La aplicación debe proveer un "Modo Avanzado" con acceso total a la configuración de parámetros y calibración. |
 
-| **SET-05**      | Habilitar usuario operador                                                                                                                                                                       |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario operador.                                                                                                                                                                                |
-| **Descripción** | La aplicación debe proveer un "Modo Operador" con permisos restringidos exclusivamente a la ejecución de mediciones y ejecución de calibración (con los parámetros predefinidos por el experto). |
+| **SET-06**      | Habilitar Modo Básico                                                                                                                                                           |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                             |
+| **Descripción** | La aplicación debe proveer un "Modo Básico" con permisos restringidos exclusivamente a la ejecución de mediciones y ejecución de calibración (con los parámetros predefinidos). |
 
-==\[Modificar en caso de implementar el modo avanzado\]==
+| **SET-07**      | Cambiar entre modos de uso                                                     |
+| :-------------- | ------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                            |
+| **Descripción** | El sistema tiene que permitir a un usuario realizar cambios de modo dinámicos. |
 
-| **SET-06**      | Cambiar entre perfiles de usuario                                                  |
-| :-------------- | ---------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                 |
-| **Descripción** | El sistema tiene que permitir a un usuario realizar cambios de perfiles dinámicos. |
+| **SET-08**      | Advertir sobre cambio de modo                                                                              |
+| :-------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                        |
+| **Descripción** | El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre modos de uso. |
 
-| **SET-07**      | Advertir sobre cambio de perfiles                                                                               |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                              |
-| **Descripción** | El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre tipos de perfiles. |
-
-| **SET-08**      | Aplicar configuraciones                                                                 |
+| **SET-09**      | Aplicar configuraciones                                                                 |
 | :-------------- | --------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario Operador.                                                      |
+| **Usuarios**    | Usuario Registrado.                                                                     |
 | **Descripción** | El sistema debe permitir al usuario seleccionar una configuración previamente guardada. |
 
-| **SET-09**      | Cargar configuraciones                                                                                                                |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario Operador.                                                                                                    |
-| **Descripción** | El sistema debe permitir al usuario operador importar configuraciones desde el almacenamiento local y guardarlos en la base de datos. |
+| **SET-10**      | Cargar configuraciones                                                                                                       |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                          |
+| **Descripción** | El sistema debe permitir al usuario importar configuraciones desde el almacenamiento local y guardarlos en la base de datos. |
 
-| **SET-10**      | Exportar configuraciones de medición                                                                                      |
+| **SET-11**      | Exportar configuraciones de medición                                                                                      |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario Operador.                                                                                        |
+| **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema debe permitir al usuario exportar las configuraciones guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-11**      | Adjuntar metadatos y observaciones libres                                                                                                                                               |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                      |
-| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final. |
+| **SET-12**      | Adjuntar metadatos y observaciones libres sobre mediciones                                                                                                                                              |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                     |
+| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final de una medición. |
 
-| **SET-12**      | Visualizar datos guardados                                                                                               |
+| **SET-13**      | Adjuntar metadatos y observaciones libres sobre setups                                                                                                                                                                                           |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                                              |
+| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre las configuraciones establecidas en un setup (de calibración o medición), vinculando este texto al paquete de datos final del mismo. |
+
+| **SET-14**      | Visualizar datos guardados                                                                                               |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                       |
+| **Usuarios**    | Usuario Registrado.                                                                                                      |
 | **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas y setups) anteriores aunque la placa no esté conectada. |
+
+| **SET-15**      | Mantener la sesión activa en el dispositivo                                                 |
+| :-------------- | ------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                         |
+| **Descripción** | El sistema debe mantener la sesión del usuario activa aunque se haya cerrado la aplicación. |
+
+| **SET-16**      | Limitar la escritura de observaciones en setups al modo Avanzado                                      |
+| :-------------- | ----------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                   |
+| **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
 
 ### Subsistema 4: Entorno de Ejecución y Plataforma
 
@@ -455,56 +476,62 @@ El sistema no busca realizar un diagnóstico médico.
 
 | **COM-01**      | Proveer entorno de aplicación de escritorio                                                                                                            |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                     |
+| **Usuarios**    | Usuario Registrado.                                                                                                                     |
 | **Descripción** | El software debe ser diseñado, compilado y distribuido como una aplicación de escritorio orientada a computadoras personales y portátiles (notebooks). |
 
 | **COM-02**      | Garantizar ejecución nativa en Microsoft Windows                                                                                                                                          |
 | :-------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                        |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                        |
 | **Descripción** | El sistema debe garantizar total compatibilidad, estabilidad y funcionalidad de todos sus módulos (especialmente la comunicación de puertos) bajo el sistema operativo Microsoft Windows. |
 
 | **COM-03**      | Proveer soporte secundario para entornos Linux                                                                                                                |
 | :-------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                            |
+| **Usuarios**    | Usuario Registrado.                                                                                                                            |
 | **Descripción** | El sistema debe contemplar en su arquitectura la portabilidad necesaria para poder ser ejecutado en distribuciones de escritorio del sistema operativo Linux. |
 
 | **COM-04**      | Garantizar el funcionamiento sin conexión a internet                                                   |
 | :-------------- | ------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                     |
+| **Usuarios**    | Usuario Registrado.                                                                                    |
 | **Descripción** | El sistema debe ser capaz de funcionar de manera completa aunque no se establezca conexión a internet. |
 ### Subsistema 5: Persistencia
 
 #### Módulo 1: Almacenamiento y Estructura de Datos
 
-| **PER-01**      | Almacenar setups de medición y calibración en una Base de Datos                                                                                  |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario experto.                                                                                                                                 |
-| **Descripción** | El sistema debe guardar todos las configuraciones de calibración y medición establecidas por el usuario experto en una base de datos relacional. |
+| **PER-01**      | Almacenar setups de medición y calibración en una Base de Datos                                                                             |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                         |
+| **Descripción** | El sistema debe guardar todos las configuraciones de calibración y medición establecidas por el usuario en en una base de datos relacional. |
 
 | **PER-02**      | Almacenar mediciones y sus resultados en una Base de Datos                                                                      |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                              |
+| **Usuarios**    | Usuario Registrado.                                                                                              |
 | **Descripción** | El sistema debe guardar todas las mediciones completadas junto con sus resultados directamente en una base de datos relacional. |
 
 | **PER-03**      | Configurar directorios                                                                                                |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                    |
+| **Usuarios**    | Usuario Registrado.                                                                                    |
 | **Descripción** | El sistema debe permitir al usuario seleccionar un directorio raíz específico para el almacenamiento de sus campañas. |
 
 | **PER-04**      | Generar nomenclatura predeterminada de archivos                                                                                                              |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                           |
+| **Usuarios**    | Usuario Registrado.                                                                                                                           |
 | **Descripción** | El sistema debe asignar automáticamente a cada archivo de salida un nombre basado en la fecha y hora de la medición, utilizando el estándar ISO 8601 básico. |
 
 | **PER-05**      | Renombramiento manual de archivos                                                                             |
 | :-------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                            |
+| **Usuarios**    | Usuario Registrado.                                                                            |
 | **Descripción** | El sistema debe permitir al usuario sobrescribir el nombre automático del archivo antes de su guardado final. |
 
 | **PER-06**      | Estructurar cabeceras de metadatos integrados                                                                                                                                                                                |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario experto, Usuario operador.                                                                                                                                                                                           |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                           |
 | **Descripción** | El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones. |
+
+| **PER-07**      | Limitar el guardado de setups al Modo Avanzado                                                                                        |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                   |
+| **Descripción** | Las configuraciones de calibración y medición solo podrán ser guardadas en la Base de Datos si se encuentra activado el Modo Avanzado |
+
 
 
 ## CASOS DE USO
