@@ -99,9 +99,9 @@ Usuario((Usuario))
 subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU1([Crear Perfil de Usuario])
 	CU2([Iniciar sesión])
-	CU3([Cambiar entre perfiles])
+	CU3([Alternar entre Modos de Uso])
 	CU4([Cerrar sesión])
-	CU5([Visualizar advertencia por cambio de perfil])
+	CU5([Visualizar advertencia por cambio de modo])
 	CU6([Aplicar configuraciones])
 	CU7([Importar configuraciones])
 	CU8([Exportar configuraciones])
@@ -138,6 +138,7 @@ subgraph Almacenamiento y Estructura de Datos
 	CU3([Guardar mediciones con sus resultados])
 	CU4([Configurar directorio raíz])
 	CU5([Renombrar archivo manualmente])
+	CU6([Redactar observaciones])
 end
 
 %% Asociaciones
@@ -148,5 +149,8 @@ Usuario --> CU4
 
 %% Relaciones Include/Extend
 CU5 -.extend.-> CU3
+CU6 -.extend.-> CU1
+CU6 -.extend.-> CU2
+CU6 -.extend.-> CU3
 ```
 
