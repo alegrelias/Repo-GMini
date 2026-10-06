@@ -683,14 +683,14 @@ CU13 -.extend.-> CU6
 ```mermaid
 flowchart LR
 %% Actores
-Operador((Operador))
+Usuario((Usuario))
 
 subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU1([Crear Perfil de Usuario])
 	CU2([Iniciar sesión])
-	CU3([Cambiar entre perfiles])
+	CU3([Alternar entre Modos de Uso])
 	CU4([Cerrar sesión])
-	CU5([Visualizar advertencia por cambio de perfil])
+	CU5([Visualizar advertencia por cambio de modo])
 	CU6([Aplicar configuraciones])
 	CU7([Importar configuraciones])
 	CU8([Exportar configuraciones])
@@ -698,14 +698,14 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 end
 
 %% Asociaciones
-Operador --> CU1
-Operador --> CU2
-Operador --> CU3
-Operador --> CU4
-Operador --> CU6
-Operador --> CU7
-Operador --> CU8
-Operador --> CU9
+Usuario --> CU1
+Usuario --> CU2
+Usuario --> CU3
+Usuario --> CU4
+Usuario --> CU6
+Usuario --> CU7
+Usuario --> CU8
+Usuario --> CU9
 
 
 %% Relaciones Include/Extend
@@ -727,6 +727,7 @@ subgraph Almacenamiento y Estructura de Datos
 	CU3([Guardar mediciones con sus resultados])
 	CU4([Configurar directorio raíz])
 	CU5([Renombrar archivo manualmente])
+	CU6([Redactar observaciones])
 end
 
 %% Asociaciones
@@ -737,7 +738,11 @@ Usuario --> CU4
 
 %% Relaciones Include/Extend
 CU5 -.extend.-> CU3
+CU6 -.extend.-> CU1
+CU6 -.extend.-> CU2
+CU6 -.extend.-> CU3
 ```
+
 
 ### Especificación de Casos de Uso
 #### Subsistema 1: Comunicación e Interacción con el Hardware
