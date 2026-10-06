@@ -1,16 +1,3 @@
-##### Extensiones e Inclusiones
-```mermaid
-flowchart LR
-subgraph Subsistema
-	CU1([Caso de Uso Base])
-	CU2([Caso de Uso Extensión])
-	CU3([Caso de Uso Inclusión])
-end
-
-CU2 --extend--> CU1
-CU1 --include--> CU3
-```
-
 ### Diagramas de Casos de Uso
 #### Subsistema 1: Comunicación e Interacción con el Hardware
 
@@ -18,7 +5,7 @@ CU1 --include--> CU3
 ```mermaid
 flowchart LR
 %%Actores
-Operador((Operador))
+Usuario((Usuario))
 
 subgraph Conectividad y Estado
 	CU1([Establecer Conexión con el Dispositivo])
@@ -28,8 +15,8 @@ subgraph Conectividad y Estado
 end
 
 %%Asignación
-Operador --> CU1
-Operador --> CU4
+Usuario --> CU1
+Usuario --> CU4
 
 %%Jerarquía
 CU2 ==> CU1
@@ -40,20 +27,16 @@ CU3 ==> CU1
 ```mermaid
 flowchart LR
 %% Actores
-Operador((Operador))
-Experto((Experto))
+Usuario((Usuario))
 
 subgraph Calibración del Dispositivo
 	CU1([Configurar la Calibración Electrónica])
 	CU2([Ejecutar Calibración Electrónica])
 end
 
-%% Jerarquía
-Experto ==> Operador
-
 %% Asociación
-Experto --> CU1
-Operador --> CU2
+Usuario --> CU1
+Usuario --> CU2
 ```
 
 #### Subsistema 2: Configuración y Toma de Mediciones
@@ -63,8 +46,7 @@ Operador --> CU2
 ```mermaid
 flowchart LR
 %% Actores
-Operador((Operador))
-Experto((Experto))
+Usuario((Usuario))
 
 subgraph Configuración y Toma de Mediciones
 	CU1([Seleccionar canales de multiplexado])
@@ -83,9 +65,6 @@ subgraph Configuración y Toma de Mediciones
 	
 end
 
-%% Jerarquía
-Experto ==> Operador
-
 %% Generalización
 CU3 ==> CU2
 CU4 ==> CU2
@@ -96,15 +75,14 @@ CU9 ==> CU6
 
 
 %% Asociaciones
-Experto --> CU1
-Experto --> CU2
-Operador --> CU6
+Usuario --> CU1
+Usuario --> CU2
+Usuario --> CU6
+Usuario --> CU12
 
 %% Relaciones Include/Extend
 CU6 -.include.-> CU10
 CU6 -.include.-> CU11
-CU6 -.include.-> CU12
-
 CU13 -.extend.-> CU6
 ```
 
@@ -152,11 +130,7 @@ CU3 -.include.-> CU5
 ```mermaid
 flowchart LR
 %% Actores
-Operador((Operador))
-Experto((Experto))
-
-%% Jerarquía
-Experto ==> Operador
+Usuario((Usuario))
 
 subgraph Almacenamiento y Estructura de Datos
 	CU1([Guardar Setups de calibración])
@@ -167,10 +141,10 @@ subgraph Almacenamiento y Estructura de Datos
 end
 
 %% Asociaciones
-Experto --> CU1
-Experto --> CU2
-Operador --> CU3
-Operador --> CU4
+Usuario --> CU1
+Usuario --> CU2
+Usuario --> CU3
+Usuario --> CU4
 
 %% Relaciones Include/Extend
 CU5 -.extend.-> CU3
