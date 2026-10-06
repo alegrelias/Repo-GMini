@@ -49,41 +49,36 @@ flowchart LR
 Usuario((Usuario))
 
 subgraph Configuración y Toma de Mediciones
-	CU1([Seleccionar canales de multiplexado])
-	CU2([Configurar medición])
-	CU3([Configurar medición de monofrecuencia])
-	CU4([Configurar medición de multifrecuencia])
-	CU5([Configurar medición de espectroscopía])
-	CU6([Ejecutar medición])
-	CU7([Ejecutar medición de monofrecuencia])
-	CU8([Ejecutar medición de multifrecuencia])
-	CU9([Ejecutar medición de espectroscopía])
-	CU10([Visualizar Progreso de medición])
-	CU11([Visualizar Resultados intermedios])
-	CU12([Visualizar estadísticos descriptivos básicos])
-	CU13([Ejecutar medición en bucle])
-	
+	CU1([Configurar medición])
+	CU2([Configurar medición de monofrecuencia])
+	CU3([Configurar medición de multifrecuencia])
+	CU4([Configurar medición de espectroscopía])
+	CU5([Ejecutar medición])
+	CU6([Ejecutar medición de monofrecuencia])
+	CU7([Ejecutar medición de multifrecuencia])
+	CU8([Ejecutar medición de espectroscopía])
+	CU9([Visualizar Progreso de medición])
+	CU10([Visualizar estadísticos descriptivos básicos])
+	CU11([Ejecutar medición en bucle])
 end
 
 %% Generalización
-CU3 ==> CU2
-CU4 ==> CU2
-CU5 ==> CU2
-CU7 ==> CU6
-CU8 ==> CU6
-CU9 ==> CU6
+CU2 ==> CU1
+CU3 ==> CU1
+CU4 ==> CU1
+CU6 ==> CU5
+CU7 ==> CU5
+CU8 ==> CU5
 
 
 %% Asociaciones
 Usuario --> CU1
-Usuario --> CU2
-Usuario --> CU6
-Usuario --> CU12
+Usuario --> CU5
+Usuario --> CU10
 
 %% Relaciones Include/Extend
-CU6 -.include.-> CU10
-CU6 -.include.-> CU11
-CU13 -.extend.-> CU6
+CU5 -.include.-> CU9
+CU11 -.extend.-> CU5
 ```
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
