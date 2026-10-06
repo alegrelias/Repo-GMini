@@ -94,7 +94,7 @@ CU13 -.extend.-> CU6
 ```mermaid
 flowchart LR
 %% Actores
-Operador((Operador))
+Usuario((Usuario))
 
 subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU1([Crear Perfil de Usuario])
@@ -109,14 +109,14 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 end
 
 %% Asociaciones
-Operador --> CU1
-Operador --> CU2
-Operador --> CU3
-Operador --> CU4
-Operador --> CU6
-Operador --> CU7
-Operador --> CU8
-Operador --> CU9
+Usuario --> CU1
+Usuario --> CU2
+Usuario --> CU3
+Usuario --> CU4
+Usuario --> CU6
+Usuario --> CU7
+Usuario --> CU8
+Usuario --> CU9
 
 
 %% Relaciones Include/Extend
