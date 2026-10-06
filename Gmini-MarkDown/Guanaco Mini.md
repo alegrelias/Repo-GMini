@@ -271,12 +271,12 @@ El sistema no busca realizar un diagnóstico médico.
 
 | **CON-02**      | Establecer conexión inalámbrica con el hardware                                                                      |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                  |
+| **Usuarios**    | Usuario Registrado.                                                                                   |
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica. |
 
 | **CON-03**      | Traducir comandos de control                                                              |
-| :-------------- | :---------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                       |
+| :-------------- | :-------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                        |
 | **Descripción** | El sistema debe permitir utilizar los comandos de la placa mediante una interfaz gráfica. |
 
 | **CON-04**      | Notificar visualmente el estado activo de conexión                                                                     |
@@ -359,9 +359,10 @@ El sistema no busca realizar un diagnóstico médico.
 | **Descripción** | El sistema permite ejecutar una cantidad de mediciones a las mismas frecuencias discretas y especificadas por el usuario. |
 
 | **MED-08**      | Ejecutar mediciones en bucle                                                               |
-| :-------------- | :--------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                         |
+| :-------------- | :----------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                        |
 | **Descripción** | El sistema debe permitir ejecutar mediciones continuas del mismo tipo a través del tiempo. |
+|                 |                                                                                            |
 
 | **MED-09**      | Mostrar progreso de la medición                                                                                                                     |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -445,30 +446,15 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema debe permitir al usuario exportar las configuraciones guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-12**      | Adjuntar metadatos y observaciones libres sobre mediciones                                                                                                                                              |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                     |
-| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final de una medición. |
-
-| **SET-13**      | Adjuntar metadatos y observaciones libres sobre setups                                                                                                                                                                                           |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                                              |
-| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre las configuraciones establecidas en un setup (de calibración o medición), vinculando este texto al paquete de datos final del mismo. |
-
-| **SET-14**      | Visualizar datos guardados                                                                                               |
+| **SET-12**      | Visualizar datos guardados                                                                                               |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                                      |
 | **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas y setups) anteriores aunque la placa no esté conectada. |
 
-| **SET-15**      | Mantener la sesión activa en el dispositivo                                                 |
+| **SET-13**      | Mantener la sesión activa en el dispositivo                                                 |
 | :-------------- | ------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                         |
 | **Descripción** | El sistema debe mantener la sesión del usuario activa aunque se haya cerrado la aplicación. |
-
-| **SET-16**      | Limitar la escritura de observaciones en setups al modo Avanzado                                      |
-| :-------------- | ----------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                   |
-| **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
 
 ### Subsistema 4: Entorno de Ejecución y Plataforma
 
@@ -532,7 +518,20 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario Registrado.                                                                                                                   |
 | **Descripción** | Las configuraciones de calibración y medición solo podrán ser guardadas en la Base de Datos si se encuentra activado el Modo Avanzado |
 
+| **PER-08**      | Adjuntar metadatos y observaciones libres sobre mediciones                                                                                                                                              |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                     |
+| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final de una medición. |
 
+| **PER-09**      | Adjuntar metadatos y observaciones libres sobre setups                                                                                                                                                                                           |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                                              |
+| **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre las configuraciones establecidas en un setup (de calibración o medición), vinculando este texto al paquete de datos final del mismo. |
+
+| **PER-10**      | Limitar la escritura de observaciones en setups al modo Avanzado                                      |
+| :-------------- | ----------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                   |
+| **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
 
 ## CASOS DE USO
 ### Convenciones gráficas
