@@ -33,7 +33,7 @@ erDiagram
 
 USER{
 	int user_id PK
-	bool is_expert
+	bool use_advanced_mode
 	string email
 	string user_name
 	string password
@@ -43,6 +43,7 @@ USER{
 CALIBRATION_SETUP{
 	int cal_setup_id PK
 	int user_id FK
+	string observations
 	string channel
 	float z_calc_value_real
 	float z_calc_value_imag
@@ -71,10 +72,11 @@ MEASURE_RESULT{
 MEASURE_SETUP{
 	int measure_setup_id PK
 	int user_id FK
+	string observations
 	float exitation_voltage
 	float gain
 	float rfbvalue
-	float settcycles
+	int settcycles
 	int mux_channel
 }
 
