@@ -6,8 +6,6 @@ classDiagram
 direction LR
 
 %% jerarquias
-User <|-- Expert
-User <|-- Operator
 
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
@@ -34,19 +32,12 @@ DeviceState <|-- UncalibratedState
 %% clases
 
 class User {
-	<<abstract>>
 	- user_id : int
 	- user_name : str
 	- email : str
 	- password : str
 	- root_directory : str
-	+ has_permission(action : str)
-}
-
-class Operator{
-
-}
-class Expert{
+	
 }
 
 class Measure {
@@ -67,6 +58,7 @@ class Measure {
 
 class MeasureSetup {
 		<<abstract>>
+		- observations : str
 		- exitation_voltage : float
 		- gain : float
 		- rfbvalue : float
@@ -90,6 +82,7 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
+	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
@@ -147,8 +140,8 @@ class PersistanceService{
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	  
 	%% operaciones en archivos
 	+ load_measure() : Measure
@@ -158,6 +151,8 @@ class PersistanceService{
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
 }
+
+
 class AuthService{
 	+ login(user_name, email, password) : Token
 	+ logout()
@@ -167,6 +162,7 @@ class AuthService{
 
 class SessionManager{
 	- current_user : User
+	- advanced_mode_active : boolean
 	- active_token : Token
 }
 
@@ -232,10 +228,6 @@ class IObservable{
 classDiagram
 
 %% jerarquias
-
-User <|-- Operator
-User <|-- Expert
-
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
@@ -271,19 +263,12 @@ class WireLess{
 }
 
 class User {
-	<<abstract>>
 	- user_id : int
 	- user_name : str
 	- email : str
 	- password : str
 	- root_directory : str
-	+ has_permission(action : str)
-}
-
-class Operator{
-
-}
-class Expert{
+	
 }
 
 class Device{
@@ -342,8 +327,8 @@ class PersistanceService{
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	  
 	%% operaciones en archivos
 	+ load_measure() : Measure
@@ -381,30 +366,18 @@ ConnectionType "1" *-- "1" ConnectionState
 ##### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
-
-%% jerarquias
-User <|-- Expert
-User <|-- Operator
-
 %% clases
 class User {
-	<<abstract>>
 	- user_id : int
 	- user_name : str
 	- email : str
 	- password : str
 	- root_directory : str
-	+ has_permission(action : str)
-}
-    
-class Operator{
-
-}
-class Expert{
-
+	
 }
 
 class CalibrationSetup{
+	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
@@ -425,6 +398,7 @@ class CalibrationService{
 
 class SessionManager{
 	- current_user : User
+	- advanced_mode_active : boolean
 	- active_token : Token
 }
 
@@ -436,8 +410,8 @@ class PersistanceService{
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	  
 	%% operaciones en archivos
 	+ load_measure() : Measure
@@ -464,10 +438,6 @@ CalibrationService ..> SessionManager
 ```mermaid
 classDiagram
 
-%% jerarquias
-User <|-- Expert
-User <|-- Operator
-
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
@@ -479,19 +449,12 @@ MeasureState <|-- ErrorState
 
 %% clases
 class User {
-	<<abstract>>
 	- user_id : int
 	- user_name : str
 	- email : str
 	- password : str
 	- root_directory : str
-	+ has_permission(action : str)
-}
-
-class Operator{
-
-}
-class Expert{
+	
 }
 
 class Measure {
@@ -512,11 +475,13 @@ class Measure {
 
 class SessionManager{
 	- current_user : User
+	- advanced_mode_active : boolean
 	- active_token : Token
 }
 
 class MeasureSetup {
 		<<abstract>>
+		- observations : str
 		- exitation_voltage : float
 		- gain : float
 		- rfbvalue : float
@@ -581,27 +546,18 @@ MeasureService ..> SessionManager
 classDiagram
 
 %% jerarquias
-User <|-- Expert
-User <|-- Operator
 
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
 
 class User {
-	<<abstract>>
 	- user_id : int
 	- user_name : str
 	- email : str
 	- password : str
 	- root_directory : str
-	+ has_permission(action : str)
-}
-
-class Operator{
-
-}
-class Expert{
+	
 }
 
 class AuthService{
@@ -618,8 +574,8 @@ class PersistanceService{
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	  
 	%% operaciones en archivos
 	+ load_measure() : Measure
@@ -632,6 +588,7 @@ class PersistanceService{
 
 class MeasureSetup {
 		<<abstract>>
+		- observations : str
 		- exitation_voltage : float
 		- gain : float
 		- rfbvalue : float
@@ -655,6 +612,7 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
+	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
@@ -663,28 +621,21 @@ class CalibrationSetup{
 
 class SessionManager{
 	- current_user : User
+	- advanced_mode_active : boolean
 	- active_token : Token
 }
 
 %% relaciones
-
-Expert "1"-->"0..*" MeasureSetup : crea
-Expert "1"-->"0..*" CalibrationSetup : crea
-
-User "1"-->"0..*" MeasureSetup : gestiona
-User "1"-->"0..*" CalibrationSetup : gestiona
+User "1"-->"0..*" MeasureSetup : aplica
+User "1"-->"0..*" CalibrationSetup : aplica
 
 AuthService ..> User
-AuthService ..>  PersistanceService
-AuthService ..>  SessionManager
+AuthService ..> PersistanceService
+AuthService ..> SessionManager
 
 PersistanceService ..> MeasureSetup
 PersistanceService ..> CalibrationSetup
 PersistanceService ..> SessionManager
-
-CalibrationSetup ..> SessionManager
-
-MeasureSetup ..> SessionManager
 ```
 
 #### Subsistema 5: Persistencia
@@ -695,28 +646,18 @@ MeasureSetup ..> SessionManager
 classDiagram
 
 %% jerarquias
-User <|-- Expert
-User <|-- Operator
-
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
 
 %% clases
 class User {
-	<<abstract>>
 	- user_id : int
 	- user_name : str
 	- email : str
 	- password : str
 	- root_directory : str
-	+ has_permission(action : str)
-}
-
-class Operator{
-
-}
-class Expert{
+	
 }
 
 class Measure {
@@ -737,6 +678,7 @@ class Measure {
 
 class MeasureSetup {
 		<<abstract>>
+		- observations : str
 		- exitation_voltage : float
 		- gain : float
 		- rfbvalue : float
@@ -760,6 +702,7 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
+	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
@@ -774,8 +717,8 @@ class PersistanceService{
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_expert(expert_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_expert(expert_id : int) : [MeasureSetup]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	  
 	%% operaciones en archivos
 	+ load_measure() : Measure
@@ -788,10 +731,29 @@ class PersistanceService{
 
 class SessionManager{
 	- current_user : User
+	- advanced_mode_active : boolean
 	- active_token : Token
 }
 
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	- update_progress()
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
 %% relaciones
+
+CalibrationService ..> SessionManager
+CalibrationService ..> CalibrationSetup
+
+MeasureService ..> SessionManager
+MeasureService ..> Measure
+
+
 User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
 User "1"-->"0..*" CalibrationSetup : guarda
@@ -799,3 +761,4 @@ User "1"-->"0..*" CalibrationSetup : guarda
 PersistanceService ..> Measure
 PersistanceService ..> SessionManager
 ```
+
