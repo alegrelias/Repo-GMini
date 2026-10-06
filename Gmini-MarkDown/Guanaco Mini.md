@@ -740,10 +740,6 @@ Usuario --> CU4
 CU5 -.extend.-> CU3
 ```
 
-
-
-
-
 ### Especificación de Casos de Uso
 #### Subsistema 1: Comunicación e Interacción con el Hardware
 
