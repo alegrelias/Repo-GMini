@@ -10,6 +10,8 @@ kanban-plugin: board
 - [ ] Agregar clases Builder
 - [ ] Definir si la clase Measure mantiene metodos
 - [ ] Definir si conviene dividir la clase PersistenceService en LocalService y DataBaseService
+- [ ] Definir quien va a traducir los comandos. Device o MeasureSetup?
+- [ ] Crear clase para calcular los estadisticos
 
 
 ## En Progreso

@@ -10,6 +10,11 @@ kanban-plugin: board
 - [ ] Justificar Patrones de Diseño
 - [ ] Agregar justificacion para las tecnologias
 - [ ] Agregar en el area de referencias FastAPI y demas
+- [ ] Separar el requerimiento SET-10
+- [ ] Separar el requerimiento PER-01
+- [ ] Separar el requerimiento PER-02
+- [ ] Verificar si hace falta poner "file_name" a mas clases
+- [ ] Separar el requerimiento PER-09
 
 
 ## En Progreso
