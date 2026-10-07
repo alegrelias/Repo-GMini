@@ -12,6 +12,7 @@ kanban-plugin: board
 - [ ] Definir si conviene dividir la clase PersistenceService en LocalService y DataBaseService
 - [ ] Definir quien va a traducir los comandos. Device o MeasureSetup?
 - [ ] Crear clase para calcular los estadisticos
+- [ ] Agregar clase Token
 
 
 ## En Progreso
