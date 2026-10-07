@@ -24,7 +24,7 @@ ConnectionState <|-- DisconnectedState
 ConnectionState <|-- ConnectionErrorState
 
 DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratingState
+DeviceState <|-- CalibratedState
 DeviceState <|-- MeasuringState
 DeviceState <|-- DeviceErrorState
 DeviceState <|-- UncalibratedState
@@ -132,7 +132,7 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
 }
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -180,7 +180,7 @@ class DeviceState{
 		<<interface>>
 	}
 	class FreeDeviceState
-	class CalibratingState
+	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
 	
@@ -232,7 +232,7 @@ ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
 DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratingState
+DeviceState <|-- CalibratedState
 DeviceState <|-- MeasuringState
 DeviceState <|-- DeviceErrorState
 DeviceState <|-- UncalibratedState
@@ -295,10 +295,10 @@ class ConnectionErrorState
 class DeviceState{
 		<<interface>>
 	}
-class FreeDeviceState
-class CalibratingState
-class MeasuringState
-class DeviceErrorState
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
 
 %% observer patern
 class IObserver{
@@ -319,7 +319,7 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
 }
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -354,7 +354,7 @@ Device ..|> IObservable
 
 MeasureService ..|> IObserver
 MeasureService .. Device : observa
-MeasureService ..> PersistanceService : invoca guardado de emergencia
+MeasureService ..> PersistenceService : invoca guardado de emergencia
 
 
 ConnectionService ..>  Device
@@ -366,6 +366,12 @@ ConnectionType "1" *-- "1" ConnectionState
 ##### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratedState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+DeviceState <|-- UncalibratedState
+
 %% clases
 class User {
 	- user_id : int
@@ -392,6 +398,14 @@ class Device{
 	+ get_state() : DeviceState
 }
 
+class DeviceState{
+		<<interface>>
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
@@ -402,30 +416,10 @@ class SessionManager{
 	- active_token : Token
 }
 
-class PersistanceService{
-	- db_root : str
-	  
-	%% operaciones en db
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	  
-	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
-}
-
 %% relaciones
 User "1"-->"1" Device : calibra
 
-PersistanceService "1"..>"1" CalibrationSetup
+Device "1"*--"1" DeviceState
 
 CalibrationService ..> Device
 CalibrationService ..> CalibrationSetup
@@ -566,7 +560,7 @@ class AuthService{
 	+ register(user_name, email, password) : Token
 }
 
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -630,12 +624,12 @@ User "1"-->"0..*" MeasureSetup : aplica
 User "1"-->"0..*" CalibrationSetup : aplica
 
 AuthService ..> User
-AuthService ..> PersistanceService
+AuthService ..> PersistenceService
 AuthService ..> SessionManager
 
-PersistanceService ..> MeasureSetup
-PersistanceService ..> CalibrationSetup
-PersistanceService ..> SessionManager
+PersistenceService ..> MeasureSetup
+PersistenceService ..> CalibrationSetup
+PersistenceService ..> SessionManager
 ```
 
 #### Subsistema 5: Persistencia
@@ -709,7 +703,7 @@ class CalibrationSetup{
 	+ get_command() : str
 }
 
-class PersistanceService{
+class PersistenceService{
 	- db_root : str
 	  
 	%% operaciones en db
@@ -758,7 +752,7 @@ User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
 User "1"-->"0..*" CalibrationSetup : guarda
 
-PersistanceService ..> Measure
-PersistanceService ..> SessionManager
+PersistenceService ..> Measure
+PersistenceService ..> SessionManager
 ```
 
