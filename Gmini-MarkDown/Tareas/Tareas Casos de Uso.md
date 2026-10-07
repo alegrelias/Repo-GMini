@@ -11,12 +11,12 @@ kanban-plugin: board
 
 ## En progreso
 
-- [ ] Verificar si hace falta unificar roles (casos de uso)
 
 
 ## Terminadas
 
 - [ ] Agregar caso de uso Guardar Medicion
+- [ ] Verificar si hace falta unificar roles (casos de uso)
 - [ ] Verificar si Seleccionar Canales es un CU aparte o simplemente un apartado en el formulario de setup
 - [ ] Verificar concordancia con clases/reqs/diagrama de CU para el subsistema 5
 - [ ] Verificar si realmente "Ver resultados intermedios" debería ser un include de ejecutar medicion. Sino que sea una extension

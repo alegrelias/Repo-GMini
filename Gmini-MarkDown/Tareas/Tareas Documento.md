@@ -19,20 +19,20 @@ kanban-plugin: board
 
 ## En Progreso
 
-- [ ] Agregar Req no funcionales tipo "solo tal usuario puede hacer X"
 - [ ] Pasar el documento md a docs
 - [ ] Verificar si es la mejor opcion guardar los resultados en texto plano (en la base de datos)
 - [ ] Definir claramente que el sistema NO VA A SER MULTIPLATAFORMA
 - [ ] Empezar a hacer pantallas (No hace falta programar)
-- [ ] Crear tabla de trazabilidad
 
 
 ## Terminadas
 
 - [ ] Definir si solo los expertos pueden crear perfiles (incluyendo el de operador)
+- [ ] Agregar Req no funcionales tipo "solo tal usuario puede hacer X"
 - [ ] Definir que cosas se guardan en BD y que se guarda de manera local
 - [ ] Verificar cardinalidad en BD
 - [ ] Definir si realmente es conveniente utilizar FastAPI
+- [ ] Crear tabla de trazabilidad
 
 
 
