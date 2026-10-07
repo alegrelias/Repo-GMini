@@ -290,7 +290,7 @@
 | **Precondición**                 | Existe una medición recién finalizada en la memoria activa del programa. |
 | **Escenario principal de éxito** | 1. El usuario se encuentra en la pestaña de resultados tras finalizar la medición.<br>2. El usuario presiona el botón "Guardar Resultados".<br>3. El sistema compila los datos obtenidos, la configuración utilizada y la marca de tiempo (fecha/hora).<br>4. El sistema serializa la información y escribe el archivo final (ej. CSV/JSON) en el directorio asignado al perfil activo.<br>5. El sistema informa al usuario mediante una notificación temporal: "Los resultados fueron guardados correctamente".<br>6. El usuario puede seguir operando la medición o retroceder al panel de control. |
 | **Postcondición**                | El archivo de resultados se almacena permanentemente en el disco y queda disponible para su visualización o exportación. |
-| **Extensiones**                  | 3.a. No hay datos válidos en memoria:<br>3.a.1. El sistema detecta que la matriz de resultados está vacía.<br>3.a.2. El sistema muestra una advertencia "No se puede guardar un resultado vacío."<br>3.a.3. El flujo se detiene y aborta el guardado. |
+| **Extensiones**                  | 2.a El usuario quiere renombrar el archivo (**Extend**) <br>2.a.1 El sistema redirige el flujo a el CU "Renombrar archivo manualmente" <br>2.b El usuario quiere dejar observaciones de la medicion (**Extend**) <br>2.b.1 El sistema redirige el flujo a el CU "redactar observaciones" <br> 3.a. No hay datos válidos en memoria:<br>3.a.1. El sistema detecta que la matriz de resultados está vacía.<br>3.a.2. El sistema muestra una advertencia "No se puede guardar un resultado vacío."<br>3.a.3. El flujo se detiene y aborta el guardado. |
 
 | **Nombre**                       | Guardar Setups de calibración |
 | :------------------------------- | :--- |
@@ -301,7 +301,7 @@
 | **Precondición**                 | El usuario configuró valores válidos de calibración en la interfaz y tiene el Modo Experto activado. |
 | **Escenario principal de éxito** | 1. Desde el panel de calibración, el usuario selecciona el botón "Guardar Setup de Calibración".<br>2. El sistema compila los valores ingresados (resistencias, capacitancias parásitas calculadas, fases).<br>3. El sistema serializa estos parámetros y los persiste en un archivo dedicado dentro de la carpeta raíz del perfil.<br>4. El sistema informa al usuario "El setup de calibración fue guardado correctamente".<br>5. El sistema vincula esta calibración a la base de datos local para precargarla en futuros arranques. |
 | **Postcondición**                | Los parámetros de calibración quedan guardados para futuros usos. |
-| **Extensiones**                  | 2.a Los campos de calibración están incompletos:<br>2.a.1 El sistema intercepta el guardado advirtiendo que faltan parámetros críticos.<br>2.a.2 El flujo se detiene a la espera de que el usuario complete los campos. |
+| **Extensiones**                  | 1.a El usuario quiere dejar observaciones de la medicion (**Extend**) <br>1.a.1 El sistema redirige el flujo a el CU "redactar observaciones" <br> 2.a Los campos de calibración están incompletos:<br>2.a.1 El sistema intercepta el guardado advirtiendo que faltan parámetros críticos.<br>2.a.2 El flujo se detiene a la espera de que el usuario complete los campos. |
 
 | **Nombre**                       | Guardar Setups de medición |
 | :------------------------------- | :--- |
@@ -312,7 +312,7 @@
 | **Precondición**                 | El usuario finalizó la configuración de una medición válida (frecuencias, MUX, etc.) en memoria y tiene el Modo Experto activado. |
 | **Escenario principal de éxito** | 1. El usuario se encuentra en la pestaña de configuración de una medición con los parámetros completados.<br>2. El usuario selecciona el botón "Guardar Setup".<br>3. El sistema solicita un nombre descriptivo para el archivo.<br>4. El usuario ingresa el nombre y confirma.<br>5. El sistema serializa los parámetros activos y persiste el registro en el disco local vinculándolo al ID del perfil activo.<br>6. El sistema informa al usuario "El setup fue guardado correctamente". |
 | **Postcondición**                | El setup de medición queda disponible en el directorio del sistema y en el listado de configuraciones guardadas. |
-| **Extensiones**                  | 1.a La configuración está vacía o incompleta:<br>1.a.1 El sistema muestra una advertencia "No se puede guardar una configuración vacía o con errores."<br>1.a.2 El flujo retorna al panel de edición. |
+| **Extensiones**                  | 1.a La configuración está vacía o incompleta:<br>1.a.1 El sistema muestra una advertencia "No se puede guardar una configuración vacía o con errores."<br>1.a.2 El flujo retorna al panel de edición. <br> 2.a El usuario quiere dejar observaciones de la medicion (**Extend**) <br>2.a.1 El sistema redirige el flujo a el CU "redactar observaciones" |
 
 | **Nombre**                       | Configurar directorio raíz |
 | :------------------------------- | :--- |
