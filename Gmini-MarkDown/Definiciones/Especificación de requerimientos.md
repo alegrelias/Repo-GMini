@@ -72,28 +72,28 @@
 | **Descripción** | El sistema debe permitir elegir los parámetros de medición para  mediciones continuas a una única frecuencia fija seleccionada. |
 
 | **MED-03**      | Ejecutar medición de una frecuencia (Monofrecuencia)                                             |
-| :-------------- | :--------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                               |
+| :-------------- | :----------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                              |
 | **Descripción** | El sistema debe permitir ejecutar mediciones continuas a una única frecuencia fija seleccionada. |
 
 | **MED-04**      | Configurar medición por espectroscopía (Barrido espectral)                                                                                                                                      |
-| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                                              |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                             |
 | **Descripción** | El sistema debe permitir elegir los parámetros de medición para realizar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado. |
 
 | **MED-05**      | Ejecutar medición por espectroscopía (Barrido espectral)                                                                                                 |
-| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                       |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                      |
 | **Descripción** | El sistema debe permitir ejecutar una medición secuencial a intervalos fijos de frecuencias establecidas en el espectro frecuencial (sweep) determinado. |
 
 | **MED-06**      | Configurar medición de multifrecuencia                                                                               |
-| :-------------- | :----------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                   |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                  |
 | **Descripción** | El sistema debe permitir elegir los parámetros de medición para una cantidad de frecuencias discretas y específicas. |
 
 | **MED-07**      | Ejecutar medición multifrecuencia                                                                                         |
-| :-------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                        |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema permite ejecutar una cantidad de mediciones a las mismas frecuencias discretas y especificadas por el usuario. |
 
 | **MED-08**      | Ejecutar mediciones en bucle                                                               |
@@ -103,23 +103,23 @@
 |                 |                                                                                            |
 
 | **MED-09**      | Mostrar progreso de la medición                                                                                                                     |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                                                                                  |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                 |
 | **Descripción** | El sistema debe proporcionar una indicación visual en pantalla que informe al usuario que un proceso de medición se encuentra actualmente en curso. |
 
 | **MED-10**      | Mostrar resultados intermedios                                                                                                 |
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                             |
+| **Usuarios**    | Usuario Registrado.                                                                                                            |
 | **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición ciclicos. |
 
 | **MED-11**      | Calcular estadísticos descriptivos básicos                                                                                |
-| :---------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                        |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones. |
 
 | **MED-12**      | Presentar estadísticos descriptivos básicos                               |
-| :---------- | :------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                        |
+| :-------------- | :------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                       |
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas automáticas. |
 
 | **MED-13**      | Limitar configuración de mediciones al Modo Avanzado                                                                              |
@@ -131,7 +131,7 @@
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 | **SET-01**      | Crear Perfil de Usuario                             |
 | :-------------- | --------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                  |
+| **Usuarios**    | Usuario Registrado.                                 |
 | **Descripción** | El sistema debe permitir crear perfiles de usuario. |
 
 | **SET-02**      | Iniciar Sesión                                          |
@@ -228,27 +228,27 @@
 
 | **PER-02**      | Almacenar mediciones y sus resultados en una Base de Datos                                                                      |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                              |
+| **Usuarios**    | Usuario Registrado.                                                                                                             |
 | **Descripción** | El sistema debe guardar todas las mediciones completadas junto con sus resultados directamente en una base de datos relacional. |
 
 | **PER-03**      | Configurar directorios                                                                                                |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                    |
+| :-------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                   |
 | **Descripción** | El sistema debe permitir al usuario seleccionar un directorio raíz específico para el almacenamiento de sus campañas. |
 
 | **PER-04**      | Generar nomenclatura predeterminada de archivos                                                                                                              |
-| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                           |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                          |
 | **Descripción** | El sistema debe asignar automáticamente a cada archivo de salida un nombre basado en la fecha y hora de la medición, utilizando el estándar ISO 8601 básico. |
 
 | **PER-05**      | Renombramiento manual de archivos                                                                             |
-| :-------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                            |
+| :-------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                           |
 | **Descripción** | El sistema debe permitir al usuario sobrescribir el nombre automático del archivo antes de su guardado final. |
 
 | **PER-06**      | Estructurar cabeceras de metadatos integrados                                                                                                                                                                                |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                           |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                          |
 | **Descripción** | El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones. |
 
 | **PER-07**      | Limitar el guardado de setups al Modo Avanzado                                                                                        |
