@@ -1999,22 +1999,22 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 ## PANTALLAS
 
 ### Pantalla de Login
-![349](pantallas/pantalla_login.png)
+![365](pantallas/pantalla_login.png)
 
 ### Pantalla de Registro
-![349](pantalla_registro.png)
+![364](pantallas/pantalla_registro.png)
 
 ### Pantalla Principal
-![](pantalla_principal.png)
+![](pantallas/pantalla_principal.png)
 
 ### Pantalla de Configuración
-![](pantalla_configuracion.png)
+![](pantallas/pantalla_configuracion.png)
 
 ### Pantalla de Mediciones y Setups de Usuario
-![](pantalla_mediciones_y_setups.png)
+![](pantallas/pantalla_mediciones_y_setups.png)
 
 ### Pantalla de Perfil de Usuario
-![](pantalla_perfil_de_usuario.png)
+![](pantallas/pantalla_perfil_de_usuario.png)
 
 ## HERRAMIENTAS UTILIZADAS
 ### Diagrama de Arquitectura de Software
