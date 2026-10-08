@@ -41,6 +41,7 @@ Vargas Da Silva, Eliam Joaquin**
 	- Convenciones Gráficas
 	- Diagrama de Entidad Relación
 - [**TABLA DE TRAZABILIDAD**](#tabla-de-trazabilidad)
+- **[PANTALLAS](#pantallas)**
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
 	- Visión general
 	- Cronograma por requerimientos
@@ -1990,6 +1991,25 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **PER-09**    | Adjuntar metadatos y observaciones libres sobre setups           | PersistenceService/MeasureSetup<br><br>PersistenceService/CalibrationSetup | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
 | **PER-10**    | Limitar la escritura de observaciones en setups al modo Avanzado | SessionManager                                                             | -                                      |
 
+## PANTALLAS
+
+### Pantalla de Login
+![[pantalla_login.png|463]]
+
+### Pantalla de Registro
+![[pantalla_registro.png|472]]
+
+### Pantalla Principal
+![[pantalla_principal.png]]
+
+### Pantalla de Configuración
+![[pantalla_configuracion.png]]
+
+### Pantalla de Mediciones y Setups de Usuario
+![[pantalla_mediciones_y_setups.png]]
+
+### Pantalla de Perfil de Usuario
+![[pantalla_perfil_de_usuario.png]]
 
 ## HERRAMIENTAS UTILIZADAS
 ### Diagrama de Arquitectura de Software
