@@ -42,6 +42,11 @@ Vargas Da Silva, Eliam Joaquin**
 	- Diagrama de Entidad Relación
 - [**TABLA DE TRAZABILIDAD**](#tabla-de-trazabilidad)
 - **[PANTALLAS](#pantallas)**
+	-  Pantalla de Registro 
+	- Pantalla Principal 
+	- Pantalla de Configuración 
+	- Pantalla de Mediciones y Setups de Usuario 
+	- Pantalla de Perfil de Usuario
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
 	- Visión general
 	- Cronograma por requerimientos
@@ -1994,22 +1999,18 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 ## PANTALLAS
 
 ### Pantalla de Login
-![[pantalla_login.png|463]]
+![352](pantalla_login.png)
 
 ### Pantalla de Registro
-![[pantalla_registro.png|472]]
 
 ### Pantalla Principal
-![[pantalla_principal.png]]
 
 ### Pantalla de Configuración
-![[pantalla_configuracion.png]]
 
 ### Pantalla de Mediciones y Setups de Usuario
-![[pantalla_mediciones_y_setups.png]]
 
 ### Pantalla de Perfil de Usuario
-![[pantalla_perfil_de_usuario.png]]
+
 
 ## HERRAMIENTAS UTILIZADAS
 ### Diagrama de Arquitectura de Software
