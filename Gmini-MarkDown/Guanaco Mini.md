@@ -1999,10 +1999,10 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 ## PANTALLAS
 
 ### Pantalla de Login
-![365](pantallas/pantalla_login.png)
+![366](pantallas/pantalla_login.png)
 
 ### Pantalla de Registro
-![364](pantallas/pantalla_registro.png)
+![369](pantallas/pantalla_registro.png)
 
 ### Pantalla Principal
 ![](pantallas/pantalla_principal.png)
