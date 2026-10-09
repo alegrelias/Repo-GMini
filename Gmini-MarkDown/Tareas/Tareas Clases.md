@@ -13,6 +13,7 @@ kanban-plugin: board
 - [ ] Definir quien va a traducir los comandos. Device o MeasureSetup?
 - [ ] Crear clase para calcular los estadisticos
 - [ ] Agregar clase Token
+- [ ] Agregar dependencia de Authservice a PersistanceService
 
 
 ## En Progreso

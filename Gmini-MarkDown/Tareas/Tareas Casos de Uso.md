@@ -6,11 +6,11 @@ kanban-plugin: board
 
 ## Pendientes
 
-- [ ] Redefinir especificacion de casos de uso
 
 
 ## En progreso
 
+- [ ] Redefinir especificacion de casos de uso
 
 
 ## Terminadas
