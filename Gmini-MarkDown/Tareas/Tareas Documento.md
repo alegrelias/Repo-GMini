@@ -15,7 +15,9 @@ kanban-plugin: board
 - [ ] Separar el requerimiento PER-02
 - [ ] Verificar si hace falta poner "file_name" a mas clases
 - [ ] Separar el requerimiento PER-09
-- [ ] Agregar a la tabla de persistencia los requerimientos visuales
+- [ ] Agregar a la tabla de trazabilidad los requerimientos visuales
+- [ ] Poner en pausa el uso de FastAPI y enfocarse en los servicios
+- [ ] definir periodo de tiempo entre cierre automático de sesiones
 
 
 ## En Progreso
