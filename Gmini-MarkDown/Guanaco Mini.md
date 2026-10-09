@@ -1354,6 +1354,14 @@ class MultiFreqSetupBuilder{
 	+ build() : MultiMeasureSetup
 	+ with_freq_list(freq_list :[float]) : self
 }
+
+%% factory method
+class ConnectionFactory{ 
+	+ create_connection(type : str) : ConnectionType 
+} 
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+}
 ```
 
 #### Diagramas de Clases
@@ -1474,9 +1482,17 @@ class ConnectionService{
 	+ disconnect()
 }
 
+%% factory method
+class ConnectionFactory{ 
+	+ create_connection(type : str) : ConnectionType 
+}
+
 %% relaciones
 
 User "1"-->"1" Device : conecta
+
+ConnectionService ..> ConnectionFactory
+ConnectionFactory ..> ConnectionType
 
 Device "1" o-- "1" ConnectionType
 Device "1" *-- "1" DeviceState
@@ -1686,13 +1702,20 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
+%% factory method
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+}
+
 %% relaciones
 User "1"-->"1..*" Measure : mide
+
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
 
-MeasureSetup ..> BaseMeasureSetupBuilder
+BaseMeasureSetupBuilder ..> MeasureSetup
 
 MeasureService ..> Measure
 MeasureService ..> SessionManager
@@ -1835,11 +1858,16 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
+%% factory method 
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+} 
+
 %% relaciones
 User "1"-->"0..*" MeasureSetup : aplica
 User "1"-->"0..*" CalibrationSetup : aplica
 
-MeasureSetup ..> BaseMeasureSetupBuilder
+BaseMeasureSetupBuilder ..> MeasureSetup
 
 AuthService ..> User
 AuthService ..> DataBaseService
@@ -1847,6 +1875,8 @@ AuthService ..> SessionManager
 
 LocalService ..> CalibrationSetup
 LocalService ..> MeasureSetup
+
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
 ```
 
 ##### Subsistema 5: Persistencia
@@ -2015,12 +2045,18 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
+%% factory method 
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+} 
+
 %% relaciones
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
 
 Measure "1"*--"1" MeasureResult
 Measure "1"o--"1" MeasureSetup
 
-MeasureSetup ..> BaseMeasureSetupBuilder
+BaseMeasureSetupBuilder ..> MeasureSetup
 
 CalibrationService ..> SessionManager
 CalibrationService ..> CalibrationSetup
@@ -2030,7 +2066,6 @@ MeasureService ..> Measure
 
 DataBaseService ..> SessionManager
 LocalService ..> SessionManager
-
 
 User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
