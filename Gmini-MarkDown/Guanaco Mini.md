@@ -10,43 +10,46 @@ Vargas Da Silva, Eliam Joaquin**
 ## ÍNDICE
 
 - [**INTRODUCCIÓN**](#introducción)
-- [**ESPECIFICACIÓN DE REQUERIMIENTOS**](#especificación-de-requerimientos)
-	- [Introducción y ámbito del sistema](#introducción-y-ámbito-del-sistema)
-		- Definiciones, siglas y abreviaturas
-		- Referencias
-	- [Descripción General](#descripción-general)
-		- Funciones del producto
-		- Características de los usuarios
-		- Restricciones
-	- [Requisitos específicos](#requisitos-específicos)
-		- [Subsistema 1: Comunicación e Interacción con el Hardware](#subsistema-1-comunicación-e-interacción-con-el-Hardware)
-			- Modulo 1: Conectividad y Estado
-			- Modulo 2: Calibración del Dispositivo
-		- [Subsistema 2: Configuración y Toma de Mediciones](#subsistema-2-configuración-y-toma-de-mediciones)
-			- Modulo 1: Tipos y Estrategias de Medición
-		- [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](#subsistema-3-configuración-y-gestión-de-perfiles-setups)
-			- Modulo 1: Perfiles de Usuario y Gestión de Setups de Medición
-		- [Subsistema 4: Entorno de Ejecución y Plataforma](#subsistema-4-entorno-de-ejecución-y-plataforma)
-			- Modulo 1: Compatibilidad del Sistema
-		- [Subsistema 5: Persistencia](#subsistema-5-persistencia)
-			- Modulo 1: Almacenamiento y Estructura de Datos
-- [**CASOS DE USO**](#casos-de-uso)
-	- Convenciones Gráficas
-	- Diagramas de Casos de Uso
-	- Especificación de Casos de Uso
-- [**CLASES SOFTWARE**](#clases-software)
-	- Lista de Clases
-	- Diagramas de Clases
-- [**BASE DE DATOS**](#base-de-datos)
-	- Convenciones Gráficas
-	- Diagrama de Entidad Relación
-- [**TABLA DE TRAZABILIDAD**](#tabla-de-trazabilidad)
-- **[PANTALLAS](#pantallas)**
-	-  Pantalla de Registro 
-	- Pantalla Principal 
-	- Pantalla de Configuración 
-	- Pantalla de Mediciones y Setups de Usuario 
-	- Pantalla de Perfil de Usuario
+- **ANÁLISIS Y DISEÑO**
+	- **[Análisis](#análisis)**
+		- [**Especificación de Requerimientos**](#especificación-de-requerimientos)
+			- [Introducción y ámbito del sistema](#introducción-y-ámbito-del-sistema)
+				- Definiciones, siglas y abreviaturas
+				- Referencias
+			- [Descripción General](#descripción-general)
+				- Funciones del producto
+				- Características de los usuarios
+				- Restricciones
+			- [Requisitos específicos](#requisitos-específicos)
+				- [Subsistema 1: Comunicación e Interacción con el Hardware](#subsistema-1-comunicación-e-interacción-con-el-Hardware)
+					- Modulo 1: Conectividad y Estado
+					- Modulo 2: Calibración del Dispositivo
+				- [Subsistema 2: Configuración y Toma de Mediciones](#subsistema-2-configuración-y-toma-de-mediciones)
+					- Modulo 1: Tipos y Estrategias de Medición
+				- [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](#subsistema-3-configuración-y-gestión-de-perfiles-setups)
+					- Modulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+				- [Subsistema 4: Entorno de Ejecución y Plataforma](#subsistema-4-entorno-de-ejecución-y-plataforma)
+					- Modulo 1: Compatibilidad del Sistema
+				- [Subsistema 5: Persistencia](#subsistema-5-persistencia)
+					- Modulo 1: Almacenamiento y Estructura de Datos
+		- [**Casos de Uso**](#casos-de-uso)
+			- Convenciones Gráficas
+			- Diagramas de Casos de Uso
+			- Especificación de Casos de Uso
+	  **[Diseño](#diseño)**
+		- [**Clases Software**](#clases-software)
+			- Lista de Clases
+			- Diagramas de Clases
+		- [**Base de Datos**](#base-de-datos)
+			- Convenciones Gráficas
+			- Diagrama de Entidad Relación
+		- [**Tabla de Trazabilidad**](#tabla-de-trazabilidad)
+		- **[Pantallas](#pantallas)**
+			-  Pantalla de Registro 
+			- Pantalla Principal 
+			- Pantalla de Configuración 
+			- Pantalla de Mediciones y Setups de Usuario 
+			- Pantalla de Perfil de Usuario
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
 	- Visión general
 	- Cronograma por requerimientos
@@ -54,9 +57,6 @@ Vargas Da Silva, Eliam Joaquin**
 	- Resumen de la metodología elegida
 - [**HERRAMIENTAS UTILIZADAS**](#herramientas-utilizadas)
 	- Diagrama de Arquitectura de Software
-- [**ANÁLISIS Y DISEÑO**](#análisis-y-diseño)
-	- Análisis
-	- Diseño
 - [**SOBRE LAS ITERACIONES**](#sobre-las-iteraciones)
 - [**SOBRE LOS ENTREGABLES**](#sobre-los-entregables)
 	- Aplicaciones y plataformas que forman parte del sistema
@@ -110,9 +110,10 @@ Este problema involucra aspectos propios de nuestra formación, como procesamien
 
 Por lo tanto, nuestro objetivo no sería realizar directamente un diagnóstico médico, sino desarrollar herramientas computacionales que ayuden a transformar las mediciones eléctricas en información interpretable, que posteriormente pueda ser analizada y validada por especialistas del área biomédica.
 
-## ESPECIFICACIÓN DE REQUERIMIENTOS
+## Análisis
+### Especificación de Requerimientos
 
-### Introducción y ámbito del sistema
+#### Introducción y ámbito del sistema
 
 El Sistema GMini GUI es una aplicación de escritorio integrada directamente con el firmware del microcontrolador ESP32 mediante comunicación alámbrica o inalámbrica.
 
@@ -146,7 +147,7 @@ Al reemplazar la actual comunicación mediante comandos a bajo nivel por esta in
 El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. El sistema contemplará un único tipo de usuario con acceso a dos modalidades de trabajo intercambiables desde la interfaz: "Modo Avanzado" y "Modo Básico".
 Los usuarios en "Modo Avanzado" tendrán total acceso al sistema, pudiendo configurar la calibración del dispositivo y los parámetros de las mediciones, pudiendo persistir estos cambios como setups reutilizables. En el "Modo Básico" se ocultarán las herramientas de edición de configuración, con el objetivo de agilizar el flujo de trabajo y prevenir alteraciones accidentales. Los usuarios en este modo estarán restringidos a realizar mediciones y labores de calibración preconfiguradas.
 
-#### Definiciones, siglas y abreviaturas
+##### Definiciones, siglas y abreviaturas
 
 - **Bioimpedancia**: Resistencia que oponen los tejidos biológicos (células, fluidos, bacterias, etc.) al paso de una corriente eléctrica alterna.
     
@@ -184,7 +185,7 @@ Los usuarios en "Modo Avanzado" tendrán total acceso al sistema, pudiendo confi
     
 - **Setups (Configuraciones de medición)**: Conjunto de parámetros técnicos (tipo, rango, canales) definidos y guardados localmente por un usuario experto, que pueden ser exportados, o bien importados y aplicados por un usuario operador.
 
-#### Referencias
+##### Referencias
 
 - **Espressif Systems**: ESP32 Technical Reference Manual. Espressif Systems, Shanghái (2023). Disponible en: [https://documentation.espressif.com/esp32_datasheet_en.html?q=ESP32](https://www.espressif.com/en/support/documents/technical-documents)
     
@@ -198,9 +199,9 @@ Los usuarios en "Modo Avanzado" tendrán total acceso al sistema, pudiendo confi
     
 - **Hunter, J. D.: Matplotlib**: A 2D graphics environment. Computing in Science & Engineering, 9(3), 90-95 (2007).
 
-## Descripción General
+### Descripción General
 
-#### Funciones del Producto
+##### Funciones del Producto
 
 **Subsistema de Comunicación e Interacción con el Hardware**
 Este subsistema agrupa las funciones encargadas de establecer y mantener el enlace de datos bidireccional entre la computadora y la placa ESP32, garantizando una transferencia estable.
@@ -243,7 +244,7 @@ Este subsistema centraliza las operaciones de persistencia del sistema, garantiz
 
 - Almacenar resultados e información en una Base de Datos
 
-#### Características de los usuarios
+##### Características de los usuarios
 
 Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto. Para poder brindarles a estos mismos una herramienta que sea capaz de adecuarse a cada perfil, se contemplarán los siguientes modos de uso:
 
@@ -251,7 +252,7 @@ Los principales usuarios de la plataforma serán los miembros del LEAB, los cual
   
 **Modo Básico**: Este modo de uso está diseñado para aquellos usuarios menos experimentados, los cuales deban realizar tareas sencillas sin enfocarse en los aspectos más complejos del sistema. Aquellos usuarios que utilicen este modo solo podrán realizar mediciones previamente preconfiguradas.
 
-#### Restricciones
+##### Restricciones
   
 El software no puede modificar el comportamiento interno del dispositivo, debe limitarse a realizar la lista de comandos y eventos ya programadas y documentadas por el LEAB.
 
@@ -267,9 +268,9 @@ El sistema deberá ser capaz de funcionar sin acceso a internet.
 
 El sistema no busca realizar un diagnóstico médico.
 
-## Requisitos específicos
-### Subsistema 1: Comunicación e Interacción con el Hardware
-#### Módulo 1: Conectividad y Estado
+### Requisitos específicos
+#### Subsistema 1: Comunicación e Interacción con el Hardware
+##### Módulo 1: Conectividad y Estado
 
 | **CON-01**      | Establecer conexión Alámbrica con el hardware                                                                      |
 | :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
@@ -306,7 +307,7 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario Registrado.                                                                                                            |
 | **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
 
-#### **Módulo 2: Calibración del Dispositivo**
+##### **Módulo 2: Calibración del Dispositivo**
 | **CAL-01**      | Configurar la calibración electrónica del equipo                                            |
 | :-------------- | :------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                         |
@@ -326,8 +327,8 @@ El sistema no busca realizar un diagnóstico médico.
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                        |
 | **Descripción** | El sistema solo debe permitir parametrizar la secuencia de comandos de calibración del hardware si se encuentra activado el Modo Avanzado. |
-### Subsistema 2: Configuración y Toma de Mediciones
-#### Módulo 1: Tipos y Estrategias de Medición
+#### Subsistema 2: Configuración y Toma de Mediciones
+##### Módulo 1: Tipos y Estrategias de Medición
 
 
 | **MED-01**      | Configurar apartados comunes a una medición                                                                                                                                |
@@ -395,9 +396,9 @@ El sistema no busca realizar un diagnóstico médico.
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                               |
 | **Descripción** | El sistema solo debe permitir configurar setups de medición (independientemente del tipo) si se encuentra activo el Modo Avanzado |
-### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-#### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 | **SET-01**      | Crear Perfil de Usuario                             |
 | :-------------- | --------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                 |
@@ -463,9 +464,9 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario Registrado.                                                                         |
 | **Descripción** | El sistema debe mantener la sesión del usuario activa aunque se haya cerrado la aplicación. |
 
-### Subsistema 4: Entorno de Ejecución y Plataforma
+#### Subsistema 4: Entorno de Ejecución y Plataforma
 
-#### Módulo 1: Compatibilidad del Sistema
+##### Módulo 1: Compatibilidad del Sistema
 
 | **COM-01**      | Proveer entorno de aplicación de escritorio                                                                                                            |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -486,9 +487,9 @@ El sistema no busca realizar un diagnóstico médico.
 | :-------------- | ------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                    |
 | **Descripción** | El sistema debe ser capaz de funcionar de manera completa aunque no se establezca conexión a internet. |
-### Subsistema 5: Persistencia
+#### Subsistema 5: Persistencia
 
-#### Módulo 1: Almacenamiento y Estructura de Datos
+##### Módulo 1: Almacenamiento y Estructura de Datos
 
 | **PER-01**      | Almacenar setups de medición y calibración en una Base de Datos                                                                             |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -540,8 +541,8 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario Registrado.                                                                                   |
 | **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
 
-## CASOS DE USO
-### Convenciones gráficas
+### Casos de Uso
+#### Convenciones gráficas
 
 ##### Actores
 ```mermaid
@@ -594,10 +595,10 @@ CU2 --extend--> CU1
 CU1 --include--> CU3
 ```
 
-### Diagramas de Casos de Uso
-#### Subsistema 1: Comunicación e Interacción con el Hardware
+#### Diagramas de Casos de Uso
+##### Subsistema 1: Comunicación e Interacción con el Hardware
 
-##### Módulo 1: Conectividad y Estado
+###### Módulo 1: Conectividad y Estado
 ```mermaid
 flowchart LR
 %%Actores
@@ -619,7 +620,7 @@ CU2 ==> CU1
 CU3 ==> CU1
 ```
 
-##### Módulo 2: Calibración del Dispositivo
+###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 flowchart LR
 %% Actores
@@ -635,8 +636,8 @@ Usuario --> CU1
 Usuario --> CU2
 ```
 
-#### Subsistema 2: Configuración y Toma de Mediciones
-##### Módulo 1: Tipos y Estrategias de Medición
+##### Subsistema 2: Configuración y Toma de Mediciones
+###### Módulo 1: Tipos y Estrategias de Medición
 
 
 ```mermaid
@@ -677,9 +678,9 @@ CU5 -.include.-> CU9
 CU11 -.extend.-> CU5
 ```
 
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+###### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
 
 ```mermaid
@@ -715,9 +716,9 @@ Usuario --> CU9
 CU3 -.include.-> CU5
 ```
 
-#### Subsistema 5: Persistencia
+##### Subsistema 5: Persistencia
 
-##### Módulo 1: Almacenamiento y Estructura de Datos
+###### Módulo 1: Almacenamiento y Estructura de Datos
 ```mermaid
 flowchart LR
 %% Actores
@@ -746,8 +747,9 @@ CU6 -.extend.-> CU3
 ```
 
 
-### Especificación de Casos de Uso
- #### Subsistema 1: Comunicación e Interacción con el Hardware
+#### Especificación de Casos de Uso
+
+##### Subsistema 1: Comunicación e Interacción con el Hardware
 
 | **Nombre**                       | Establecer Conexión con el Dispositivo |
 | :------------------------------- | :--- |
@@ -812,7 +814,7 @@ CU6 -.extend.-> CU3
 | **Postcondiciones**              | - Se realiza la calibración del equipo<br>- El sistema permite a los usuarios medir                                                                                                                                                                                                                                                                                                                            |
 | **Extensiones**                  | 3.a. La placa no responde a la secuencia de comandos o se pierde la conexión física.<br>3.a.1. El sistema arroja un mensaje de error en pantalla y aborta el proceso de calibración.                                                                                                                                                                                                                           |
 
-#### Subsistema 2: Configuración y Toma de Mediciones
+##### Subsistema 2: Configuración y Toma de Mediciones
 
 | **Nombre**                       | Ejecutar Medición                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | :------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -935,7 +937,7 @@ CU6 -.extend.-> CU3
 | **Postcondiciones**              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Extensiones**                  | 5.3.a El valor de frecuencia es inválido o está fuera de rango:<br>5.3.a.1. El Sistema detecta que el valor es inferior a 0.5 kHz, superior a 100 kHz, o no tiene formato numérico.<br>5.3.a.2 El Sistema aborta la inserción y muestra una advertencia junto al campo: "Valor fuera de rango (0.5 kHz - 100 kHz)".<br><br>5.3.b El valor ingresado ya existe en la lista:<br>5.3.b.1. El Sistema detecta una colisión de datos (duplicado).<br>5.3.b.2 El Sistema ignora la acción de agregar y muestra un mensaje temporal: "Esta frecuencia ya se encuentra en la lista".<br><br>5.6.a El usuario intenta continuar con una lista insuficiente:<br>5.6.a.1 El sistema detecta que la lista está vacía o contiene una sola frecuencia.<br>5.6.a.2 El sistema deshabilita el botón “Finalizar frecuencias” y muestra un cartel “La cantidad de frecuencias es inválida”.                                                   |
 
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 | **Nombre**                       | Crear Perfil de Usuario                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1028,7 +1030,7 @@ CU6 -.extend.-> CU3
 | **Postcondición**                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Extensiones**                  | 5.a. El usuario selecciona el botón "Cargar":<br>5.a.1. El usuario es llevado al panel de ejecución de medición (Aplica el CU Aplicar configuraciones).<br><br>5.b. El usuario selecciona el botón "Importar":<br>5.b.1. El Sistema invoca al caso de uso CU Importar configuraciones.<br><br>5.c. El usuario selecciona el botón "Exportar":<br>5.c.1. El Sistema invoca al caso de uso CU Exportar configuraciones.<br><br>5.d. El usuario selecciona el botón "Borrar":<br>5.d.1. El sistema muestra un panel de confirmación "¿Está seguro que desea borrar este archivo? Esta acción no es reversible."<br>5.d.2. El usuario selecciona "Aceptar".<br>5.d.3. El sistema borra el archivo del disco duro.<br>5.d.4. El sistema actualiza la lista visual volviendo al paso 2.<br>5.d.2.a. El usuario selecciona "Cancelar": El sistema cierra el panel sin borrar nada. |
 
-#### Subsistema 5: Persistencia
+##### Subsistema 5: Persistencia
 
 | **Nombre**                       | Guardar mediciones con sus resultados |
 | :------------------------------- | :--- |
@@ -1096,9 +1098,9 @@ CU6 -.extend.-> CU3
 | **Postcondición**                | El texto de observaciones queda vinculado a la configuración activa, listo para ser incluido permanentemente en la estructura del archivo. |
 | **Extensiones**                  | |
 
-
-## CLASES SOFTWARE
-### Lista de Clases
+## Diseño
+### Clases Software
+#### Lista de Clases
 
 ```mermaid
 classDiagram
@@ -1318,10 +1320,10 @@ class IObservable{
 }
 ```
 
-### Diagramas de Clases
-##### Subsistema 1: Comunicación e Interacción con el Hardware
+#### Diagramas de Clases
+###### Subsistema 1: Comunicación e Interacción con el Hardware
 
-##### Módulo 1: Conectividad y Estado
+###### Módulo 1: Conectividad y Estado
 
 ```mermaid
 classDiagram
@@ -1462,7 +1464,7 @@ ConnectionType "1" *-- "1" ConnectionState
 ```
 
 
-##### Módulo 2: Calibración del Dispositivo
+###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
 %% clases
@@ -1509,8 +1511,8 @@ CalibrationService ..> CalibrationSetup
 CalibrationService ..> SessionManager
 ```
 
-#### Subsistema 2: Configuración y Toma de Mediciones
-##### Módulo 1: Tipos y Estrategias de Medición
+##### Subsistema 2: Configuración y Toma de Mediciones
+###### Módulo 1: Tipos y Estrategias de Medición
 
 ```mermaid
 classDiagram
@@ -1616,9 +1618,9 @@ Measure "1"*--"1" MeasureState
 MeasureService ..> Measure
 MeasureService ..> SessionManager
 ```
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+###### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 ```mermaid
 classDiagram
 
@@ -1715,9 +1717,9 @@ PersistenceService ..> CalibrationSetup
 PersistenceService ..> SessionManager
 ```
 
-#### Subsistema 5: Persistencia
+##### Subsistema 5: Persistencia
 
-##### Módulo 1: Almacenamiento y Estructura de Datos
+###### Módulo 1: Almacenamiento y Estructura de Datos
 
 ```mermaid
 classDiagram
@@ -1841,11 +1843,11 @@ PersistenceService ..> SessionManager
 
 
 
-## BASE DE DATOS
+### Base de Datos
 
-### Convenciones Gráficas
+#### Convenciones Gráficas
 
-#### Entidades, Atributos y Claves
+##### Entidades, Atributos y Claves
 ```mermaid
 erDiagram
     ENTIDAD_EJEMPLO {
@@ -1855,7 +1857,7 @@ erDiagram
     }
 ```
 
-#### Cardinalidad y Multiplicidad
+##### Cardinalidad y Multiplicidad
 ```mermaid
 erDiagram
     LADO_UNO ||--|{ LADO_MUCHOS : "Uno a Muchos (al menos 1)"
@@ -1863,14 +1865,14 @@ erDiagram
     ENTIDAD_A ||--|| ENTIDAD_B : "Uno a Uno estricto"
 ```
 
-#### Representación de Herencia
+##### Representación de Herencia
 ```mermaid
 erDiagram
     TABLA_PADRE o|--|| TABLA_HIJA_A : "es un (extiende)"
     TABLA_PADRE o|--|| TABLA_HIJA_B : "es un (extiende)"
 ```
 
-### Diagrama de Entidad Relacion
+#### Diagrama de Entidad Relacion
 ```mermaid
 erDiagram
 
@@ -1960,11 +1962,11 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 ```
 
 
-## TABLA DE TRAZABILIDAD
+### Tabla de trazabilidad
 
-##### Subsistema 1: Comunicación e Interacción con el Hardware
+###### Subsistema 1: Comunicación e Interacción con el Hardware
 
-##### Módulo 1: Conectividad y Estado
+###### Módulo 1: Conectividad y Estado
 
 | **Requisito** | Caso de uso                                          | Clase/servicio                                         | Persistencia |
 | ------------- | ---------------------------------------------------- | ------------------------------------------------------ | ------------ |
@@ -1976,7 +1978,7 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **CON-06**    | Notificar visualmente el estado error de conexión    | ConnectionService/ConnectionState/ConnectionErrorState | -            |
 | **CON-07**    | Persistir últimos datos generados ante un error      | MeasureService/PersistenceService                      | MEASURE      |
 
-##### Módulo 2: Calibración del Dispositivo
+###### Módulo 2: Calibración del Dispositivo
 | **Requisito** | Caso de uso                                              | Clase/servicio                       | Persistencia |
 | ------------- | -------------------------------------------------------- | ------------------------------------ | ------------ |
 | **CAL-01**    | Configurar la calibración electrónica del equipo         | CalibrationService/CalibrationSetup  | -            |
@@ -1984,8 +1986,8 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **CAL-03**    | Bloquear ejecución por descalibración                    | Device/DeviceState/UncalibratedState | -            |
 | **CAL-04**    | Limitar la configuración de calibración al Modo Avanzado | SessionManager                       | -            |
 
-#### Subsistema 2: Configuración y Toma de Mediciones
-##### Módulo 1: Tipos y Estrategias de Medición
+##### Subsistema 2: Configuración y Toma de Mediciones
+###### Módulo 1: Tipos y Estrategias de Medición
 
 | **Requisito** | Caso de uso                                                | Clase/servicio                  | Persistencia  |
 | ------------- | ---------------------------------------------------------- | ------------------------------- | ------------- |
@@ -2000,9 +2002,9 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **MED-11**    | Calcular estadísticos descriptivos básicos                 | Clase Pendiente                 | -             |
 | **MED-13**    | Limitar configuración de mediciones al Modo Avanzado       | SessionManager                  | -             |
 
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+###### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
 | **Requisito** | Caso de uso                                 | Clase/servicio     | Persistencia                    |
 | ------------- | ------------------------------------------- | ------------------ | ------------------------------- |
@@ -2018,9 +2020,9 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **SET-11**    | Exportar configuraciones de medición        | PersistenceService | -                               |
 | **SET-13**    | Mantener la sesión activa en el dispositivo | SessionManager     | -                               |
 
-#### Subsistema 5: Persistencia
+##### Subsistema 5: Persistencia
 
-##### Módulo 1: Almacenamiento y Estructura de Datos
+###### Módulo 1: Almacenamiento y Estructura de Datos
 
 | **Requisito** | Caso de uso                                                      | Clase/servicio                                                             | Persistencia                           |
 | ------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------- |
@@ -2035,24 +2037,24 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **PER-09**    | Adjuntar metadatos y observaciones libres sobre setups           | PersistenceService/MeasureSetup<br><br>PersistenceService/CalibrationSetup | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
 | **PER-10**    | Limitar la escritura de observaciones en setups al modo Avanzado | SessionManager                                                             | -                                      |
 
-## PANTALLAS
+### Pantallas
 
-### Pantalla de Login
+#### Pantalla de Login
 ![366](pantallas/pantalla_login.png)
 
-### Pantalla de Registro
+#### Pantalla de Registro
 ![369](pantallas/pantalla_registro.png)
 
-### Pantalla Principal
+#### Pantalla Principal
 ![](pantallas/pantalla_principal.png)
 
-### Pantalla de Configuración
+#### Pantalla de Configuración
 ![](pantallas/pantalla_configuracion.png)
 
-### Pantalla de Mediciones y Setups de Usuario
+#### Pantalla de Mediciones y Setups de Usuario
 ![](pantallas/pantalla_mediciones_y_setups.png)
 
-### Pantalla de Perfil de Usuario
+#### Pantalla de Perfil de Usuario
 ![](pantallas/pantalla_perfil_de_usuario.png)
 
 ## HERRAMIENTAS UTILIZADAS
