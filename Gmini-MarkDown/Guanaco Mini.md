@@ -1115,17 +1115,12 @@ MeasureSetup <|-- MultiMeasureSetup
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
-MeasureState <|-- PendingState
-MeasureState <|-- ExecutingState
-MeasureState <|-- CompleteState
-MeasureState <|-- ErrorState
-
 ConnectionState <|-- ConnectedState
 ConnectionState <|-- DisconnectedState
 ConnectionState <|-- ConnectionErrorState
 
 DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratingState
+DeviceState <|-- CalibratedState
 DeviceState <|-- MeasuringState
 DeviceState <|-- DeviceErrorState
 DeviceState <|-- UncalibratedState
@@ -1145,16 +1140,14 @@ class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
-	- state : MeasureState
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ do_measure()
-	+ cancel_measure()
-	+ set_state(new_state : MeasureState)
-	+ get_state() : MeasureState
+	+ set_state(new_state : str)
+	+ get_state() : str
 }
 
 class MeasureSetup {
@@ -1233,17 +1226,9 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
 }
-class PersistenceService{
-	- db_root : str
-	  
-	%% operaciones en db
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	  
+
+class LocalService{
+	- local_root : str
 	%% operaciones en archivos
 	+ load_measure() : Measure
 	+ load_calibration_setup() : CalibrationSetup
@@ -1251,6 +1236,17 @@ class PersistenceService{
 	+ export_setup_to_file(setup : MeasureSetup)
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
+}
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 }
 
 
@@ -1281,7 +1277,7 @@ class DeviceState{
 		<<interface>>
 	}
 	class FreeDeviceState
-	class CalibratingState
+	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
 	
@@ -1333,7 +1329,7 @@ ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
 DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratingState
+DeviceState <|-- CalibratedState
 DeviceState <|-- MeasuringState
 DeviceState <|-- DeviceErrorState
 DeviceState <|-- UncalibratedState
@@ -1396,10 +1392,10 @@ class ConnectionErrorState
 class DeviceState{
 		<<interface>>
 	}
-class FreeDeviceState
-class CalibratingState
-class MeasuringState
-class DeviceErrorState
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
 
 %% observer patern
 class IObserver{
@@ -1420,24 +1416,17 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
 }
-class PersistenceService{
+
+class DataBaseService{
 	- db_root : str
-	  
 	%% operaciones en db
+	+ save_user(user : User)
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	  
-	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
 }
 
 class ConnectionService{
@@ -1455,7 +1444,7 @@ Device ..|> IObservable
 
 MeasureService ..|> IObserver
 MeasureService .. Device : observa
-MeasureService ..> PersistenceService : invoca guardado de emergencia
+MeasureService ..> DataBaseService : invoca guardado de emergencia
 
 
 ConnectionService ..>  Device
@@ -1467,6 +1456,12 @@ ConnectionType "1" *-- "1" ConnectionState
 ###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
+DeviceState <|-- FreeDeviceState
+DeviceState <|-- CalibratedState
+DeviceState <|-- MeasuringState
+DeviceState <|-- DeviceErrorState
+DeviceState <|-- UncalibratedState
+
 %% clases
 class User {
 	- user_id : int
@@ -1493,6 +1488,14 @@ class Device{
 	+ get_state() : DeviceState
 }
 
+class DeviceState{
+		<<interface>>
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
@@ -1505,6 +1508,8 @@ class SessionManager{
 
 %% relaciones
 User "1"-->"1" Device : calibra
+
+Device "1"*--"1" DeviceState
 
 CalibrationService ..> Device
 CalibrationService ..> CalibrationSetup
@@ -1521,11 +1526,6 @@ MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
 
-MeasureState <|-- PendingState
-MeasureState <|-- ExecutingState
-MeasureState <|-- CompleteState
-MeasureState <|-- ErrorState
-
 %% clases
 class User {
 	- user_id : int
@@ -1540,16 +1540,14 @@ class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
-	- state : MeasureState
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ do_measure()
-	+ cancel_measure()
-	+ set_state(new_state : MeasureState)
-	+ get_state() : MeasureState
+	+ set_state(new_state : str)
+	+ get_state() : str
 }
 
 class SessionManager{
@@ -1598,22 +1596,11 @@ class MeasureService{
 	- update_progress()
 }
 
-class MeasureState{
-	 <<interface>>
-	 + do_measure(context : Measure)
-	 + cancel_measure(context : Measure)
-}
-class PendingState
-class ExecutingState
-class CompleteState
-class ErrorState
-
 %% relaciones
 User "1"-->"1..*" Measure : mide
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
-Measure "1"*--"1" MeasureState
 
 MeasureService ..> Measure
 MeasureService ..> SessionManager
@@ -1645,17 +1632,8 @@ class AuthService{
 	+ register(user_name, email, password) : Token
 }
 
-class PersistenceService{
-	- db_root : str
-	  
-	%% operaciones en db
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	  
+class LocalService{
+	- local_root : str
 	%% operaciones en archivos
 	+ load_measure() : Measure
 	+ load_calibration_setup() : CalibrationSetup
@@ -1663,6 +1641,17 @@ class PersistenceService{
 	+ export_setup_to_file(setup : MeasureSetup)
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
+}
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 }
 
 class MeasureSetup {
@@ -1709,12 +1698,11 @@ User "1"-->"0..*" MeasureSetup : aplica
 User "1"-->"0..*" CalibrationSetup : aplica
 
 AuthService ..> User
-AuthService ..> PersistenceService
+AuthService ..> DataBaseService
 AuthService ..> SessionManager
 
-PersistenceService ..> MeasureSetup
-PersistenceService ..> CalibrationSetup
-PersistenceService ..> SessionManager
+LocalService ..> CalibrationSetup
+LocalService ..> MeasureSetup
 ```
 
 ##### Subsistema 5: Persistencia
@@ -1745,14 +1733,21 @@ class Measure {
 	- file_name : str
 	- state : MeasureState
 	- device_temp : float
-	- result : MeasureResult
+	- result : ['EXECUTING', 'COMPLETE', 'ERROR']
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ do_measure()
-	+ cancel_measure()
-	+ set_state(new_state : MeasureState)
-	+ get_state() : MeasureState
+	+ set_state(new_state : str)
+	+ get_state() : str
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
 }
 
 class MeasureSetup {
@@ -1788,26 +1783,6 @@ class CalibrationSetup{
 	+ get_command() : str
 }
 
-class PersistenceService{
-	- db_root : str
-	  
-	%% operaciones en db
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	  
-	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
-}
-
 class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
@@ -1824,7 +1799,32 @@ class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
 
+class LocalService{
+	- local_root : str
+	%% operaciones en archivos
+	+ load_measure() : Measure
+	+ load_calibration_setup() : CalibrationSetup
+	+ load_setup() : MeasureSetup
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+}
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+}
+
 %% relaciones
+
+Measure "1"*--"1" MeasureResult
+Measure "1"o--"1" MeasureSetup
 
 CalibrationService ..> SessionManager
 CalibrationService ..> CalibrationSetup
@@ -1832,13 +1832,13 @@ CalibrationService ..> CalibrationSetup
 MeasureService ..> SessionManager
 MeasureService ..> Measure
 
+DataBaseService ..> SessionManager
+LocalService ..> SessionManager
+
 
 User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
 User "1"-->"0..*" CalibrationSetup : guarda
-
-PersistenceService ..> Measure
-PersistenceService ..> SessionManager
 ```
 
 
