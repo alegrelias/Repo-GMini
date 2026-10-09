@@ -251,7 +251,7 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                          |
 | **Descripción** | El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones. |
 
-| **PER-07**      | Limitar el guardado de setups al Modo Avanzado                                                                                        |
+| **PER-07**      | Limitar el guardado de setups en la base de datos al Modo Avanzado                                                                    |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                   |
 | **Descripción** | Las configuraciones de calibración y medición solo podrán ser guardadas en la Base de Datos si se encuentra activado el Modo Avanzado |
