@@ -1,5 +1,5 @@
-## CLASES SOFTWARE
-### Lista de Clases
+### Clases Software
+#### Lista de Clases
 
 ```mermaid
 classDiagram
@@ -10,6 +10,10 @@ direction LR
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
+
+BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
+BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
+BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
@@ -50,14 +54,14 @@ class Measure {
 }
 
 class MeasureSetup {
-		<<abstract>>
-		- observations : str
-		- exitation_voltage : float
-		- gain : float
-		- rfbvalue : float
-		- settcycles : int
-		- mux_channel : [0, 1, 2, 3]
-		+ get_command() : str
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -190,16 +194,6 @@ class ConnectionState{
 class ConnectedState
 class DisconnectedState
 class ConnectionErrorState
-	
-class MeasureState{
-	 <<interface>>
-	 + do_measure(context : Measure)
-	 + cancel_measure(context : Measure)
-}
-class PendingState
-class ExecutingState
-class CompleteState
-class ErrorState
 
 %% observer patern
 class IObserver{
@@ -213,12 +207,58 @@ class IObservable{
 	+ detach()
 	+ notify()
 }
+
+%% builder patern
+class BaseMeasureSetupBuilder{
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ build() : MeasureSetup
+	+ with_observations()
+	+ with_voltage()
+	+ with_gain()
+	+ with_rfb_value()
+	+ with_cycles()
+	+ with_mux_channel()
+}
+
+class SpectroSetupBuilder{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+	+ build() : SpecMeasureSetup
+	+ with_start_freq(startfreq : float) : self
+	+ with_inc_freq(incfreq : float) : self
+	+ with_steps(steps : int) : self
+	+ with_repeat(repeat : int) : self
+}
+
+class SingleFreqSetupBuilder{
+	- freq : float
+	- delay : int
+	- count : int
+	+ build() : SingleMeasureSetup
+	+ with_freq(freq : float) : self
+	+ with_delay(delay : int) : self
+	+ with_count(count : int) : self
+}
+
+class MultiFreqSetupBuilder{
+	- freq_list :[float]
+	+ build() : MultiMeasureSetup
+	+ with_freq_list(freq_list :[float]) : self
+}
 ```
 
-### Diagramas de Clases
-##### Subsistema 1: Comunicación e Interacción con el Hardware
+#### Diagramas de Clases
+###### Subsistema 1: Comunicación e Interacción con el Hardware
 
-##### Módulo 1: Conectividad y Estado
+###### Módulo 1: Conectividad y Estado
 
 ```mermaid
 classDiagram
@@ -352,7 +392,7 @@ ConnectionType "1" *-- "1" ConnectionState
 ```
 
 
-##### Módulo 2: Calibración del Dispositivo
+###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
 DeviceState <|-- FreeDeviceState
@@ -415,8 +455,8 @@ CalibrationService ..> CalibrationSetup
 CalibrationService ..> SessionManager
 ```
 
-#### Subsistema 2: Configuración y Toma de Mediciones
-##### Módulo 1: Tipos y Estrategias de Medición
+##### Subsistema 2: Configuración y Toma de Mediciones
+###### Módulo 1: Tipos y Estrategias de Medición
 
 ```mermaid
 classDiagram
@@ -424,6 +464,10 @@ classDiagram
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
+
+BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
+BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
+BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 %% clases
 class User {
@@ -456,14 +500,14 @@ class SessionManager{
 }
 
 class MeasureSetup {
-		<<abstract>>
-		- observations : str
-		- exitation_voltage : float
-		- gain : float
-		- rfbvalue : float
-		- settcycles : int
-		- mux_channel : [0, 1, 2, 3]
-		+ get_command() : str
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -495,18 +539,66 @@ class MeasureService{
 	- update_progress()
 }
 
+%% builder patern
+class BaseMeasureSetupBuilder{
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ build() : MeasureSetup
+	+ with_observations()
+	+ with_voltage()
+	+ with_gain()
+	+ with_rfb_value()
+	+ with_cycles()
+	+ with_mux_channel()
+}
+
+class SpectroSetupBuilder{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+	+ build() : SpecMeasureSetup
+	+ with_start_freq(startfreq : float) : self
+	+ with_inc_freq(incfreq : float) : self
+	+ with_steps(steps : int) : self
+	+ with_repeat(repeat : int) : self
+}
+
+class SingleFreqSetupBuilder{
+	- freq : float
+	- delay : int
+	- count : int
+	+ build() : SingleMeasureSetup
+	+ with_freq(freq : float) : self
+	+ with_delay(delay : int) : self
+	+ with_count(count : int) : self
+}
+
+class MultiFreqSetupBuilder{
+	- freq_list :[float]
+	+ build() : MultiMeasureSetup
+	+ with_freq_list(freq_list :[float]) : self
+}
+
 %% relaciones
 User "1"-->"1..*" Measure : mide
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
 
+MeasureSetup ..> BaseMeasureSetupBuilder
+
 MeasureService ..> Measure
 MeasureService ..> SessionManager
 ```
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+###### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 ```mermaid
 classDiagram
 
@@ -515,6 +607,10 @@ classDiagram
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
+
+BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
+BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
+BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 class User {
 	- user_id : int
@@ -554,14 +650,14 @@ class DataBaseService{
 }
 
 class MeasureSetup {
-		<<abstract>>
-		- observations : str
-		- exitation_voltage : float
-		- gain : float
-		- rfbvalue : float
-		- settcycles : int
-		- mux_channel : [0, 1, 2, 3]
-		+ get_command() : str
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -592,9 +688,57 @@ class SessionManager{
 	- active_token : Token
 }
 
+%% builder patern
+class BaseMeasureSetupBuilder{
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ build() : MeasureSetup
+	+ with_observations()
+	+ with_voltage()
+	+ with_gain()
+	+ with_rfb_value()
+	+ with_cycles()
+	+ with_mux_channel()
+}
+
+class SpectroSetupBuilder{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+	+ build() : SpecMeasureSetup
+	+ with_start_freq(startfreq : float) : self
+	+ with_inc_freq(incfreq : float) : self
+	+ with_steps(steps : int) : self
+	+ with_repeat(repeat : int) : self
+}
+
+class SingleFreqSetupBuilder{
+	- freq : float
+	- delay : int
+	- count : int
+	+ build() : SingleMeasureSetup
+	+ with_freq(freq : float) : self
+	+ with_delay(delay : int) : self
+	+ with_count(count : int) : self
+}
+
+class MultiFreqSetupBuilder{
+	- freq_list :[float]
+	+ build() : MultiMeasureSetup
+	+ with_freq_list(freq_list :[float]) : self
+}
+
 %% relaciones
 User "1"-->"0..*" MeasureSetup : aplica
 User "1"-->"0..*" CalibrationSetup : aplica
+
+MeasureSetup ..> BaseMeasureSetupBuilder
 
 AuthService ..> User
 AuthService ..> DataBaseService
@@ -604,9 +748,9 @@ LocalService ..> CalibrationSetup
 LocalService ..> MeasureSetup
 ```
 
-#### Subsistema 5: Persistencia
+##### Subsistema 5: Persistencia
 
-##### Módulo 1: Almacenamiento y Estructura de Datos
+###### Módulo 1: Almacenamiento y Estructura de Datos
 
 ```mermaid
 classDiagram
@@ -615,6 +759,10 @@ classDiagram
 MeasureSetup <|-- SpecMeasureSetup
 MeasureSetup <|-- SingleMeasureSetup
 MeasureSetup <|-- MultiMeasureSetup
+
+BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
+BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
+BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 %% clases
 class User {
@@ -650,14 +798,14 @@ class MeasureResult{
 }
 
 class MeasureSetup {
-		<<abstract>>
-		- observations : str
-		- exitation_voltage : float
-		- gain : float
-		- rfbvalue : float
-		- settcycles : int
-		- mux_channel : [0, 1, 2, 3]
-		+ get_command() : str
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -720,10 +868,58 @@ class DataBaseService{
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 }
 
+%% builder patern
+class BaseMeasureSetupBuilder{
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ build() : MeasureSetup
+	+ with_observations()
+	+ with_voltage()
+	+ with_gain()
+	+ with_rfb_value()
+	+ with_cycles()
+	+ with_mux_channel()
+}
+
+class SpectroSetupBuilder{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+	+ build() : SpecMeasureSetup
+	+ with_start_freq(startfreq : float) : self
+	+ with_inc_freq(incfreq : float) : self
+	+ with_steps(steps : int) : self
+	+ with_repeat(repeat : int) : self
+}
+
+class SingleFreqSetupBuilder{
+	- freq : float
+	- delay : int
+	- count : int
+	+ build() : SingleMeasureSetup
+	+ with_freq(freq : float) : self
+	+ with_delay(delay : int) : self
+	+ with_count(count : int) : self
+}
+
+class MultiFreqSetupBuilder{
+	- freq_list :[float]
+	+ build() : MultiMeasureSetup
+	+ with_freq_list(freq_list :[float]) : self
+}
+
 %% relaciones
 
 Measure "1"*--"1" MeasureResult
 Measure "1"o--"1" MeasureSetup
+
+MeasureSetup ..> BaseMeasureSetupBuilder
 
 CalibrationService ..> SessionManager
 CalibrationService ..> CalibrationSetup
