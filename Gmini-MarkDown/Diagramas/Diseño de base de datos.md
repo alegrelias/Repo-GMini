@@ -33,7 +33,6 @@ erDiagram
 
 USER{
 	int user_id PK
-	bool use_advanced_mode
 	string email
 	string user_name
 	string password
