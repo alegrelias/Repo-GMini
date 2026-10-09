@@ -1119,15 +1119,15 @@ BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
-ConnectionState <|-- ConnectedState
-ConnectionState <|-- DisconnectedState
-ConnectionState <|-- ConnectionErrorState
+ConnectionState <|.. ConnectedState
+ConnectionState <|.. DisconnectedState
+ConnectionState <|.. ConnectionErrorState
 
-DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratedState
-DeviceState <|-- MeasuringState
-DeviceState <|-- DeviceErrorState
-DeviceState <|-- UncalibratedState
+DeviceState <|.. FreeDeviceState
+DeviceState <|.. CalibratedState
+DeviceState <|.. MeasuringState
+DeviceState <|.. DeviceErrorState
+DeviceState <|.. UncalibratedState
 
 %% clases
 
@@ -1138,6 +1138,12 @@ class User {
 	- password : str
 	- root_directory : str
 	
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
 }
 
 class Measure {
@@ -1376,15 +1382,15 @@ classDiagram
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
-DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratedState
-DeviceState <|-- MeasuringState
-DeviceState <|-- DeviceErrorState
-DeviceState <|-- UncalibratedState
+DeviceState <|.. FreeDeviceState
+DeviceState <|.. CalibratedState
+DeviceState <|.. MeasuringState
+DeviceState <|.. DeviceErrorState
+DeviceState <|.. UncalibratedState
 
-ConnectionState <|-- ConnectedState
-ConnectionState <|-- DisconnectedState
-ConnectionState <|-- ConnectionErrorState
+ConnectionState <|.. ConnectedState
+ConnectionState <|.. DisconnectedState
+ConnectionState <|.. ConnectionErrorState
 
 %% clases
 
@@ -1512,11 +1518,11 @@ ConnectionType "1" *-- "1" ConnectionState
 ###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
-DeviceState <|-- FreeDeviceState
-DeviceState <|-- CalibratedState
-DeviceState <|-- MeasuringState
-DeviceState <|-- DeviceErrorState
-DeviceState <|-- UncalibratedState
+DeviceState <|.. FreeDeviceState
+DeviceState <|.. CalibratedState
+DeviceState <|.. MeasuringState
+DeviceState <|.. DeviceErrorState
+DeviceState <|.. UncalibratedState
 
 %% clases
 class User {
@@ -1562,10 +1568,19 @@ class SessionManager{
 	- active_token : Token
 }
 
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
+}
+
 %% relaciones
 User "1"-->"1" Device : calibra
 
 Device "1"*--"1" DeviceState
+
+SessionManager "1"o--"0..1" Token
+SessionManager "1"o--"0..1" User
 
 CalibrationService ..> Device
 CalibrationService ..> CalibrationSetup
@@ -1614,6 +1629,12 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
 }
 
 class MeasureSetup {
@@ -1719,6 +1740,9 @@ BaseMeasureSetupBuilder ..> MeasureSetup
 
 MeasureService ..> Measure
 MeasureService ..> SessionManager
+
+SessionManager "1"o--"0..1" Token
+SessionManager "1"o--"0..1" User
 ```
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
@@ -1749,6 +1773,12 @@ class AuthService{
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
 }
 
 class LocalService{
@@ -1872,6 +1902,10 @@ BaseMeasureSetupBuilder ..> MeasureSetup
 AuthService ..> User
 AuthService ..> DataBaseService
 AuthService ..> SessionManager
+AuthService ..> Token
+
+SessionManager "1"o--"0..1" Token
+SessionManager "1"o--"0..1" User
 
 LocalService ..> CalibrationSetup
 LocalService ..> MeasureSetup
@@ -1909,9 +1943,9 @@ class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
-	- state : MeasureState
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
 	- device_temp : float
-	- result : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- result : MeasureResult
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
@@ -1965,6 +1999,12 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
 }
 
 class MeasureService{
@@ -2064,6 +2104,9 @@ CalibrationService ..> CalibrationSetup
 MeasureService ..> SessionManager
 MeasureService ..> Measure
 
+SessionManager "1"o--"0..1" Token
+SessionManager "1"o--"0..1" User
+
 DataBaseService ..> SessionManager
 LocalService ..> SessionManager
 
@@ -2071,6 +2114,7 @@ User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
 User "1"-->"0..*" CalibrationSetup : guarda
 ```
+
 
 
 
