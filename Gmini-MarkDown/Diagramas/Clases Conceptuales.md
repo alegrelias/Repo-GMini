@@ -386,7 +386,7 @@ class ConnectionFactory{
 
 %% relaciones
 
-User "1"-->"1" Device : interactúa
+User "1"-->"1" Device : conecta
 
 ConnectionService ..> ConnectionFactory : usa
 ConnectionFactory ..> ConnectionType : instancia
@@ -400,7 +400,7 @@ MeasureService .. Device : observa
 MeasureService ..> DataBaseService : invoca guardado de emergencia
 
 
-ConnectionService ..>  Device : conecta
+ConnectionService ..>  Device : establece conección
 
 ConnectionType "1" *-- "1" ConnectionState
 
@@ -630,7 +630,7 @@ class MeasureSetupBuilderFactory{
 }
 
 %% relaciones
-User "1"-->"1..*" Measure : interactúa
+User "1"-->"1..*" Measure : mide
 
 MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
@@ -799,20 +799,20 @@ class MeasureSetupBuilderFactory{
 User "1"-->"0..*" MeasureSetup : aplica
 User "1"-->"0..*" CalibrationSetup : aplica
 
-BaseMeasureSetupBuilder ..> MeasureSetup
+BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
-AuthService ..> User
-AuthService ..> DataBaseService
-AuthService ..> SessionManager
-AuthService ..> Token
+AuthService ..> User : crea usuario
+AuthService ..> DataBaseService : guarda usuario
+AuthService ..> SessionManager : establece usuario
+AuthService ..> Token : crea
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-LocalService ..> CalibrationSetup
-LocalService ..> MeasureSetup
+LocalService ..> CalibrationSetup : exporta/importa
+LocalService ..> MeasureSetup : exporta/importa
 
-MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 ```
 
 ##### Subsistema 5: Persistencia
