@@ -419,11 +419,11 @@ ConnectionState <|.. ConnectionErrorState : implementa
 ###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
-DeviceState <|.. FreeDeviceState
-DeviceState <|.. CalibratedState
-DeviceState <|.. MeasuringState
-DeviceState <|.. DeviceErrorState
-DeviceState <|.. UncalibratedState
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
 
 %% clases
 class User {
@@ -483,9 +483,9 @@ Device "1"*--"1" DeviceState
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-CalibrationService ..> Device
-CalibrationService ..> CalibrationSetup
-CalibrationService ..> SessionManager
+CalibrationService ..> Device : establece calibracíon
+CalibrationService ..> CalibrationSetup : crea setup
+CalibrationService ..> SessionManager : consulta
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
