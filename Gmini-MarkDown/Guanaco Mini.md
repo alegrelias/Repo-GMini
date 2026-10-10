@@ -2373,7 +2373,7 @@ ContainerDb(sqlite, "Base de Datos del Sistema", "SQLite3", "Base de Datos relac
 
 }
 
-System_Ext(ESP32, "Placa GMini", "Dispositivo de Hardware que realiza mediciones de impedancia y bioimpedancia eléctrica.")
+System_Ext(ESP32, "Placa GMini", "Dispositivo medidor de impedancia.")
 
 }
 
@@ -2385,40 +2385,45 @@ Rel(app, ESP32, "Envía comandos de control al dispositivo y recolecta las respu
 
 ```mermaid
 C4Component
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
+title Diagrama de Componentes para el Sistema GMini GUI
+
 Person(user, "Usuario registrado")
 
-System_Ext(ESP32, "Placa GMini", "Dispositivo de Hardware que realiza mediciones de impedancia y bioimpedancia eléctrica.")
-
-ContainerDb(sqlite, "Base de Datos del Sistema", "SQLite3", "Base de Datos relacional donde se almacenan mediciones y setups de configuración.")
+System_Boundary(GMini-GUI, "Sistema Guanaco Mini") {
 
 Container_Boundary(app, "Aplicación de Escritorio"){
-Component(UI, "Interfaz Gráfica de Usuario", "PyQt6", "Interfaz Gráfica implementada en PyQt6.")
 
+Component(UI, "Interfaz Gráfica", "PyQt6", "Maneja la interacción visual.")
+    
+Component(sesion, "Autenticación y Sesión", "Python 3", "Mantiene la sesión activa.")
 
-Component(sesion, "Componente de Autenticación y Sesión", "Python3", "Componente que permite mantener la sesión de usuario.")
+Component(mediciones, "Mediciones y Config", "Python 3", "Orquesta las mediciones.")
 
-
-Component(mediciones, "Componente de Mediciones y Configuración", "Python3", "Componente que permite realizar mediciones y crear setups de configuración.")
-
-
-Component(comunicacion, "Componente de Comunicación y Hardware", "Python3", "Componente que establece comunicación con el dispositivo.")
-
-
-Component(persistencia, "Componente de Persistencia", "Python3", "Componente que permite almacenar los resultados de las mediciones, la información del usuario y los setups de configuración creados.")
+Component(comunicacion, "Comunicación y HW", "Python 3", "Maneja el puerto serial/Bluetooth.")
+    
+Component(persistencia, "Persistencia", "Python 3", "Centraliza el acceso a datos.")
 }
 
-Rel(user, UI, "Calibra el dispositivo y realiza mediciones")
+System_Boundary(externos, "Infraestructura Externa") {
+ContainerDb(sqlite, "Base de Datos", "SQLite3", "Almacenamiento local.")
+}
 
-Rel(UI, mediciones, "Envía los datos de configuración de mediciones y calibración")
-Rel(mediciones, comunicacion, "Establece el tipo de comunicación con el dispositivo")
-Rel(mediciones, persistencia, "Almacena las mediciones realizadas, sus configuraciones y permite al usuario recuperarlas")
+}
 
-Rel(persistencia, sqlite, "Persiste datos generados y Recolecta datos solicitados")
-Rel(UI, persistencia, "Envía la solicitud de exportación e importación de archivos")
+System_Ext(ESP32, "Placa GMini", "Dispositivo medidor de impedancia.")
 
-Rel(UI, sesion, "Solicita validación y recibe un Token") 
-Rel(sesion, persistencia, "Almacena los datos del usuario y verifica su información")
+Rel(user, UI, "Opera sistema")
 
-Rel(UI, comunicacion, "Envía información de comunicación")
-Rel(comunicacion, ESP32, "Establece conexión con el dispositivo")
+Rel(UI, sesion, "Valida acceso")
+Rel(UI, mediciones, "Inicia proceso")
+Rel(UI, comunicacion, "Ajusta puerto")
+Rel(UI, persistencia, "Exporta/Importa")
+
+Rel(mediciones, comunicacion, "Delega comandos")
+Rel(sesion, persistencia, "Consulta usuario")
+Rel(mediciones, persistencia, "Guarda resultados")
+
+Rel(comunicacion, ESP32, "I/O Hardware")
+Rel(persistencia, sqlite, "Lee / Escribe")
 ```
