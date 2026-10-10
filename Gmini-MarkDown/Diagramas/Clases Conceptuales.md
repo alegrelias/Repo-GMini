@@ -67,7 +67,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -89,7 +88,6 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class Device{
@@ -134,6 +132,7 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
+	+ get_measure_command() : str
 }
 
 class LocalService{
@@ -179,6 +178,7 @@ class ConnectionService{
 }
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+	+ get_calibration_command() : str
 }
 
 %% state patern
@@ -359,6 +359,7 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
+	+ get_measure_command() : str
 }
 
 class DataBaseService{
@@ -440,7 +441,6 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class Device{
@@ -461,6 +461,7 @@ class DeviceState{
 
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+	+ get_calibration_command() : str
 }
 
 class SessionManager{
@@ -546,7 +547,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -576,6 +576,7 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
+	+ get_measure_command() : str
 }
 
 %% builder patern
@@ -713,7 +714,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -735,7 +735,6 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class SessionManager{
@@ -872,7 +871,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -894,7 +892,6 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class SessionManager{
@@ -913,10 +910,12 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
+	+ get_measure_command() : str
 }
 
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+	+ get_calibration_command() : str
 }
 
 class LocalService{
