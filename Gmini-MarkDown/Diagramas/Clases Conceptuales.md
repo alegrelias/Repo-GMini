@@ -28,6 +28,10 @@ DeviceState <|.. MeasuringState
 DeviceState <|.. DeviceErrorState
 DeviceState <|.. UncalibratedState
 
+ICommandAdapter <|.. CalibrationAdapter
+ICommandAdapter <|.. MeasureAdapter
+
+
 %% clases
 
 class User {
@@ -132,7 +136,6 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
-	+ get_measure_command() : str
 }
 
 class LocalService{
@@ -178,7 +181,6 @@ class ConnectionService{
 }
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
-	+ get_calibration_command() : str
 }
 
 %% state patern
@@ -268,6 +270,24 @@ class ConnectionFactory{
 class MeasureSetupBuilderFactory{ 
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
 }
+
+%% patron adapter
+class ICommandAdapter{ 
+	<<interface>> 
+	+ encode(setup) : str 
+	+ decode(response : str) 
+} 
+
+class CalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+} 
+
+class MeasureAdapter{ 
+	+ encode(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
 ```
 
 #### Diagramas de Clases
@@ -359,7 +379,6 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
-	+ get_measure_command() : str
 }
 
 class DataBaseService{
@@ -385,11 +404,24 @@ class ConnectionFactory{
 	+ create_connection(type : str) : ConnectionType 
 }
 
+class ICommandAdapter{ 
+	<<interface>> 
+	+ encode(setup) : str 
+	+ decode(response : str) 
+} 
+
+class CalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+}
+
 %% relaciones
+
+ConnectionService --> CalibrationAdapter : envía setup y recibe comando
 
 User "1"-->"1" Device : conecta
 
-ConnectionService ..> ConnectionFactory : usa
+ConnectionService --> ConnectionFactory : usa
 ConnectionFactory ..> ConnectionType : instancia
 
 Device "1" o-- "1" ConnectionType
@@ -397,12 +429,12 @@ Device "1" *-- "1" DeviceState
 Device ..|> IObservable : implementa
 
 MeasureService ..|> IObserver : implementa
-MeasureService .. Device : observa
-MeasureService ..> DataBaseService : invoca guardado de emergencia
+MeasureService --> Device : observa
+MeasureService --> DataBaseService : invoca guardado de emergencia
 
 
-ConnectionService ..>  Device : establece conexión
-ConnectionService ..>  ConnectionType : observa
+ConnectionService -->  Device : establece conexión
+ConnectionService -->  ConnectionType : observa
 
 
 ConnectionType "1" *-- "1" ConnectionState
@@ -417,6 +449,8 @@ DeviceState <|.. UncalibratedState : implementa
 ConnectionState <|.. ConnectedState : implementa
 ConnectionState <|.. DisconnectedState : implementa
 ConnectionState <|.. ConnectionErrorState : implementa
+
+ICommandAdapter <|.. CalibrationAdapter : implementa
 ```
 
 
@@ -464,7 +498,6 @@ class DeviceState{
 
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
-	+ get_calibration_command() : str
 }
 
 class SessionManager{
@@ -579,7 +612,6 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
-	+ get_measure_command() : str
 }
 
 %% builder patern
@@ -913,12 +945,10 @@ class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
 	- update_progress()
-	+ get_measure_command() : str
 }
 
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
-	+ get_calibration_command() : str
 }
 
 class LocalService{
