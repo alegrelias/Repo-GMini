@@ -630,17 +630,17 @@ class MeasureSetupBuilderFactory{
 }
 
 %% relaciones
-User "1"-->"1..*" Measure : mide
+User "1"-->"1..*" Measure : interactúa
 
-MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
 
-BaseMeasureSetupBuilder ..> MeasureSetup
+BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
-MeasureService ..> Measure
-MeasureService ..> SessionManager
+MeasureService ..> Measure : ejecuta medición
+MeasureService ..> SessionManager : consulta
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
