@@ -404,20 +404,7 @@ class ConnectionFactory{
 	+ create_connection(type : str) : ConnectionType 
 }
 
-class ICommandAdapter{ 
-	<<interface>> 
-	+ encode(setup) : str 
-	+ decode(response : str) 
-} 
-
-class CalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-}
-
 %% relaciones
-
-ConnectionService --> CalibrationAdapter : envía setup y recibe comando
 
 User "1"-->"1" Device : conecta
 
@@ -449,8 +436,6 @@ DeviceState <|.. UncalibratedState : implementa
 ConnectionState <|.. ConnectedState : implementa
 ConnectionState <|.. DisconnectedState : implementa
 ConnectionState <|.. ConnectionErrorState : implementa
-
-ICommandAdapter <|.. CalibrationAdapter : implementa
 ```
 
 
@@ -512,6 +497,17 @@ class Token {
 	- created_at : DateTime
 }
 
+class ICommandAdapter{
+    <<interface>>
+    + encode(setup) : str
+    + decode(response : str)
+}
+
+class CalibrationAdapter{
+    + encode(setup : CalibrationSetup) : str
+    + decode(response : str) : bool
+}
+
 %% relaciones
 User "1"-->"1" Device : calibra
 
@@ -520,9 +516,11 @@ Device "1"*--"1" DeviceState
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-CalibrationService ..> Device : establece calibracíon
+CalibrationService ..> CalibrationAdapter : envía setups y recibe comandos
+CalibrationService ..> Device : establece calibración
 CalibrationService ..> CalibrationSetup : crea setup
 CalibrationService ..> SessionManager : verifica usuario
+ICommandAdapter <|.. CalibrationAdapter : implementa
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
@@ -665,6 +663,17 @@ class MeasureSetupBuilderFactory{
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
 }
 
+class ICommandAdapter{
+    <<interface>>
+    + encode(setup) : str
+    + decode(response : str)
+}
+
+class MeasureAdapter{
+    + encode(setup : MeasureSetup) : str
+    + decode(response : str) : MeasureResult
+}
+
 %% relaciones
 User "1"-->"1..*" Measure : mide
 
@@ -677,9 +686,12 @@ BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 MeasureService ..> Measure : ejecuta medición
 MeasureService ..> SessionManager : verifica usuario
+MeasureService ..> MeasureAdapter : envía setups y recibe comandos
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
+
+ICommandAdapter <|.. MeasureAdapter : implementa
 ```
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
