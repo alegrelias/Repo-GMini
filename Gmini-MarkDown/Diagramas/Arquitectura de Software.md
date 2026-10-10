@@ -1,31 +1,85 @@
+## HERRAMIENTAS UTILIZADAS
+### Diagramas de Arquitectura de Software
+#### Diagrama de Contexto
+```mermaid
+C4Context
+
+title Diagrama de Contexto para el Sistema GMini GUI
+Person(user, "Usuario registrado")
+
+System(GMini-GUI, "Sistema Guanaco Mini", "Permite a los usuarios interactuar con el dispositivo Guanaco Mini.")
+
+System_Ext(ESP32, "Placa GMini", "Dispositivo de Hardware que realiza mediciones de impedancia y bioimpedancia eléctrica.")
+
+Rel(user, GMini-GUI, "Calibra el dispositivo y realiza mediciones")
+Rel(GMini-GUI, ESP32, "Envía comandos de control al dispositivo y recolecta las respuestas")
+```
+
+#### Diagrama de Contenedores
 
 ```mermaid
-flowchart TD
-    %% Definición de estilos
-    classDef frontend fill:#2b5c8f,stroke:#1a3a5c,stroke-width:2px,color:#fff
-    classDef backend fill:#278f56,stroke:#175c35,stroke-width:2px,color:#fff
-    classDef database fill:#b06c13,stroke:#7a4a0c,stroke-width:2px,color:#fff
-    classDef hardware fill:#666666,stroke:#333333,stroke-width:2px,color:#fff
-    classDef user fill:#8c3b3b,stroke:#5c2424,stroke-width:2px,color:#fff
+C4Container
 
-    Actor((Usuario\nExperto / Operador)):::user
+title Diagrama de Contenedores para el Sistema GMini GUI
 
-    subgraph Entorno Cliente [PC / Notebook con Microsoft Windows]
-        UI[Frontend de Escritorio\nPyQt6]:::frontend
-        
-        subgraph Motor Lógico Local
-            API[API Orquestador\nFastAPI]:::backend
-            DB[(Persistencia\nSQLite)]:::database
-        end
-    end
+Enterprise_Boundary(LEAB, "Entorno de Laboratorio") {
 
-    subgraph Entorno Físico
-        ESP[Hardware Guanaco Mini\nESP32]:::hardware
-    end
+Person(user, "Usuario registrado")
 
-    %% Relaciones y Flujos de Información
-    Actor -->|Interactúa con| UI
-    UI <-->|Peticiones HTTP / WebSockets| API
-    API <-->|Lectura / Escritura SQL| DB
-    API <-->|Puerto Serial USB / Bluetooth| ESP
+System_Boundary(sys_gmini, "Sistema Guanaco Mini"){
+
+Container(app, "Aplicación de Escritorio", "Python3 + PyQt6" ,"Provee la interfaz gráfica de usuario y la lógica de negocio para interactuar con el Hardware.")
+
+ContainerDb(sqlite, "Base de Datos del Sistema", "SQLite3", "Base de Datos relacional donde se almacenan mediciones y setups de configuración.")
+
+}
+
+System_Ext(ESP32, "Placa GMini", "Dispositivo de Hardware que realiza mediciones de impedancia y bioimpedancia eléctrica.")
+
+}
+
+Rel(user, app, "Calibra el dispositivo y realiza mediciones")
+Rel(app, sqlite, "Persiste datos generados")
+Rel(app, ESP32, "Envía comandos de control al dispositivo y recolecta las respuestas")
+```
+#### Diagrama de Componentes
+
+```mermaid
+C4Component
+Person(user, "Usuario registrado")
+
+System_Ext(ESP32, "Placa GMini", "Dispositivo de Hardware que realiza mediciones de impedancia y bioimpedancia eléctrica.")
+
+ContainerDb(sqlite, "Base de Datos del Sistema", "SQLite3", "Base de Datos relacional donde se almacenan mediciones y setups de configuración.")
+
+Container_Boundary(app, "Aplicación de Escritorio"){
+Component(UI, "Interfaz Gráfica de Usuario", "PyQt6", "Interfaz Gráfica implementada en PyQt6.")
+
+
+Component(sesion, "Componente de Autenticación y Sesión", "Python3", "Componente que permite mantener la sesión de usuario.")
+
+
+Component(mediciones, "Componente de Mediciones y Configuración", "Python3", "Componente que permite realizar mediciones y crear setups de configuración.")
+
+
+Component(comunicacion, "Componente de Comunicación y Hardware", "Python3", "Componente que establece comunicación con el dispositivo.")
+
+
+Component(persistencia, "Componente de Persistencia", "Python3", "Componente que permite almacenar los resultados de las mediciones, la información del usuario y los setups de configuración creados.")
+}
+
+Rel(user, UI, "Calibra el dispositivo y realiza mediciones")
+
+Rel(UI, mediciones, "Envía los datos de configuración de mediciones y calibración")
+Rel(mediciones, comunicacion, "Establece el tipo de comunicación con el dispositivo")
+Rel(mediciones, persistencia, "Almacena las mediciones realizadas, sus configuraciones y permite al usuario recuperarlas")
+
+Rel(persistencia, sqlite, "Persiste datos generados y Recolecta datos solicitados")
+Rel(UI, persistencia, "Envía la solicitud de exportación e importación de archivos")
+
+Rel(UI, sesion, "Solicita validación y recibe un Token") 
+Rel(sesion, persistencia, "Almacena los datos del usuario y verifica su información")
+
+Rel(UI, comunicacion, "Envía información de comunicación")
+Rel(comunicacion, ESP32, "Establece conexión con el dispositivo")
 ```
