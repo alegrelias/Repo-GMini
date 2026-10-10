@@ -401,9 +401,12 @@ MeasureService .. Device : observa
 MeasureService ..> DataBaseService : invoca guardado de emergencia
 
 
-ConnectionService ..>  Device : establece conección
+ConnectionService ..>  Device : establece conexión
+ConnectionService ..>  ConnectionType : observa
+
 
 ConnectionType "1" *-- "1" ConnectionState
+ConnectionType ..|> IObservable : implementa
 
 DeviceState <|.. FreeDeviceState : implementa
 DeviceState <|.. CalibratedState : implementa
