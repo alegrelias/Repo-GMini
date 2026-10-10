@@ -994,24 +994,24 @@ class MeasureSetupBuilderFactory{
 } 
 
 %% relaciones
-MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
 Measure "1"*--"1" MeasureResult
 Measure "1"o--"1" MeasureSetup
 
-BaseMeasureSetupBuilder ..> MeasureSetup
+BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
-CalibrationService ..> SessionManager
-CalibrationService ..> CalibrationSetup
+CalibrationService ..> SessionManager : verifica usuario
+CalibrationService ..> CalibrationSetup : modifica datos
 
-MeasureService ..> SessionManager
-MeasureService ..> Measure
+MeasureService ..> SessionManager : verifica usuario
+MeasureService ..> Measure : modifica datos
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-DataBaseService ..> SessionManager
-LocalService ..> SessionManager
+DataBaseService ..> SessionManager : verifica usuario
+LocalService ..> SessionManager : verifica usuario
 
 User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
