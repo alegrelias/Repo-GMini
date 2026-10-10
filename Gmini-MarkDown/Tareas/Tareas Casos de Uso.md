@@ -10,11 +10,11 @@ kanban-plugin: board
 
 ## En progreso
 
-- [ ] Redefinir especificacion de casos de uso
 
 
 ## Terminadas
 
+- [ ] Redefinir especificacion de casos de uso
 - [ ] Agregar caso de uso Guardar Medicion
 - [ ] Verificar si hace falta unificar roles (casos de uso)
 - [ ] Verificar si Seleccionar Canales es un CU aparte o simplemente un apartado en el formulario de setup
