@@ -485,7 +485,7 @@ SessionManager "1"o--"0..1" User
 
 CalibrationService ..> Device : establece calibracíon
 CalibrationService ..> CalibrationSetup : crea setup
-CalibrationService ..> SessionManager : consulta
+CalibrationService ..> SessionManager : verifica usuario
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
@@ -640,7 +640,7 @@ Measure "1"*--"1" MeasureResult
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 MeasureService ..> Measure : ejecuta medición
-MeasureService ..> SessionManager : consulta
+MeasureService ..> SessionManager : verifica usuario
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
