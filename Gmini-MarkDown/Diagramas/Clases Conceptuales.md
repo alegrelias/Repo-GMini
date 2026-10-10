@@ -150,6 +150,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
@@ -281,16 +282,6 @@ classDiagram
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
-DeviceState <|.. FreeDeviceState
-DeviceState <|.. CalibratedState
-DeviceState <|.. MeasuringState
-DeviceState <|.. DeviceErrorState
-DeviceState <|.. UncalibratedState
-
-ConnectionState <|.. ConnectedState
-ConnectionState <|.. DisconnectedState
-ConnectionState <|.. ConnectionErrorState
-
 %% clases
 
 class ConnectionType {
@@ -374,6 +365,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
@@ -394,23 +386,33 @@ class ConnectionFactory{
 
 %% relaciones
 
-User "1"-->"1" Device : conecta
+User "1"-->"1" Device : interactúa
 
-ConnectionService ..> ConnectionFactory
-ConnectionFactory ..> ConnectionType
+ConnectionService ..> ConnectionFactory : usa
+ConnectionFactory ..> ConnectionType : instancia
 
 Device "1" o-- "1" ConnectionType
 Device "1" *-- "1" DeviceState
-Device ..|> IObservable
+Device ..|> IObservable : implementa
 
-MeasureService ..|> IObserver
+MeasureService ..|> IObserver : implementa
 MeasureService .. Device : observa
 MeasureService ..> DataBaseService : invoca guardado de emergencia
 
 
-ConnectionService ..>  Device
+ConnectionService ..>  Device : conecta
 
 ConnectionType "1" *-- "1" ConnectionState
+
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
+
+ConnectionState <|.. ConnectedState : implementa
+ConnectionState <|.. DisconnectedState : implementa
+ConnectionState <|.. ConnectionErrorState : implementa
 ```
 
 
@@ -694,6 +696,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
@@ -930,6 +933,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
