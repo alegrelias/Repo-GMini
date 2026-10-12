@@ -1068,8 +1068,14 @@ MeasureService ..> Measure : modifica datos
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-DataBaseService ..> SessionManager : verifica usuario
-LocalService ..> SessionManager : verifica usuario
+DataBaseService ..> Measure : persiste la medición
+LocalService ..> Measure : importa/exporta la medición
+
+DataBaseService ..> MeasureSetup : persiste el setup
+LocalService ..> MeasureSetup : importa/exporta el setup
+
+DataBaseService ..> CalibrationSetup : persiste el setup
+LocalService ..> CalibrationSetup : importa/exporta el setup
 
 User "1"-->"0..*" Measure : guarda
 User "1"-->"0..*" MeasureSetup : guarda
