@@ -56,7 +56,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
-	- device_int : int
+	- device_id : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -64,7 +64,7 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
-	+ set_default_name(name : str)
+	+ set_default_name()
 }
 
 class MeasureSetup {
@@ -188,7 +188,7 @@ class SessionManager{
 	+ get_active_mode() : boolean
 	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
-	+ set_active_token(user : User)
+	+ set_active_token(token : Token)
 }
 
 class ConnectionService{
@@ -207,6 +207,7 @@ class CalibrationService{
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
@@ -336,7 +337,7 @@ ConnectionType <|-- WireLess
 class ConnectionType {
 	<<abstract>>
 	- connection_state : ConnectionState
-	+ connect(device)
+	+ connect()
 	+ disconnect()
 	+ send(data : str)
 	+ receive() : str
@@ -374,6 +375,7 @@ class ConnectionErrorState
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
@@ -411,7 +413,6 @@ class ConnectionFactory{
 
 %% relaciones
 
-Device ..|> IObservable : implementa
 ConnectionService ..|> IObserver : implementa
 
 ConnectionType ..|> IObservable : implementa
@@ -432,6 +433,7 @@ ConnectionType o-- ConnectionState
 Device o-- DeviceState
 
 ConnectionService --> ConnectionType : establece conexión
+ConnectionService --> Device : establece conexión
 ConnectionService --> ConnectionType : observa
 ```
 
@@ -464,7 +466,6 @@ class CalibrationSetup{
 
 class Device{
 	- device_id : int
-	- connection_type : ConnectionType
 	- device_state : DeviceState
 	+ set_state(new_state : DeviceState)
 	+ get_state() : DeviceState
@@ -472,11 +473,13 @@ class Device{
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
+	class UncalibratedState
 
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
@@ -492,7 +495,7 @@ class SessionManager{
 	+ get_active_mode() : boolean
 	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
-	+ set_active_token(user : User)
+	+ set_active_token(token : Token)
 }
 
 class ConnectionService{
@@ -582,6 +585,7 @@ class Device{
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
@@ -594,7 +598,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
-	- device_int : int
+	- device_id : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -602,6 +606,7 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
+	+ set_default_name()
 }
 
 class SessionManager{
@@ -614,7 +619,7 @@ class SessionManager{
 	+ get_active_mode() : boolean
 	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
-	+ set_active_token(user : User)
+	+ set_active_token(token : Token)
 }
 
 class Token {
@@ -752,14 +757,17 @@ class MeasureSetupBuilderFactory{
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
 }
 
+%% adapter pattern
 class IMeasureAdapter{ 
 	<<interface>>
-	+ encode(setup : MeasureSetup) : str 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
 	+ decode(response : str) : MeasureResult 
 }
 
 class GminiMeasureAdapter{ 
-	+ encode(setup : MeasureSetup) : str 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
 	+ decode(response : str) : MeasureResult 
 }
 
@@ -892,7 +900,7 @@ class SessionManager{
 	+ get_active_mode() : boolean
 	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
-	+ set_active_token(user : User)
+	+ set_active_token(token : Token)
 }
 
 %% builder patern
@@ -953,6 +961,7 @@ AuthService ..> User : crea usuario
 AuthService ..> DataBaseService : guarda usuario
 AuthService ..> SessionManager : establece usuario
 AuthService ..> Token : crea
+AuthService ..> LocalServiec : periste/recupera token
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
@@ -1001,7 +1010,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
-	- device_int : int
+	- device_id : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -1009,6 +1018,7 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
+	+ set_default_name()
 }
 
 class MeasureResult{
@@ -1061,7 +1071,7 @@ class SessionManager{
 	+ get_active_mode() : boolean
 	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
-	+ set_active_token(user : User)
+	+ set_active_token(token : Token)
 }
 
 class Token {
@@ -1161,7 +1171,6 @@ class MeasureSetupBuilderFactory{
 } 
 
 %% relaciones
-User --> LocalService : configura directorio raiz
 
 MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
@@ -1179,10 +1188,12 @@ MeasureService ..> Measure : modifica datos
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
+LocalService ..> Measure : importa/exporta la medición
+LocalService ..> MeasureSetup : importa/exporta el setup
+LocalService ..> CalibrationSetup : importa/exporta el setup
+
 DataBaseService ..> Measure : persiste la medición
-
 DataBaseService ..> MeasureSetup : persiste el setup
-
 DataBaseService ..> CalibrationSetup : persiste el setup
 
 MeasureService ..|> IObservable : implementa
