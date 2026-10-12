@@ -524,7 +524,6 @@ class GminiCalibrationAdapter{
 } 
 
 %% relaciones
-User "1"-->"1" Device : calibra
 
 Device "1"*--"1" DeviceState
 
@@ -1195,4 +1194,3 @@ DataBaseService ..> CalibrationSetup : persiste el setup
 
 MeasureService ..|> IObservable : implementa
 ```
-
