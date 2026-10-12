@@ -1,4 +1,377 @@
 ### Clases Software
+
+#### Diagrama General
+
+```mermaid
+classDiagram
+direction LR
+
+%% jerarquias
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
+BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
+BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+%% interfaces
+ConnectionState <|.. ConnectedState : implementa
+ConnectionState <|.. DisconnectedState : implementa
+ConnectionState <|.. ConnectionErrorState : implementa
+
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
+
+IMeasureAdapter <|.. GminiMeasureAdapter : implementa
+
+ICalibrationAdapter <|.. GminiCalibrationAdapter : implementa
+
+IObserver <|.. ConnectionService : implementa
+IObservable <|.. ConnectionService : implementa
+IObserver <|.. ConnectionType : implementa
+IObserver <|.. MeasureService : implementa
+
+%% clases
+
+class User {
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ set_state(new_state : str)
+	+ get_state() : str
+	+ set_default_name()
+}
+
+class MeasureSetup {
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- observations : str
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+}
+
+class Device{
+	- device_id : int
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect()
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+%% servicios
+
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	- update_progress()
+}
+
+class LocalService{
+	%% operaciones en archivos
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_user_token(path : str, token : Token)
+}
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str) 
+}
+
+
+class AuthService{
+	+ user_token_file_path : str
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+	+ restore_session(token : str)
+}
+
+class SessionManager{
+	- current_user : User
+	- advanced_mode_active : boolean
+	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
+}
+
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+%% state patern
+
+class DeviceState{
+		<<interface>>
+		+ can_measure() : boolean
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+	class UncalibratedState
+	
+class ConnectionState{
+		<<interface>>
+		+ connect(context : ConnectionType)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
+
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
+%% builder patern
+class BaseMeasureSetupBuilder{
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ build() : MeasureSetup
+	+ with_observations()
+	+ with_voltage()
+	+ with_gain()
+	+ with_rfb_value()
+	+ with_cycles()
+	+ with_mux_channel()
+}
+
+class SpectroSetupBuilder{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+	+ build() : SpecMeasureSetup
+	+ with_start_freq(startfreq : float) : self
+	+ with_inc_freq(incfreq : float) : self
+	+ with_steps(steps : int) : self
+	+ with_repeat(repeat : int) : self
+}
+
+class SingleFreqSetupBuilder{
+	- freq : float
+	- delay : int
+	- count : int
+	+ build() : SingleMeasureSetup
+	+ with_freq(freq : float) : self
+	+ with_delay(delay : int) : self
+	+ with_count(count : int) : self
+}
+
+class MultiFreqSetupBuilder{
+	- freq_list :[float]
+	+ build() : MultiMeasureSetup
+	+ with_freq_list(freq_list :[float]) : self
+}
+
+%% factory method
+class ConnectionFactory{ 
+	+ create_connection(type : str) : ConnectionType 
+} 
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+}
+
+%% patron adapter
+class ICalibrationAdapter{ 
+	<<interface>>
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+}
+
+class GminiCalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+} 
+
+class IMeasureAdapter{ 
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+class GminiMeasureAdapter{ 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+%% relaciones
+
+ConnectionService --> ConnectionType
+ConnectionService --> Device
+
+MeasureService --> ConnectionService
+MeasureService --> Measure
+MeasureService --> DataBaseService
+MeasureService --> SessionManager
+MeasureService --> ConnectionService
+MeasureService --> IMeasureAdapter
+
+CalibrationService --> CalibrationSetup
+CalibrationService --> Device
+CalibrationService --> ConnectionService
+CalibrationService --> ICalibrationAdapter
+
+AuthService --> DataBaseService
+AuthService --> SessionManager
+AuthService --> LocalService
+AuthService --> Token
+AuthService --> User
+
+LocalService --> CalibrationSetup
+LocalService --> MeasureSetup
+LocalService --> Measure
+
+DataBaseService -->  CalibrationSetup
+DataBaseService -->  MeasureSetup
+DataBaseService -->  Measure
+
+MeasureSetupBuilderFactory --> BaseMeasureSetupBuilder
+BaseMeasureSetupBuilder --> MeasureSetup
+ConnectionFactory --> ConnectionType
+
+Device o-- DeviceState
+
+ConnectionType o-- ConnectionState
+
+SessionManager o-- User
+SessionManager o-- Token
+
+Measure --> Device
+Measure o-- MeasureSetup
+Measure *-- MeasureResult
+```
+
+
+
+
 #### Lista de Clases
 
 ```mermaid
