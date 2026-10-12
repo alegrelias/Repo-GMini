@@ -1024,16 +1024,6 @@ class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
 
-class LocalService{
-	- local_root : str
-	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
-}
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
@@ -1116,12 +1106,9 @@ SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
 DataBaseService ..> Measure : persiste la medición
-LocalService ..> Measure : importa/exporta la medición
 
 DataBaseService ..> MeasureSetup : persiste el setup
-LocalService ..> MeasureSetup : importa/exporta el setup
 
 DataBaseService ..> CalibrationSetup : persiste el setup
-LocalService ..> CalibrationSetup : importa/exporta el setup
 ```
 
