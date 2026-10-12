@@ -32,10 +32,6 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                 |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado de error de la comunicación con el dispositivo en todo momento. |
 
-| **CON-07**      | Persistir últimos datos generados ante un error                                                                                               |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                                                                            |
-| **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
 
 #### **Módulo 2: Calibración del Dispositivo**
 | **CAL-01**      | Configurar la calibración electrónica del equipo                                            |
@@ -126,6 +122,11 @@
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                               |
 | **Descripción** | El sistema solo debe permitir configurar setups de medición (independientemente del tipo) si se encuentra activo el Modo Avanzado |
+
+| MED-14          | Persistir últimos datos generados ante un error                                                                                               |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                           |
+| **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
