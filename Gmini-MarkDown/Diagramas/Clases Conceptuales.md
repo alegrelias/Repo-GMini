@@ -64,6 +64,7 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
+	+ set_default_name(name : str)
 }
 
 class MeasureSetup {
@@ -137,15 +138,16 @@ class WireLess{
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	- update_progress()
 }
 
 class LocalService{
-	- local_root : str
 	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
 	+ export_setup_to_file(setup : MeasureSetup)
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
@@ -161,6 +163,8 @@ class DataBaseService{
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
+	+ rename_file(measure : Measure, file_name : str)
 }
 
 
@@ -175,6 +179,13 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(user : User)
 }
 
 class ConnectionService{
@@ -292,12 +303,14 @@ class GminiCalibrationAdapter{
 
 class IMeasureAdapter{ 
 	<<interface>>
-	+ encode(setup : MeasureSetup) : str 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
 	+ decode(response : str) : MeasureResult 
 }
 
 class GminiMeasureAdapter{ 
-	+ encode(setup : MeasureSetup) : str 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
 	+ decode(response : str) : MeasureResult 
 }
 
@@ -470,6 +483,13 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(user : User)
 }
 
 class ConnectionService{
@@ -538,6 +558,7 @@ DeviceState <|.. UncalibratedState : implementa
 ConnectionService ..|> IObservable : implementa
 
 MeasureService ..|> IObserver : implementa
+MeasureService ..|> IObservable : implementa
 
 %% clases
 class User {
@@ -584,6 +605,13 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(user : User)
 }
 
 class Token {
@@ -628,6 +656,8 @@ class MeasureResult{
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	- update_progress()
 }
 
@@ -650,6 +680,8 @@ class DataBaseService{
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
+	+ rename_file(measure : Measure, file_name : str)
 }
 
 
@@ -790,11 +822,10 @@ class Token {
 }
 
 class LocalService{
-	- local_root : str
 	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
 	+ export_setup_to_file(setup : MeasureSetup)
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
@@ -810,6 +841,8 @@ class DataBaseService{
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
+	+ rename_file(measure : Measure, file_name : str)
 }
 
 class MeasureSetup {
@@ -847,6 +880,13 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(user : User)
 }
 
 %% builder patern
@@ -934,6 +974,13 @@ BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 %% clases
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
 class User {
 	- user_id : int
 	- user_name : str
@@ -1002,6 +1049,13 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(user : User)
 }
 
 class Token {
@@ -1013,6 +1067,8 @@ class Token {
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	- update_progress()
 }
 
@@ -1031,6 +1087,8 @@ class DataBaseService{
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
+	+ rename_file(measure : Measure, file_name : str)
 }
 
 %% builder patern
@@ -1106,5 +1164,7 @@ DataBaseService ..> Measure : persiste la medición
 DataBaseService ..> MeasureSetup : persiste el setup
 
 DataBaseService ..> CalibrationSetup : persiste el setup
+
+MeasureService ..|> IObservable : implementa
 ```
 
