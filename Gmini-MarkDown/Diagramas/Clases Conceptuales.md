@@ -29,6 +29,10 @@ DeviceState <|.. MeasuringState
 DeviceState <|.. DeviceErrorState
 DeviceState <|.. UncalibratedState
 
+IMeasureAdapter <|.. GminiMeasureAdapter
+
+ICalibrationAdapter <|.. GminiCalibrationAdapter
+
 
 %% clases
 
@@ -530,7 +534,7 @@ ICalibrationAdapter <|.. GminiCalibrationAdapter : implementa
 CalibrationService ..> Device : establece calibración
 CalibrationService ..> CalibrationSetup : crea setup
 CalibrationService ..> SessionManager : verifica usuario
-CalibrationService ..> GminiCalibrationAdapter : envía objetos y espera comandos
+CalibrationService ..> ICalibrationAdapter : envía objetos y espera comandos
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
@@ -696,7 +700,7 @@ BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 MeasureService ..> Measure : ejecuta medición
 MeasureService ..> SessionManager : verifica usuario
-MeasureService ..> GminiMeasureAdapter : envía setups y recibe comandos
+MeasureService ..> IMeasureAdapter : envía setups y recibe comandos
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
