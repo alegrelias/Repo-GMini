@@ -952,6 +952,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_int : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -1122,9 +1123,5 @@ LocalService ..> MeasureSetup : importa/exporta el setup
 
 DataBaseService ..> CalibrationSetup : persiste el setup
 LocalService ..> CalibrationSetup : importa/exporta el setup
-
-User "1"-->"0..*" Measure : guarda
-User "1"-->"0..*" MeasureSetup : guarda
-User "1"-->"0..*" CalibrationSetup : guarda
 ```
 
