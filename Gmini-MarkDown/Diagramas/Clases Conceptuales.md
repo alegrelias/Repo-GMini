@@ -573,6 +573,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_int : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -783,6 +784,7 @@ class AuthService{
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
+	+ restore_session(token : str)
 }
 
 class Token {
@@ -903,9 +905,6 @@ class MeasureSetupBuilderFactory{
 } 
 
 %% relaciones
-User "1"-->"0..*" MeasureSetup : aplica
-User "1"-->"0..*" CalibrationSetup : aplica
-
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 AuthService ..> User : crea usuario
