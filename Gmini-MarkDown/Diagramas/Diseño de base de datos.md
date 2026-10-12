@@ -1,8 +1,8 @@
-## BASE DE DATOS
+### Base de Datos
 
-### Convenciones Gráficas
+#### Convenciones Gráficas
 
-#### Entidades, Atributos y Claves
+##### Entidades, Atributos y Claves
 ```mermaid
 erDiagram
     ENTIDAD_EJEMPLO {
@@ -12,7 +12,7 @@ erDiagram
     }
 ```
 
-#### Cardinalidad y Multiplicidad
+##### Cardinalidad y Multiplicidad
 ```mermaid
 erDiagram
     LADO_UNO ||--|{ LADO_MUCHOS : "Uno a Muchos (al menos 1)"
@@ -20,14 +20,14 @@ erDiagram
     ENTIDAD_A ||--|| ENTIDAD_B : "Uno a Uno estricto"
 ```
 
-#### Representación de Herencia
+##### Representación de Herencia
 ```mermaid
 erDiagram
     TABLA_PADRE o|--|| TABLA_HIJA_A : "es un (extiende)"
     TABLA_PADRE o|--|| TABLA_HIJA_B : "es un (extiende)"
 ```
 
-### Diagrama de Entidad Relacion
+#### Diagrama de Entidad Relacion
 ```mermaid
 erDiagram
 
