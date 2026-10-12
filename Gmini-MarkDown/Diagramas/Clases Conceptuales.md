@@ -396,8 +396,6 @@ class ConnectionFactory{
 %% relaciones
 
 Device ..|> IObservable : implementa
-
-MeasureService ..|> IObserver : implementa
 ConnectionService ..|> IObserver : implementa
 
 ConnectionType ..|> IObservable : implementa
@@ -417,9 +415,8 @@ ConnectionFactory --> ConnectionType : crea
 ConnectionType o-- ConnectionState
 Device o-- DeviceState
 
-ConnectionService --> Device : establece conexión
 ConnectionService --> ConnectionType : establece conexión
-ConnectionService --> ConnectionState : observa
+ConnectionService --> ConnectionType : observa
 ```
 
 
@@ -538,7 +535,7 @@ DeviceState <|.. MeasuringState : implementa
 DeviceState <|.. DeviceErrorState : implementa
 DeviceState <|.. UncalibratedState : implementa
 
-Device ..|> IObservable : implementa
+ConnectionService ..|> IObservable : implementa
 
 MeasureService ..|> IObserver : implementa
 
@@ -744,8 +741,7 @@ BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 MeasureService ..> Measure : ejecuta medición
 MeasureService ..> SessionManager : verifica usuario
 MeasureService ..> IMeasureAdapter : envía setups y recibe comandos
-MeasureService ..> ConnectionService : envía comandos y espera devolución
-MeasureService --> DeviceState : observa
+MeasureService --> ConnectionService : observa
 MeasureService --> DataBaseService : invoca guardado de emergencia
 
 SessionManager "1"o--"0..1" Token
