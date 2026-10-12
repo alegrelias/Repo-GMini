@@ -65,7 +65,8 @@ MEASURE_RESULT{
 	string frequencies
 	string amplitudes
 	string phases
-	string impedances
+	string impedances_real
+	string impedances_imag
 }
 
 MEASURE_SETUP{
