@@ -53,11 +53,19 @@ MEASURE{
 	int user_id FK
 	int measure_setup FK
 	int result FK
+	int decice_id FK
 	date date
+	str state
+	float device_temp
 	string file_name
 	string observations
 	string loop_group_id
 	int iteration_number
+}
+
+DEVICE{
+	int device_id PK
+	str device_name
 }
 
 MEASURE_RESULT{
@@ -84,6 +92,7 @@ SPEC_MEASURE_SETUP{
 	int spec_ms_id PK
 	int m_setup FK
 	float startfreq
+	float incfreq
 	int steps
 	int repeat
 }
@@ -102,7 +111,7 @@ MULTI_MEASURE_SETUP{
 	string frequencies_list
 }
 
-USER ||--o{ MEASURE : realiza
+USER ||--o{ MEASURE : mide
 
 USER ||--o{ CALIBRATION_SETUP : crea
 
@@ -111,6 +120,8 @@ USER ||--o{ MEASURE_SETUP : configura
 MEASURE ||--|| MEASURE_RESULT : arroja
 
 MEASURE |{--|| MEASURE_SETUP : tiene
+
+MEASURE o{--|| DEVICE : realiza
 
 MEASURE_SETUP o|--|| SPEC_MEASURE_SETUP : es_un
 MEASURE_SETUP o|--|| SINGLE_MEASURE_SETUP : es_un
