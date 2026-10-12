@@ -148,9 +148,11 @@ class LocalService{
 	+ load_measure(path : str) : Measure
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(setup : MeasureSetup)
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
+	+ export_user_token(path : str, token : Token)
 }
 class DataBaseService{
 	- db_root : str
@@ -169,6 +171,7 @@ class DataBaseService{
 
 
 class AuthService{
+	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
@@ -809,6 +812,7 @@ class User {
 }
 
 class AuthService{
+	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
@@ -826,9 +830,11 @@ class LocalService{
 	+ load_measure(path : str) : Measure
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(setup : MeasureSetup)
 	+ export_calibration_setup_to_file(setup : CalibrationSetup)
 	+ export_measure_to_file(measure : Measure)
+	+ export_user_token(path : str, token : Token)
 }
 class DataBaseService{
 	- db_root : str
@@ -1091,6 +1097,18 @@ class DataBaseService{
 	+ rename_file(measure : Measure, file_name : str)
 }
 
+class LocalService{
+	%% operaciones en archivos
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(setup : MeasureSetup)
+	+ export_calibration_setup_to_file(setup : CalibrationSetup)
+	+ export_measure_to_file(measure : Measure)
+	+ export_user_token(path : str, token : Token)
+}
+
 %% builder patern
 class BaseMeasureSetupBuilder{
 	<<abstract>>
@@ -1143,6 +1161,8 @@ class MeasureSetupBuilderFactory{
 } 
 
 %% relaciones
+User --> LocalService : configura directorio raiz
+
 MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
 Measure "1"*--"1" MeasureResult
