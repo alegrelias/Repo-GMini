@@ -55,7 +55,7 @@ MEASURE{
 	int result FK
 	int decice_id FK
 	date date
-	str state
+	string state
 	float device_temp
 	string file_name
 	string observations
@@ -65,7 +65,7 @@ MEASURE{
 
 DEVICE{
 	int device_id PK
-	str device_name
+	string device_name
 }
 
 MEASURE_RESULT{
