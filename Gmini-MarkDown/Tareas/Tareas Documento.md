@@ -13,10 +13,10 @@ kanban-plugin: board
 - [ ] Separar el requerimiento SET-10
 - [ ] Separar el requerimiento PER-01
 - [ ] Separar el requerimiento PER-02
-- [ ] Verificar si hace falta poner "file_name" a mas clases
 - [ ] Separar el requerimiento PER-09
 - [ ] Agregar a la tabla de trazabilidad los requerimientos visuales
-- [ ] Poner en pausa el uso de FastAPI y enfocarse en los servicios
+- [ ] Definir cómo se guarda la sesión, cómo se recupera y cuándo caduca o se invalida.
+- [ ] Definir cómo se notifican los avances y cómo se recuperan los datos parciales si se interrumpe la comunicación.
 
 
 ## En Progreso
@@ -33,8 +33,10 @@ kanban-plugin: board
 - [ ] Definir que cosas se guardan en BD y que se guarda de manera local
 - [ ] Empezar a hacer pantallas (No hace falta programar)
 - [ ] Verificar cardinalidad en BD
+- [ ] Verificar si hace falta poner "file_name" a mas clases
 - [ ] Definir si realmente es conveniente utilizar FastAPI
 - [ ] Crear tabla de trazabilidad
+- [ ] Poner en pausa el uso de FastAPI y enfocarse en los servicios
 
 
 
