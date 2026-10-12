@@ -1,6 +1,6 @@
 ### Clases Software
 
-#### Diagrama General
+### Diagrama General
 
 ```mermaid
 classDiagram
@@ -324,38 +324,39 @@ class GminiMeasureAdapter{
 
 %% relaciones
 
-ConnectionService --> ConnectionType
-ConnectionService --> Device
+ConnectionService --> ConnectionType : establece conexión
+ConnectionService --> Device : establece conexión
 
-MeasureService --> ConnectionService
-MeasureService --> Measure
-MeasureService --> DataBaseService
-MeasureService --> SessionManager
-MeasureService --> ConnectionService
-MeasureService --> IMeasureAdapter
+MeasureService --> ConnectionService : envía comandos y observa
+MeasureService --> Measure : ejecuta medición
+MeasureService --> DataBaseService : invoca guardado de emergencia 
+MeasureService --> SessionManager : verifica usuario
+MeasureService --> Device : verifica y actualiza estado
+MeasureService --> IMeasureAdapter : envía setups y recibe comandos
 
-CalibrationService --> CalibrationSetup
-CalibrationService --> Device
-CalibrationService --> ConnectionService
-CalibrationService --> ICalibrationAdapter
+CalibrationService --> CalibrationSetup : crea setup
+CalibrationService --> Device : establece calibración
+CalibrationService --> SessionManager : verifica usuario
+CalibrationService --> ConnectionService : envía comandos y espera devolución
+CalibrationService --> ICalibrationAdapter : envía setups y espera comandos
 
-AuthService --> DataBaseService
-AuthService --> SessionManager
-AuthService --> LocalService
-AuthService --> Token
-AuthService --> User
+AuthService --> DataBaseService : guarda usuario
+AuthService --> SessionManager : establece usuario
+AuthService --> LocalService : persiste/recupera token
+AuthService --> Token : crea token
+AuthService --> User : crea usuario
 
-LocalService --> CalibrationSetup
-LocalService --> MeasureSetup
-LocalService --> Measure
+LocalService --> CalibrationSetup : exporta/importa setup
+LocalService --> MeasureSetup : exporta/importa setup
+LocalService --> Measure : exporta/importa medición
 
-DataBaseService -->  CalibrationSetup
-DataBaseService -->  MeasureSetup
-DataBaseService -->  Measure
+DataBaseService -->  CalibrationSetup : guarda setup
+DataBaseService -->  MeasureSetup : guarda setup
+DataBaseService -->  Measure : guarda medición
 
-MeasureSetupBuilderFactory --> BaseMeasureSetupBuilder
-BaseMeasureSetupBuilder --> MeasureSetup
-ConnectionFactory --> ConnectionType
+MeasureSetupBuilderFactory --> BaseMeasureSetupBuilder : construye
+BaseMeasureSetupBuilder --> MeasureSetup : instancia
+ConnectionFactory --> ConnectionType : crea
 
 Device o-- DeviceState
 
@@ -368,6 +369,8 @@ Measure --> Device
 Measure o-- MeasureSetup
 Measure *-- MeasureResult
 ```
+
+
 
 
 
