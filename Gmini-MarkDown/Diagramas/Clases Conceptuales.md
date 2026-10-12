@@ -18,6 +18,7 @@ BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
+%% interfaces
 ConnectionState <|.. ConnectedState
 ConnectionState <|.. DisconnectedState
 ConnectionState <|.. ConnectionErrorState
@@ -27,9 +28,6 @@ DeviceState <|.. CalibratedState
 DeviceState <|.. MeasuringState
 DeviceState <|.. DeviceErrorState
 DeviceState <|.. UncalibratedState
-
-ICommandAdapter <|.. CalibrationAdapter
-ICommandAdapter <|.. MeasureAdapter
 
 
 %% clases
@@ -272,18 +270,24 @@ class MeasureSetupBuilderFactory{
 }
 
 %% patron adapter
-class ICommandAdapter{ 
-	<<interface>> 
-	+ encode(setup) : str 
-	+ decode(response : str) 
-} 
+class ICalibrationAdapter{ 
+	<<interface>>
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+}
 
-class CalibrationAdapter{ 
+class GminiCalibrationAdapter{ 
 	+ encode(setup : CalibrationSetup) : str 
 	+ decode(response : str) : bool 
 } 
 
-class MeasureAdapter{ 
+class IMeasureAdapter{ 
+	<<interface>>
+	+ encode(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+class GminiMeasureAdapter{ 
 	+ encode(setup : MeasureSetup) : str 
 	+ decode(response : str) : MeasureResult 
 }
@@ -421,7 +425,9 @@ MeasureService --> DataBaseService : invoca guardado de emergencia
 
 
 ConnectionService -->  Device : establece conexión
-ConnectionService -->  ConnectionType : observa
+
+Device -->  ConnectionType : observa
+Device ..|> IObserver : implementa
 
 
 ConnectionType "1" *-- "1" ConnectionState
@@ -497,16 +503,17 @@ class Token {
 	- created_at : DateTime
 }
 
-class ICommandAdapter{
-    <<interface>>
-    + encode(setup) : str
-    + decode(response : str)
+%% patron adapter
+class ICalibrationAdapter{ 
+	<<interface>>
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
 }
 
-class CalibrationAdapter{
-    + encode(setup : CalibrationSetup) : str
-    + decode(response : str) : bool
-}
+class GminiCalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+} 
 
 %% relaciones
 User "1"-->"1" Device : calibra
@@ -516,11 +523,14 @@ Device "1"*--"1" DeviceState
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-CalibrationService ..> CalibrationAdapter : envía setups y recibe comandos
+ICalibrationAdapter <|.. GminiCalibrationAdapter : implementa
+
+
+
 CalibrationService ..> Device : establece calibración
 CalibrationService ..> CalibrationSetup : crea setup
 CalibrationService ..> SessionManager : verifica usuario
-ICommandAdapter <|.. CalibrationAdapter : implementa
+CalibrationService ..> GminiCalibrationAdapter : envía objetos y espera comandos
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
@@ -663,15 +673,15 @@ class MeasureSetupBuilderFactory{
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
 }
 
-class ICommandAdapter{
-    <<interface>>
-    + encode(setup) : str
-    + decode(response : str)
+class IMeasureAdapter{ 
+	<<interface>>
+	+ encode(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
 }
 
-class MeasureAdapter{
-    + encode(setup : MeasureSetup) : str
-    + decode(response : str) : MeasureResult
+class GminiMeasureAdapter{ 
+	+ encode(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
 }
 
 %% relaciones
@@ -686,12 +696,12 @@ BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 MeasureService ..> Measure : ejecuta medición
 MeasureService ..> SessionManager : verifica usuario
-MeasureService ..> MeasureAdapter : envía setups y recibe comandos
+MeasureService ..> GminiMeasureAdapter : envía setups y recibe comandos
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-ICommandAdapter <|.. MeasureAdapter : implementa
+IMeasureAdapter <|.. GminiMeasureAdapter : implementa
 ```
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
