@@ -1122,6 +1122,7 @@ BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
+%% interfaces
 ConnectionState <|.. ConnectedState
 ConnectionState <|.. DisconnectedState
 ConnectionState <|.. ConnectionErrorState
@@ -1131,6 +1132,11 @@ DeviceState <|.. CalibratedState
 DeviceState <|.. MeasuringState
 DeviceState <|.. DeviceErrorState
 DeviceState <|.. UncalibratedState
+
+IMeasureAdapter <|.. GminiMeasureAdapter
+
+ICalibrationAdapter <|.. GminiCalibrationAdapter
+
 
 %% clases
 
@@ -1154,6 +1160,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -1161,6 +1168,7 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
+	+ set_default_name()
 }
 
 class MeasureSetup {
@@ -1171,7 +1179,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1193,12 +1200,10 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class Device{
 	- device_id : int
-	- connection_type : ConnectionType
 	- device_state : DeviceState
 	+ set_state(new_state : DeviceState)
 	+ get_state() : DeviceState
@@ -1216,7 +1221,7 @@ class MeasureResult{
 class ConnectionType {
 	<<abstract>>
 	- connection_state : ConnectionState
-	+ connect(device)
+	+ connect()
 	+ disconnect()
 	+ send(data : str)
 	+ receive() : str
@@ -1237,49 +1242,66 @@ class WireLess{
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	- update_progress()
 }
 
 class LocalService{
-	- local_root : str
 	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_user_token(path : str, token : Token)
 }
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str) 
 }
 
 
 class AuthService{
+	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
-	
+	+ restore_session(token : str)
 }
 
 class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
 }
 
 class ConnectionService{
+	+ active_conections : [device : connection_type]
 	+ connect(device : Device, connection_type : ConnectionType)
-	+ disconnect()
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
 }
+
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
@@ -1288,15 +1310,17 @@ class CalibrationService{
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
+	class UncalibratedState
 	
 class ConnectionState{
 		<<interface>>
-		+ connect(context : ConnectionType, device : Device)
+		+ connect(context : ConnectionType)
 		+ disconnect(context : ConnectionType)
 		+ send(context : ConnectionType, data: str)
 		+ receive(context : ConnectionType) : str
@@ -1371,6 +1395,32 @@ class ConnectionFactory{
 class MeasureSetupBuilderFactory{ 
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
 }
+
+%% patron adapter
+class ICalibrationAdapter{ 
+	<<interface>>
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+}
+
+class GminiCalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+} 
+
+class IMeasureAdapter{ 
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+class GminiMeasureAdapter{ 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
 ```
 
 #### Diagramas de Clases
@@ -1385,22 +1435,12 @@ classDiagram
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
 
-DeviceState <|.. FreeDeviceState
-DeviceState <|.. CalibratedState
-DeviceState <|.. MeasuringState
-DeviceState <|.. DeviceErrorState
-DeviceState <|.. UncalibratedState
-
-ConnectionState <|.. ConnectedState
-ConnectionState <|.. DisconnectedState
-ConnectionState <|.. ConnectionErrorState
-
 %% clases
 
 class ConnectionType {
 	<<abstract>>
 	- connection_state : ConnectionState
-	+ connect(device)
+	+ connect()
 	+ disconnect()
 	+ send(data : str)
 	+ receive() : str
@@ -1416,18 +1456,8 @@ class WireLess{
 	- protocol : str
 }
 
-class User {
-	- user_id : int
-	- user_name : str
-	- email : str
-	- password : str
-	- root_directory : str
-	
-}
-
 class Device{
 	- device_id : int
-	- connection_type : ConnectionType
 	- device_state : DeviceState
 	+ set_state(new_state : DeviceState)
 	+ get_state() : DeviceState
@@ -1437,7 +1467,7 @@ class Device{
 	
 class ConnectionState{
 		<<interface>>
-		+ connect(context : ConnectionType, device : Device)
+		+ connect(context : ConnectionType)
 		+ disconnect(context : ConnectionType)
 		+ send(context : ConnectionType, data: str)
 		+ receive(context : ConnectionType) : str
@@ -1448,11 +1478,13 @@ class ConnectionErrorState
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
+	class UncalibratedState
 
 %% observer patern
 class IObserver{
@@ -1468,27 +1500,13 @@ class IObservable{
 }
 
 %% servicios
-class MeasureService{
-	+ execute_measure(measure : Measure)
-	+ finish_measure() : [MeasureResult]
-	- update_progress()
-}
-
-class DataBaseService{
-	- db_root : str
-	%% operaciones en db
-	+ save_user(user : User)
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-}
 
 class ConnectionService{
+	+ active_conections : [device : connection_type]
 	+ connect(device : Device, connection_type : ConnectionType)
-	+ disconnect()
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
 }
 
 %% factory method
@@ -1498,34 +1516,39 @@ class ConnectionFactory{
 
 %% relaciones
 
-User "1"-->"1" Device : conecta
+ConnectionService ..|> IObserver : implementa
+ConnectionService ..|> IObservable : implementa
+ConnectionType ..|> IObservable : implementa
 
-ConnectionService ..> ConnectionFactory
-ConnectionFactory ..> ConnectionType
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
 
-Device "1" o-- "1" ConnectionType
-Device "1" *-- "1" DeviceState
-Device ..|> IObservable
+ConnectionState <|.. ConnectedState : implementa
+ConnectionState <|.. DisconnectedState : implementa
+ConnectionState <|.. ConnectionErrorState : implementa
 
-MeasureService ..|> IObserver
-MeasureService .. Device : observa
-MeasureService ..> DataBaseService : invoca guardado de emergencia
+ConnectionFactory --> ConnectionType : crea
 
+ConnectionType o-- ConnectionState
+Device o-- DeviceState
 
-ConnectionService ..>  Device
-
-ConnectionType "1" *-- "1" ConnectionState
+ConnectionService --> ConnectionType : establece conexión
+ConnectionService --> Device : establece conexión
+ConnectionService --> ConnectionType : observa
 ```
 
 
 ###### Módulo 2: Calibración del Dispositivo
 ```mermaid
 classDiagram
-DeviceState <|.. FreeDeviceState
-DeviceState <|.. CalibratedState
-DeviceState <|.. MeasuringState
-DeviceState <|.. DeviceErrorState
-DeviceState <|.. UncalibratedState
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
 
 %% clases
 class User {
@@ -1542,12 +1565,10 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class Device{
 	- device_id : int
-	- connection_type : ConnectionType
 	- device_state : DeviceState
 	+ set_state(new_state : DeviceState)
 	+ get_state() : DeviceState
@@ -1555,11 +1576,13 @@ class Device{
 
 class DeviceState{
 		<<interface>>
+		+ can_measure() : boolean
 	}
 	class FreeDeviceState
 	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
+	class UncalibratedState
 
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
@@ -1569,6 +1592,21 @@ class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
+}
+
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
 }
 
 class Token {
@@ -1577,17 +1615,32 @@ class Token {
 	- created_at : DateTime
 }
 
+%% patron adapter
+class ICalibrationAdapter{ 
+	<<interface>>
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+}
+
+class GminiCalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+} 
+
 %% relaciones
-User "1"-->"1" Device : calibra
 
 Device "1"*--"1" DeviceState
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-CalibrationService ..> Device
-CalibrationService ..> CalibrationSetup
-CalibrationService ..> SessionManager
+ICalibrationAdapter <|.. GminiCalibrationAdapter : implementa
+
+CalibrationService ..> ConnectionService : envía comandos y espera devolución
+CalibrationService ..> Device : establece calibración
+CalibrationService ..> CalibrationSetup : crea setup
+CalibrationService ..> SessionManager : verifica usuario
+CalibrationService ..> ICalibrationAdapter : envía objetos y espera comandos
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
@@ -1604,6 +1657,17 @@ BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
 BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
+
+ConnectionService ..|> IObservable : implementa
+
+MeasureService ..|> IObserver : implementa
+MeasureService ..|> IObservable : implementa
+
 %% clases
 class User {
 	- user_id : int
@@ -1614,11 +1678,29 @@ class User {
 	
 }
 
+class Device{
+	- device_id : int
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class DeviceState{
+		<<interface>>
+		+ can_measure() : boolean
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+	class UncalibratedState
+
 class Measure {
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -1626,12 +1708,20 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
+	+ set_default_name()
 }
 
 class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
 }
 
 class Token {
@@ -1648,7 +1738,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1677,8 +1766,33 @@ class MeasureResult{
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	- update_progress()
 }
+
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
+}
+
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
+}
+
 
 %% builder patern
 class BaseMeasureSetupBuilder{
@@ -1726,26 +1840,61 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
 %% factory method
 class MeasureSetupBuilderFactory{ 
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
 }
 
-%% relaciones
-User "1"-->"1..*" Measure : mide
+%% adapter pattern
+class IMeasureAdapter{ 
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
 
-MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
+class GminiMeasureAdapter{ 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+%% relaciones
+
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
+Measure --> Device : conoce
 
-BaseMeasureSetupBuilder ..> MeasureSetup
+BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
-MeasureService ..> Measure
-MeasureService ..> SessionManager
+MeasureService ..> Measure : ejecuta medición
+MeasureService ..> SessionManager : verifica usuario
+MeasureService ..> IMeasureAdapter : envía setups y recibe comandos
+MeasureService --> ConnectionService : envía comandos y observa
+MeasureService --> DataBaseService : invoca guardado de emergencia
+MeasureService ..> Device : verifica y actualiza estado
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
+
+IMeasureAdapter <|.. GminiMeasureAdapter : implementa
+
+Device "1"*--"1" DeviceState
 ```
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
@@ -1773,9 +1922,11 @@ class User {
 }
 
 class AuthService{
+	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
+	+ restore_session(token : str)
 }
 
 class Token {
@@ -1785,25 +1936,28 @@ class Token {
 }
 
 class LocalService{
-	- local_root : str
 	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_user_token(path : str, token : Token)
 }
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
 }
 
 class MeasureSetup {
@@ -1814,7 +1968,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1836,13 +1989,19 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
 }
 
 %% builder patern
@@ -1897,23 +2056,21 @@ class MeasureSetupBuilderFactory{
 } 
 
 %% relaciones
-User "1"-->"0..*" MeasureSetup : aplica
-User "1"-->"0..*" CalibrationSetup : aplica
+BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
-BaseMeasureSetupBuilder ..> MeasureSetup
-
-AuthService ..> User
-AuthService ..> DataBaseService
-AuthService ..> SessionManager
-AuthService ..> Token
+AuthService ..> User : crea usuario
+AuthService ..> DataBaseService : guarda usuario
+AuthService ..> SessionManager : establece usuario
+AuthService ..> Token : crea
+AuthService ..> LocalService : periste/recupera token
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-LocalService ..> CalibrationSetup
-LocalService ..> MeasureSetup
+LocalService ..> CalibrationSetup : exporta/importa
+LocalService ..> MeasureSetup : exporta/importa
 
-MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 ```
 
 ##### Subsistema 5: Persistencia
@@ -1933,6 +2090,13 @@ BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 %% clases
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
 class User {
 	- user_id : int
 	- user_name : str
@@ -1947,6 +2111,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -1954,6 +2119,7 @@ class Measure {
 	- iteration_number : int
 	+ set_state(new_state : str)
 	+ get_state() : str
+	+ set_default_name()
 }
 
 class MeasureResult{
@@ -1973,7 +2139,6 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	+ get_command() : str
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1995,13 +2160,19 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	+ get_command() : str
 }
 
 class SessionManager{
 	- current_user : User
 	- advanced_mode_active : boolean
 	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
 }
 
 class Token {
@@ -2013,6 +2184,8 @@ class Token {
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	- update_progress()
 }
 
@@ -2020,26 +2193,30 @@ class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
 
-class LocalService{
-	- local_root : str
-	%% operaciones en archivos
-	+ load_measure() : Measure
-	+ load_calibration_setup() : CalibrationSetup
-	+ load_setup() : MeasureSetup
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
-}
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str)
+}
+
+class LocalService{
+	%% operaciones en archivos
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_user_token(path : str, token : Token)
 }
 
 %% builder patern
@@ -2094,32 +2271,33 @@ class MeasureSetupBuilderFactory{
 } 
 
 %% relaciones
-MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder
+
+MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
 Measure "1"*--"1" MeasureResult
 Measure "1"o--"1" MeasureSetup
 
-BaseMeasureSetupBuilder ..> MeasureSetup
+BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
-CalibrationService ..> SessionManager
-CalibrationService ..> CalibrationSetup
+CalibrationService ..> SessionManager : verifica usuario
+CalibrationService ..> CalibrationSetup : modifica datos
 
-MeasureService ..> SessionManager
-MeasureService ..> Measure
+MeasureService ..> SessionManager : verifica usuario
+MeasureService ..> Measure : modifica datos
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
-DataBaseService ..> SessionManager
-LocalService ..> SessionManager
+LocalService ..> Measure : importa/exporta la medición
+LocalService ..> MeasureSetup : importa/exporta el setup
+LocalService ..> CalibrationSetup : importa/exporta el setup
 
-User "1"-->"0..*" Measure : guarda
-User "1"-->"0..*" MeasureSetup : guarda
-User "1"-->"0..*" CalibrationSetup : guarda
+DataBaseService ..> Measure : persiste la medición
+DataBaseService ..> MeasureSetup : persiste el setup
+DataBaseService ..> CalibrationSetup : persiste el setup
+
+MeasureService ..|> IObservable : implementa
 ```
-
-
-
 
 
 ### Base de Datos
@@ -2177,11 +2355,19 @@ MEASURE{
 	int user_id FK
 	int measure_setup FK
 	int result FK
+	int decice_id FK
 	date date
+	string state
+	float device_temp
 	string file_name
 	string observations
 	string loop_group_id
 	int iteration_number
+}
+
+DEVICE{
+	int device_id PK
+	string device_name
 }
 
 MEASURE_RESULT{
@@ -2189,7 +2375,8 @@ MEASURE_RESULT{
 	string frequencies
 	string amplitudes
 	string phases
-	string impedances
+	string impedances_real
+	string impedances_imag
 }
 
 MEASURE_SETUP{
@@ -2207,6 +2394,7 @@ SPEC_MEASURE_SETUP{
 	int spec_ms_id PK
 	int m_setup FK
 	float startfreq
+	float incfreq
 	int steps
 	int repeat
 }
@@ -2225,7 +2413,7 @@ MULTI_MEASURE_SETUP{
 	string frequencies_list
 }
 
-USER ||--o{ MEASURE : realiza
+USER ||--o{ MEASURE : mide
 
 USER ||--o{ CALIBRATION_SETUP : crea
 
@@ -2235,10 +2423,13 @@ MEASURE ||--|| MEASURE_RESULT : arroja
 
 MEASURE |{--|| MEASURE_SETUP : tiene
 
+MEASURE o{--|| DEVICE : realiza
+
 MEASURE_SETUP o|--|| SPEC_MEASURE_SETUP : es_un
 MEASURE_SETUP o|--|| SINGLE_MEASURE_SETUP : es_un
 MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 ```
+
 
 
 ### Tabla de trazabilidad
