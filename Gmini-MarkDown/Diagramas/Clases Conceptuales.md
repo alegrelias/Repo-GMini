@@ -217,7 +217,7 @@ class DeviceState{
 	
 class ConnectionState{
 		<<interface>>
-		+ connect(context : ConnectionType, device : Device)
+		+ connect(context : ConnectionType)
 		+ disconnect(context : ConnectionType)
 		+ send(context : ConnectionType, data: str)
 		+ receive(context : ConnectionType) : str
@@ -364,7 +364,7 @@ class Device{
 	
 class ConnectionState{
 		<<interface>>
-		+ connect(context : ConnectionType, device : Device)
+		+ connect(context : ConnectionType)
 		+ disconnect(context : ConnectionType)
 		+ send(context : ConnectionType, data: str)
 		+ receive(context : ConnectionType) : str
@@ -414,7 +414,7 @@ class ConnectionFactory{
 %% relaciones
 
 ConnectionService ..|> IObserver : implementa
-
+ConnectionService ..|> IObservable : implementa
 ConnectionType ..|> IObservable : implementa
 
 DeviceState <|.. FreeDeviceState : implementa
@@ -784,8 +784,9 @@ BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 MeasureService ..> Measure : ejecuta medición
 MeasureService ..> SessionManager : verifica usuario
 MeasureService ..> IMeasureAdapter : envía setups y recibe comandos
-MeasureService --> ConnectionService : observa
+MeasureService --> ConnectionService : envía comandos y observa
 MeasureService --> DataBaseService : invoca guardado de emergencia
+MeasureService ..> Device : verifica y actualiza estado
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
@@ -961,7 +962,7 @@ AuthService ..> User : crea usuario
 AuthService ..> DataBaseService : guarda usuario
 AuthService ..> SessionManager : establece usuario
 AuthService ..> Token : crea
-AuthService ..> LocalServiec : periste/recupera token
+AuthService ..> LocalService : periste/recupera token
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
