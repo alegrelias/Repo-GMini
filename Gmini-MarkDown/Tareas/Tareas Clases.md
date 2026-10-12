@@ -8,17 +8,20 @@ kanban-plugin: board
 
 - [ ] Agregar patron singleton para la sesion del usuario (sessionmanager)
 - [ ] definir si hacer el Authservice una interface
-- [ ] Implementar patron adapter para la traduccion de comandos
-- [ ] El servicio de conexion debe observar el estado de conexion
 
 
 ## En Progreso
 
-- [ ] agregar descripcion a las relaciones
 
 
 ## Terminadas
 
+- [ ] Implementar patron adapter para la traduccion de comandos
+- [ ] agregar can_measure() a los state del device
+- [ ] establecer conexion entre los servicios y el comservice
+- [ ] agregar metodo de restauracion de sesiones en AuthService
+- [ ] El servicio de conexion debe observar el estado de conexion
+- [ ] agregar descripcion a las relaciones
 - [ ] Agregar clase Token
 - [ ] Agregar atributo "observaciones" en el resultado de una medicion como valor opcional
 - [ ] Agregar clases Factory

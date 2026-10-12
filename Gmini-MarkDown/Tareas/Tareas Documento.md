@@ -31,7 +31,9 @@ kanban-plugin: board
 - [ ] Definir si solo los expertos pueden crear perfiles (incluyendo el de operador)
 - [ ] Agregar Req no funcionales tipo "solo tal usuario puede hacer X"
 - [ ] Definir que cosas se guardan en BD y que se guarda de manera local
+- [ ] separar impedances en BD por impedances_r, impedances_i
 - [ ] Empezar a hacer pantallas (No hace falta programar)
+- [ ] verificar que se guarde el id de la placa con la que se midió
 - [ ] Verificar cardinalidad en BD
 - [ ] Verificar si hace falta poner "file_name" a mas clases
 - [ ] Definir si realmente es conveniente utilizar FastAPI
