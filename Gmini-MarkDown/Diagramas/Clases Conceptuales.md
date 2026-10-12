@@ -149,9 +149,9 @@ class LocalService{
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
 	+ load_user_token(path : str) : Token
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 }
 class DataBaseService{
@@ -165,8 +165,7 @@ class DataBaseService{
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str)
-	+ rename_file(measure : Measure, file_name : str)
+	+ update_user_directory(user_id : int, path : str) 
 }
 
 
@@ -689,7 +688,6 @@ class DataBaseService{
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	+ update_user_directory(user_id : int, path : str)
-	+ rename_file(measure : Measure, file_name : str)
 }
 
 
@@ -840,9 +838,9 @@ class LocalService{
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
 	+ load_user_token(path : str) : Token
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 }
 class DataBaseService{
@@ -857,7 +855,6 @@ class DataBaseService{
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	+ update_user_directory(user_id : int, path : str)
-	+ rename_file(measure : Measure, file_name : str)
 }
 
 class MeasureSetup {
@@ -1105,7 +1102,6 @@ class DataBaseService{
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
 	+ update_user_directory(user_id : int, path : str)
-	+ rename_file(measure : Measure, file_name : str)
 }
 
 class LocalService{
@@ -1114,9 +1110,9 @@ class LocalService{
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
 	+ load_user_token(path : str) : Token
-	+ export_setup_to_file(setup : MeasureSetup)
-	+ export_calibration_setup_to_file(setup : CalibrationSetup)
-	+ export_measure_to_file(measure : Measure)
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 }
 
