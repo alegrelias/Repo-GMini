@@ -56,6 +56,7 @@ class Measure {
 	- date : DateTime
 	- file_name : str
 	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_int : int
 	- device_temp : float
 	- result : MeasureResult
 	- observations : str
@@ -98,7 +99,6 @@ class CalibrationSetup{
 
 class Device{
 	- device_id : int
-	- connection_type : ConnectionType
 	- device_state : DeviceState
 	+ set_state(new_state : DeviceState)
 	+ get_state() : DeviceState
@@ -116,7 +116,7 @@ class MeasureResult{
 class ConnectionType {
 	<<abstract>>
 	- connection_state : ConnectionState
-	+ connect(device)
+	+ connect()
 	+ disconnect()
 	+ send(data : str)
 	+ receive() : str
@@ -168,7 +168,7 @@ class AuthService{
 	+ login(user_name, email, password) : Token
 	+ logout()
 	+ register(user_name, email, password) : Token
-	
+	+ restore_session(token : str)
 }
 
 class SessionManager{
@@ -178,9 +178,13 @@ class SessionManager{
 }
 
 class ConnectionService{
+	+ active_conections : [device : connection_type]
 	+ connect(device : Device, connection_type : ConnectionType)
-	+ disconnect()
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
 }
+
 class CalibrationService{
 	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
 }
@@ -194,6 +198,7 @@ class DeviceState{
 	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
+	class UncalibratedState
 	
 class ConnectionState{
 		<<interface>>
@@ -331,18 +336,8 @@ class WireLess{
 	- protocol : str
 }
 
-class User {
-	- user_id : int
-	- user_name : str
-	- email : str
-	- password : str
-	- root_directory : str
-	
-}
-
 class Device{
 	- device_id : int
-	- connection_type : ConnectionType
 	- device_state : DeviceState
 	+ set_state(new_state : DeviceState)
 	+ get_state() : DeviceState
@@ -368,6 +363,7 @@ class DeviceState{
 	class CalibratedState
 	class MeasuringState
 	class DeviceErrorState
+	class UncalibratedState
 
 %% observer patern
 class IObserver{
@@ -403,8 +399,11 @@ class DataBaseService{
 }
 
 class ConnectionService{
+	+ active_conections : [device : connection_type]
 	+ connect(device : Device, connection_type : ConnectionType)
-	+ disconnect()
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
 }
 
 %% factory method
@@ -414,27 +413,11 @@ class ConnectionFactory{
 
 %% relaciones
 
-User "1"-->"1" Device : conecta
-
-ConnectionService --> ConnectionFactory : usa
-ConnectionFactory ..> ConnectionType : instancia
-
-Device "1" o-- "1" ConnectionType
-Device "1" *-- "1" DeviceState
 Device ..|> IObservable : implementa
 
 MeasureService ..|> IObserver : implementa
-MeasureService --> Device : observa
-MeasureService --> DataBaseService : invoca guardado de emergencia
+ConnectionService ..|> IObserver : implementa
 
-
-ConnectionService -->  Device : establece conexión
-
-Device -->  ConnectionType : observa
-Device ..|> IObserver : implementa
-
-
-ConnectionType "1" *-- "1" ConnectionState
 ConnectionType ..|> IObservable : implementa
 
 DeviceState <|.. FreeDeviceState : implementa
@@ -446,6 +429,18 @@ DeviceState <|.. UncalibratedState : implementa
 ConnectionState <|.. ConnectedState : implementa
 ConnectionState <|.. DisconnectedState : implementa
 ConnectionState <|.. ConnectionErrorState : implementa
+
+ConnectionFactory --> ConnectionType : crea
+
+ConnectionType o-- ConnectionState
+Device o-- DeviceState
+
+ConnectionService --> Device : establece conexión
+ConnectionService --> ConnectionType : establece conexión
+ConnectionService --> ConnectionState : observa
+
+MeasureService --> DeviceState : observa
+MeasureService --> DataBaseService : invoca guardado de emergencia
 ```
 
 
