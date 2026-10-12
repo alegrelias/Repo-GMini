@@ -379,24 +379,6 @@ class IObservable{
 }
 
 %% servicios
-class MeasureService{
-	+ execute_measure(measure : Measure)
-	+ finish_measure() : [MeasureResult]
-	- update_progress()
-}
-
-class DataBaseService{
-	- db_root : str
-	%% operaciones en db
-	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-}
 
 class ConnectionService{
 	+ active_conections : [device : connection_type]
@@ -438,9 +420,6 @@ Device o-- DeviceState
 ConnectionService --> Device : establece conexión
 ConnectionService --> ConnectionType : establece conexión
 ConnectionService --> ConnectionState : observa
-
-MeasureService --> DeviceState : observa
-MeasureService --> DataBaseService : invoca guardado de emergencia
 ```
 
 
@@ -496,6 +475,14 @@ class SessionManager{
 	- active_token : Token
 }
 
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
+}
+
 class Token {
 	- user_id : int
 	- token_string : str
@@ -524,8 +511,7 @@ SessionManager "1"o--"0..1" User
 
 ICalibrationAdapter <|.. GminiCalibrationAdapter : implementa
 
-
-
+CalibrationService ..> ConnectionService : envía comandos y espera devolución
 CalibrationService ..> Device : establece calibración
 CalibrationService ..> CalibrationSetup : crea setup
 CalibrationService ..> SessionManager : verifica usuario
@@ -546,6 +532,16 @@ BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
 BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
+
+Device ..|> IObservable : implementa
+
+MeasureService ..|> IObserver : implementa
+
 %% clases
 class User {
 	- user_id : int
@@ -555,6 +551,22 @@ class User {
 	- root_directory : str
 	
 }
+
+class Device{
+	- device_id : int
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class DeviceState{
+		<<interface>>
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+	class UncalibratedState
 
 class Measure {
 	- measureSetup : MeasureSetup
@@ -621,6 +633,28 @@ class MeasureService{
 	- update_progress()
 }
 
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
+}
+
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+}
+
+
 %% builder patern
 class BaseMeasureSetupBuilder{
 	<<abstract>>
@@ -667,6 +701,19 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
 %% factory method
 class MeasureSetupBuilderFactory{ 
 	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
@@ -684,23 +731,28 @@ class GminiMeasureAdapter{
 }
 
 %% relaciones
-User "1"-->"1..*" Measure : mide
 
 MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 
 Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
+Measure --> Device : conoce
 
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 MeasureService ..> Measure : ejecuta medición
 MeasureService ..> SessionManager : verifica usuario
 MeasureService ..> IMeasureAdapter : envía setups y recibe comandos
+MeasureService ..> ConnectionService : envía comandos y espera devolución
+MeasureService --> DeviceState : observa
+MeasureService --> DataBaseService : invoca guardado de emergencia
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
 
 IMeasureAdapter <|.. GminiMeasureAdapter : implementa
+
+Device "1"*--"1" DeviceState
 ```
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
