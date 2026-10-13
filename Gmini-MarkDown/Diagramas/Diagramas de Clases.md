@@ -371,16 +371,12 @@ Measure o-- MeasureSetup
 Measure *-- MeasureResult
 ```
 
-
-
-
-
-
 #### Lista de Clases
+
+##### Jerarquía
 
 ```mermaid
 classDiagram
-direction LR
 
 %% jerarquias
 
@@ -394,55 +390,6 @@ BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
 ConnectionType <|-- Wire
 ConnectionType <|-- WireLess
-
-%% interfaces
-ConnectionState <|.. ConnectedState
-ConnectionState <|.. DisconnectedState
-ConnectionState <|.. ConnectionErrorState
-
-DeviceState <|.. FreeDeviceState
-DeviceState <|.. CalibratedState
-DeviceState <|.. MeasuringState
-DeviceState <|.. DeviceErrorState
-DeviceState <|.. UncalibratedState
-
-IMeasureAdapter <|.. GminiMeasureAdapter
-
-ICalibrationAdapter <|.. GminiCalibrationAdapter
-
-
-%% clases
-
-class User {
-	- user_id : int
-	- user_name : str
-	- email : str
-	- password : str
-	- root_directory : str
-	
-}
-
-class Token {
-	- user_id : int
-	- token_string : str
-	- created_at : DateTime
-}
-
-class Measure {
-	- measureSetup : MeasureSetup
-	- date : DateTime
-	- file_name : str
-	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
-	- device_id : int
-	- device_temp : float
-	- result : MeasureResult
-	- observations : str
-	- loop_group_id : str
-	- iteration_number : int
-	+ set_state(new_state : str)
-	+ get_state() : str
-	+ set_default_name()
-}
 
 class MeasureSetup {
 	<<abstract>>
@@ -468,29 +415,6 @@ class MultiMeasureSetup{
 	- freq_list :[float]
 }
 
-class CalibrationSetup{
-	- observations : str
-	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
-	- z_calc_value_real : float
-	- z_calc_value_imag : float
-}
-
-class Device{
-	- device_id : int
-	- device_state : DeviceState
-	+ set_state(new_state : DeviceState)
-	+ get_state() : DeviceState
-}
-
-class MeasureResult{
-	- frequencies : [float]
-	- amplitudes : [float]
-	- phases : [float]
-	- impedances : [complex]
-	+ measure_mean() : [float]
-	+ measure_std() : [float]
-}
-
 class ConnectionType {
 	<<abstract>>
 	- connection_state : ConnectionState
@@ -510,112 +434,6 @@ class WireLess{
 	- protocol : str
 }
 
-%% servicios
-
-class MeasureService{
-	+ execute_measure(measure : Measure)
-	+ finish_measure() : [MeasureResult]
-	+ apply_setup(device : Device, setup : MeasureSetup)
-	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
-	- update_progress()
-}
-
-class LocalService{
-	%% operaciones en archivos
-	+ load_measure(path : str) : Measure
-	+ load_calibration_setup(path : str) : CalibrationSetup
-	+ load_setup(path : str) : MeasureSetup
-	+ load_user_token(path : str) : Token
-	+ export_setup_to_file(path : str, setup : MeasureSetup)
-	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
-	+  export_measure_to_file(path : str, measure : Measure)
-	+ export_user_token(path : str, token : Token)
-}
-class DataBaseService{
-	- db_root : str
-	%% operaciones en db
-	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
-	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
-	+ get_measures_by_user(user_id : int) : [Measure]
-	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
-	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
-}
-
-
-class AuthService{
-	+ user_token_file_path : str
-	+ login(user_name, email, password) : Token
-	+ logout()
-	+ register(user_name, email, password) : Token
-	+ restore_session(token : str)
-}
-
-class SessionManager{
-	- current_user : User
-	- advanced_mode_active : boolean
-	- active_token : Token
-	+ switch_user_mode()
-	+ get_current_user() : User
-	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
-	+ get_active_token() : Token
-	+ set_active_token(token : Token)
-}
-
-class ConnectionService{
-	+ active_conections : [device : connection_type]
-	+ connect(device : Device, connection_type : ConnectionType)
-	+ disconnect(device : Device)
-	+ send(device : Device, command : str)
-	+ receive(device : Device) : str
-}
-
-class CalibrationService{
-	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
-}
-
-%% state patern
-
-class DeviceState{
-		<<interface>>
-		+ can_measure() : boolean
-	}
-	class FreeDeviceState
-	class CalibratedState
-	class MeasuringState
-	class DeviceErrorState
-	class UncalibratedState
-	
-class ConnectionState{
-		<<interface>>
-		+ connect(context : ConnectionType)
-		+ disconnect(context : ConnectionType)
-		+ send(context : ConnectionType, data: str)
-		+ receive(context : ConnectionType) : str
-	}
-class ConnectedState
-class DisconnectedState
-class ConnectionErrorState
-
-%% observer patern
-class IObserver{
-	<<interface>>
-	+ update(observable : IObservable, event_info : str)
-}
-
-class IObservable{
-	<<interface>>
-	+ attach()
-	+ detach()
-	+ notify()
-}
-
-%% builder patern
 class BaseMeasureSetupBuilder{
 	<<abstract>>
 	- observations : str
@@ -661,15 +479,52 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
-%% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
-} 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
-}
+```
 
-%% patron adapter
+##### Patrón State
+```mermaid
+classDiagram
+%% state patern
+ConnectionState <|.. ConnectedState
+ConnectionState <|.. DisconnectedState
+ConnectionState <|.. ConnectionErrorState
+
+DeviceState <|.. FreeDeviceState
+DeviceState <|.. CalibratedState
+DeviceState <|.. MeasuringState
+DeviceState <|.. DeviceErrorState
+DeviceState <|.. UncalibratedState
+
+class DeviceState{
+		<<interface>>
+		+ can_measure() : boolean
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+	class UncalibratedState
+	
+class ConnectionState{
+		<<interface>>
+		+ connect(context : ConnectionType)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
+```
+
+##### Patrón Adapter
+```mermaid
+classDiagram
+
+%% adapter pattern
+IMeasureAdapter <|.. GminiMeasureAdapter
+ICalibrationAdapter <|.. GminiCalibrationAdapter
+
 class ICalibrationAdapter{ 
 	<<interface>>
 	+ encode(setup : CalibrationSetup) : str 
@@ -692,6 +547,179 @@ class GminiMeasureAdapter{
 	+ encode_setup(setup : MeasureSetup) : str 
 	+ encode_execution(setup : MeasureSetup) : str 
 	+ decode(response : str) : MeasureResult 
+}
+```
+
+##### Patrón Observer
+```mermaid
+classDiagram
+
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
+```
+
+##### Patrón Factory
+```mermaid
+classDiagram
+%% factory method
+class ConnectionFactory{ 
+	+ create_connection(type : str) : ConnectionType 
+} 
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+}
+```
+##### Clases del Dominio
+```mermaid
+classDiagram
+%% mediciones
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ set_state(new_state : str)
+	+ get_state() : str
+	+ set_default_name()
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+
+
+%% usuario
+class User {
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
+}
+
+%% conexion y calibracion
+class CalibrationSetup{
+	- observations : str
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+}
+
+class Device{
+	- device_id : int
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+```
+
+##### Servicios de Mediciones y Calibración
+```mermaid
+classDiagram
+%% mediciones y conexion
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	- update_progress()
+}
+
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+```
+
+##### Servicios de Usuario y Autenticación
+```mermaid
+classDiagram
+%% usuario
+class AuthService{
+	+ user_token_file_path : str
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+	+ restore_session(token : str)
+}
+
+class SessionManager{
+	- current_user : User
+	- advanced_mode_active : boolean
+	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
+}
+```
+##### Servicios de Persistencia
+```mermaid
+classDiagram
+
+%% persistencia
+class LocalService{
+	%% operaciones en archivos
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_user_token(path : str, token : Token)
+}
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str) 
 }
 
 ```
