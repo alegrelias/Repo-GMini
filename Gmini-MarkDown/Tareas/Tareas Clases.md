@@ -12,6 +12,7 @@ kanban-plugin: board
 
 ## En Progreso
 
+- [ ] Hacer que session manager implemente observer para notificar cambios de uso
 
 
 ## Terminadas

@@ -6,7 +6,6 @@ kanban-plugin: board
 
 ## Pendientes
 
-- [ ] Verificar tabla de trazabilidad
 - [ ] Agregar definiciones
 - [ ] Justificar Patrones de Diseño
 - [ ] Agregar justificacion para las tecnologias
@@ -29,6 +28,7 @@ kanban-plugin: board
 
 ## Terminadas
 
+- [ ] Verificar tabla de trazabilidad
 - [ ] Definir si solo los expertos pueden crear perfiles (incluyendo el de operador)
 - [ ] Agregar Req no funcionales tipo "solo tal usuario puede hacer X"
 - [ ] Definir que cosas se guardan en BD y que se guarda de manera local
