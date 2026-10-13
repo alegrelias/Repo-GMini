@@ -1103,6 +1103,383 @@ CU6 -.extend.-> CU3
 
 ## Diseño
 ### Clases Software
+
+### Diagrama General
+
+```mermaid
+classDiagram
+direction LR
+
+%% jerarquias
+
+MeasureSetup <|-- SpecMeasureSetup
+MeasureSetup <|-- SingleMeasureSetup
+MeasureSetup <|-- MultiMeasureSetup
+
+BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
+BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
+BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
+
+ConnectionType <|-- Wire
+ConnectionType <|-- WireLess
+
+%% interfaces
+ConnectionState <|.. ConnectedState : implementa
+ConnectionState <|.. DisconnectedState : implementa
+ConnectionState <|.. ConnectionErrorState : implementa
+
+DeviceState <|.. FreeDeviceState : implementa
+DeviceState <|.. CalibratedState : implementa
+DeviceState <|.. MeasuringState : implementa
+DeviceState <|.. DeviceErrorState : implementa
+DeviceState <|.. UncalibratedState : implementa
+
+IMeasureAdapter <|.. GminiMeasureAdapter : implementa
+
+ICalibrationAdapter <|.. GminiCalibrationAdapter : implementa
+
+IObserver <|.. ConnectionService : implementa
+IObservable <|.. ConnectionService : implementa
+IObserver <|.. ConnectionType : implementa
+IObserver <|.. MeasureService : implementa
+IObservable <|.. SessionManager : implementa
+
+%% clases
+
+class User {
+	- user_id : int
+	- user_name : str
+	- email : str
+	- password : str
+	- root_directory : str
+	
+}
+
+class Token {
+	- user_id : int
+	- token_string : str
+	- created_at : DateTime
+}
+
+class Measure {
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ set_state(new_state : str)
+	+ get_state() : str
+	+ set_default_name()
+}
+
+class MeasureSetup {
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+}
+class SpecMeasureSetup{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+}
+class SingleMeasureSetup{
+	- freq : float
+	- delay : int
+	- count : int
+}
+class MultiMeasureSetup{
+	- freq_list :[float]
+}
+
+class CalibrationSetup{
+	- observations : str
+	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
+	- z_calc_value_real : float
+	- z_calc_value_imag : float
+}
+
+class Device{
+	- device_id : int
+	- device_state : DeviceState
+	+ set_state(new_state : DeviceState)
+	+ get_state() : DeviceState
+}
+
+class MeasureResult{
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+class ConnectionType {
+	<<abstract>>
+	- connection_state : ConnectionState
+	+ connect()
+	+ disconnect()
+	+ send(data : str)
+	+ receive() : str
+	+ set_state(new_state : ConnectionState)
+	+ get_state() : ConnectionState
+}
+class Wire{
+	- baudrate : int
+	- port_name : str
+	- timeout : int
+}
+class WireLess{
+	- protocol : str
+}
+
+%% servicios
+
+class MeasureService{
+	+ execute_measure(measure : Measure)
+	+ finish_measure() : [MeasureResult]
+	+ apply_setup(device : Device, setup : MeasureSetup)
+	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	- update_progress()
+}
+
+class LocalService{
+	%% operaciones en archivos
+	+ load_measure(path : str) : Measure
+	+ load_calibration_setup(path : str) : CalibrationSetup
+	+ load_setup(path : str) : MeasureSetup
+	+ load_user_token(path : str) : Token
+	+ export_setup_to_file(path : str, setup : MeasureSetup)
+	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
+	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_user_token(path : str, token : Token)
+}
+class DataBaseService{
+	- db_root : str
+	%% operaciones en db
+	+ save_user(user : User)
+	+ get_user_by_id(user_id : int): User
+	+ save_measure(measure : Measure)
+	+ save_calibration_setup(cal_setup : CalibrationSetup)
+	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_measures_by_user(user_id : int) : [Measure]
+	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
+	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
+	+ update_user_directory(user_id : int, path : str) 
+}
+
+
+class AuthService{
+	+ user_token_file_path : str
+	+ login(user_name, email, password) : Token
+	+ logout()
+	+ register(user_name, email, password) : Token
+	+ restore_session(token : str)
+}
+
+class SessionManager{
+	- current_user : User
+	- advanced_mode_active : boolean
+	- active_token : Token
+	+ switch_user_mode()
+	+ get_current_user() : User
+	+ set_current_user(user : User)
+	+ get_active_mode() : boolean
+	+ set_active_mode(mode : boolean)
+	+ get_active_token() : Token
+	+ set_active_token(token : Token)
+}
+
+class ConnectionService{
+	+ active_conections : [device : connection_type]
+	+ connect(device : Device, connection_type : ConnectionType)
+	+ disconnect(device : Device)
+	+ send(device : Device, command : str)
+	+ receive(device : Device) : str
+}
+
+class CalibrationService{
+	+ calibrate_device(device : Device, cal_setup : CalibrationSetup)
+}
+
+%% state patern
+
+class DeviceState{
+		<<interface>>
+		+ can_measure() : boolean
+	}
+	class FreeDeviceState
+	class CalibratedState
+	class MeasuringState
+	class DeviceErrorState
+	class UncalibratedState
+	
+class ConnectionState{
+		<<interface>>
+		+ connect(context : ConnectionType)
+		+ disconnect(context : ConnectionType)
+		+ send(context : ConnectionType, data: str)
+		+ receive(context : ConnectionType) : str
+	}
+class ConnectedState
+class DisconnectedState
+class ConnectionErrorState
+
+%% observer patern
+class IObserver{
+	<<interface>>
+	+ update(observable : IObservable, event_info : str)
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
+%% builder patern
+class BaseMeasureSetupBuilder{
+	<<abstract>>
+	- observations : str
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- settcycles : int
+	- mux_channel : [0, 1, 2, 3]
+	+ build() : MeasureSetup
+	+ with_observations()
+	+ with_voltage()
+	+ with_gain()
+	+ with_rfb_value()
+	+ with_cycles()
+	+ with_mux_channel()
+}
+
+class SpectroSetupBuilder{
+	- startfreq : float
+	- incfreq : float
+	- steps : int
+	- repeat : int
+	+ build() : SpecMeasureSetup
+	+ with_start_freq(startfreq : float) : self
+	+ with_inc_freq(incfreq : float) : self
+	+ with_steps(steps : int) : self
+	+ with_repeat(repeat : int) : self
+}
+
+class SingleFreqSetupBuilder{
+	- freq : float
+	- delay : int
+	- count : int
+	+ build() : SingleMeasureSetup
+	+ with_freq(freq : float) : self
+	+ with_delay(delay : int) : self
+	+ with_count(count : int) : self
+}
+
+class MultiFreqSetupBuilder{
+	- freq_list :[float]
+	+ build() : MultiMeasureSetup
+	+ with_freq_list(freq_list :[float]) : self
+}
+
+%% factory method
+class ConnectionFactory{ 
+	+ create_connection(type : str) : ConnectionType 
+} 
+class MeasureSetupBuilderFactory{ 
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+}
+
+%% patron adapter
+class ICalibrationAdapter{ 
+	<<interface>>
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+}
+
+class GminiCalibrationAdapter{ 
+	+ encode(setup : CalibrationSetup) : str 
+	+ decode(response : str) : bool 
+} 
+
+class IMeasureAdapter{ 
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+class GminiMeasureAdapter{ 
+	+ encode_setup(setup : MeasureSetup) : str 
+	+ encode_execution(setup : MeasureSetup) : str 
+	+ decode(response : str) : MeasureResult 
+}
+
+%% relaciones
+
+ConnectionService --> ConnectionType : establece conexión
+ConnectionService --> Device : establece conexión
+
+MeasureService --> ConnectionService : envía comandos y observa
+MeasureService --> Measure : ejecuta medición
+MeasureService --> DataBaseService : invoca guardado de emergencia 
+MeasureService --> SessionManager : verifica usuario
+MeasureService --> Device : verifica y actualiza estado
+MeasureService --> IMeasureAdapter : envía setups y recibe comandos
+
+CalibrationService --> CalibrationSetup : crea setup
+CalibrationService --> Device : establece calibración
+CalibrationService --> SessionManager : verifica usuario
+CalibrationService --> ConnectionService : envía comandos y espera devolución
+CalibrationService --> ICalibrationAdapter : envía setups y espera comandos
+
+AuthService --> DataBaseService : guarda usuario
+AuthService --> SessionManager : establece usuario
+AuthService --> LocalService : persiste/recupera token
+AuthService --> Token : crea token
+AuthService --> User : crea usuario
+
+LocalService --> CalibrationSetup : exporta/importa setup
+LocalService --> MeasureSetup : exporta/importa setup
+LocalService --> Measure : exporta/importa medición
+
+DataBaseService -->  CalibrationSetup : guarda setup
+DataBaseService -->  MeasureSetup : guarda setup
+DataBaseService -->  Measure : guarda medición
+
+MeasureSetupBuilderFactory --> BaseMeasureSetupBuilder : construye
+BaseMeasureSetupBuilder --> MeasureSetup : instancia
+ConnectionFactory --> ConnectionType : crea
+
+Device o-- DeviceState
+
+ConnectionType o-- ConnectionState
+
+SessionManager o-- User
+SessionManager o-- Token
+
+Measure --> Device
+Measure o-- MeasureSetup
+Measure *-- MeasureResult
+```
+
+
+
+
+
+
 #### Lista de Clases
 
 ```mermaid
@@ -1549,8 +1926,16 @@ DeviceState <|.. CalibratedState : implementa
 DeviceState <|.. MeasuringState : implementa
 DeviceState <|.. DeviceErrorState : implementa
 DeviceState <|.. UncalibratedState : implementa
+IObservable <|.. SessionManager : implementa
 
 %% clases
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
 class User {
 	- user_id : int
 	- user_name : str
@@ -1667,6 +2052,8 @@ ConnectionService ..|> IObservable : implementa
 
 MeasureService ..|> IObserver : implementa
 MeasureService ..|> IObservable : implementa
+
+IObservable <|.. SessionManager : implementa
 
 %% clases
 class User {
@@ -1912,6 +2299,8 @@ BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
 BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
+IObservable <|.. SessionManager : implementa
+
 class User {
 	- user_id : int
 	- user_name : str
@@ -1933,6 +2322,13 @@ class Token {
 	- user_id : int
 	- token_string : str
 	- created_at : DateTime
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
 }
 
 class LocalService{
@@ -2088,6 +2484,8 @@ MeasureSetup <|-- MultiMeasureSetup
 BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
 BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
+
+IObservable <|.. SessionManager : implementa
 
 %% clases
 class IObservable{
@@ -2438,15 +2836,15 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 
 ##### Módulo 1: Conectividad y Estado
 
-| **Requisito** | Caso de uso                                          | Clase/servicio                                                   | Persistencia |
-| ------------- | ---------------------------------------------------- | ---------------------------------------------------------------- | ------------ |
-| **CON-01**    | Establecer conexión alámbrica                        | ConnectionService/Wire                                           | -            |
-| **CON-02**    | Establecer conexión inalámbrica                      | ConnectionService/Wireless                                       | -            |
-| **CON-03**    | Traducir comandos de control                         | CalibrationSetup/get_command()<br><br>MeasureSetup/get_command() | -            |
-| **CON-04**    | Notificar visualmente el estado activo de conexión   | ConnectionService/ConnectionState/ConnectedState                 | -            |
-| **CON-05**    | Notificar visualmente el estado Inactivo de conexión | ConnectionService/ConnectionState/DisconnectedState              | -            |
-| **CON-06**    | Notificar visualmente el estado error de conexión    | ConnectionService/ConnectionState/ConnectionErrorState           | -            |
-| **CON-07**    | Persistir últimos datos generados ante un error      | MeasureService/PersistenceService                                | MEASURE      |
+| **Requisito** | Caso de uso                                          | Clase/servicio                                                                                                           | Persistencia |
+| ------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| **CON-01**    | Establecer conexión alámbrica                        | ConnectionService/ConnectionType/Wire                                                                                    | -            |
+| **CON-02**    | Establecer conexión inalámbrica                      | ConnectionService/ConnectionType/Wireless                                                                                | -            |
+| **CON-03**    | Traducir comandos de control                         | CalibrationService/ICalibrationAdapter/GminiCalibrationAdapter<br><br>MeasureService/IMeasureAdapter/GminiMeasureAdapter | -            |
+| **CON-04**    | Notificar visualmente el estado activo de conexión   | ConnectionService/ConnectionState/ConnectedState                                                                         | -            |
+| **CON-05**    | Notificar visualmente el estado Inactivo de conexión | ConnectionService/ConnectionState/DisconnectedState                                                                      | -            |
+| **CON-06**    | Notificar visualmente el estado error de conexión    | ConnectionService/ConnectionState/ConnectionErrorState                                                                   | -            |
+
 
 ##### Módulo 2: Calibración del Dispositivo
 | **Requisito** | Caso de uso                                              | Clase/servicio                       | Persistencia |
@@ -2461,7 +2859,7 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 
 | **Requisito** | Caso de uso                                                | Clase/servicio                  | Persistencia  |
 | ------------- | ---------------------------------------------------------- | ------------------------------- | ------------- |
-| **MED-01**    | Configurar apartados comunes a una medición                | Measure                         | -             |
+| **MED-01**    | Configurar apartados comunes a una medición                | MeasureSetup                    | -             |
 | **MED-02**    | Configurar medición de una frecuencia  (Monofrecuencia)    | MeasureSetup/SingleMeasureSetup | -             |
 | **MED-03**    | Ejecutar medición de una frecuencia (Monofrecuencia)       | MeasureService                  | MeasureResult |
 | **MED-04**    | Configurar medición por espectroscopía (Barrido espectral) | MeasureSetup/SpecMeasureSetup   | -             |
@@ -2469,43 +2867,47 @@ MEASURE_SETUP o|--|| MULTI_MEASURE_SETUP : es_un
 | **MED-06**    | Configurar medición de multifrecuencia                     | MeasureSetup/MultiMeasureSetup  | -             |
 | **MED-07**    | Ejecutar medición multifrecuencia                          | MeasureService                  | MeasureResult |
 | **MED-08**    | Ejecutar mediciones en bucle                               | MeasureService                  | MeasureResult |
+| **MED-09**    | Mostrar Progreso de la medición                            | MeasureService/IObservable/GUI  | -             |
+| **MED-10**    | Mostrar resultados intermedios                             | MeasureService/IObservable/GUI  | -             |
 | **MED-11**    | Calcular estadísticos descriptivos básicos                 | MeasureResult                   | -             |
 | **MED-13**    | Limitar configuración de mediciones al Modo Avanzado       | SessionManager                  | -             |
+| **MED-14**    | Persistir últimos datos generados ante un error            | MeasureService/DataBaseService  | MEASURE       |
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 ##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
-| **Requisito** | Caso de uso                                 | Clase/servicio     | Persistencia                    |
-| ------------- | ------------------------------------------- | ------------------ | ------------------------------- |
-| **SET-01**    | Crear Perfil de Usuario                     | AuthService        | USER                            |
-| **SET-02**    | Iniciar Sesión                              | AuthService        | -                               |
-| **SET-03**    | Cerrar Sesión                               | AuthService        | -                               |
-| **SET-04**    | Habilitar Modos de Uso                      | SessionManager     | -                               |
-| **SET-05**    | Habilitar Modo Avanzado                     | SessionManager     | -                               |
-| **SET-06**    | Habilitar Modo Básico                       | SessionManager     | -                               |
-| **SET-07**    | Cambiar entre modos de uso                  | SessionManager     | -                               |
-| **SET-09**    | Aplicar configuraciones                     | PersistenceService | -                               |
-| **SET-10**    | Cargar configuraciones                      | PersistenceService | CALIBRATION_SETUP/MEASURE_SETUP |
-| **SET-11**    | Exportar configuraciones de medición        | PersistenceService | -                               |
-| **SET-13**    | Mantener la sesión activa en el dispositivo | SessionManager     | -                               |
+| **Requisito** | Caso de uso                                 | Clase/servicio                 | Persistencia                    |
+| ------------- | ------------------------------------------- | ------------------------------ | ------------------------------- |
+| **SET-01**    | Crear Perfil de Usuario                     | AuthService/DataBaseService    | USER                            |
+| **SET-02**    | Iniciar Sesión                              | AuthService                    | -                               |
+| **SET-03**    | Cerrar Sesión                               | AuthService                    | -                               |
+| **SET-04**    | Habilitar Modos de Uso                      | SessionManager                 | -                               |
+| **SET-05**    | Habilitar Modo Avanzado                     | SessionManager                 | -                               |
+| **SET-06**    | Habilitar Modo Básico                       | SessionManager                 | -                               |
+| **SET-07**    | Cambiar entre modos de uso                  | SessionManager                 | -                               |
+| **SET-08**    | Advertir sobre cambio de modo               | SessionManager/IObservable/GUI | -                               |
+| **SET-09**    | Aplicar configuraciones                     | DataBaseService                | -                               |
+| **SET-10**    | Cargar configuraciones                      | DataBaseService                | CALIBRATION_SETUP/MEASURE_SETUP |
+| **SET-11**    | Exportar configuraciones de medición        | LocalService                   | -                               |
+| **SET-13**    | Mantener la sesión activa en el dispositivo | LocalService/Token             | -                               |
 
 #### Subsistema 5: Persistencia
 
 ##### Módulo 1: Almacenamiento y Estructura de Datos
 
-| **Requisito** | Caso de uso                                                      | Clase/servicio                                                             | Persistencia                           |
-| ------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------- |
-| **PER-01**    | Almacenar setups de medición y calibración en una Base de Datos  | PersistenceService/MeasureSetup<br><br>PersistenceService/CalibrationSetup | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
-| **PER-02**    | Almacenar mediciones y sus resultados en una Base de Datos       | PersistenceService/Measure<br><br>PersistenceService/MeasureResult<br><br> | MEASURE<br><br>MEASURE_RESULT          |
-| **PER-03**    | Configurar directorios                                           | PersistenceService                                                         | -                                      |
-| **PER-04**    | Generar nomenclatura predeterminada de archivos                  | Measure                                                                    | MEASURE                                |
-| **PER-05**    | Renombramiento manual de archivos                                | Measure                                                                    | MEASURE                                |
-| **PER-06**    | Estructurar cabeceras de metadatos integrados                    | Mesaure                                                                    | MEASURE                                |
-| **PER-07**    | Limitar el guardado de setups al Modo Avanzado                   | SessionManager                                                             | -                                      |
-| **PER-08**    | Adjuntar metadatos y observaciones libres sobre mediciones       | Mesaure                                                                    | MEASURE                                |
-| **PER-09**    | Adjuntar metadatos y observaciones libres sobre setups           | PersistenceService/MeasureSetup<br><br>PersistenceService/CalibrationSetup | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
-| **PER-10**    | Limitar la escritura de observaciones en setups al modo Avanzado | SessionManager                                                             | -                                      |
+| **Requisito** | Caso de uso                                                      | Clase/servicio                                                       | Persistencia                           |
+| ------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------- |
+| **PER-01**    | Almacenar setups de medición y calibración en una Base de Datos  | DataBaseService/MeasureSetup<br><br>DataBaseService/CalibrationSetup | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
+| **PER-02**    | Almacenar mediciones y sus resultados en una Base de Datos       | DataBaseService/Measure<br><br>DataBaseService/MeasureResult<br><br> | MEASURE<br><br>MEASURE_RESULT          |
+| **PER-03**    | Configurar directorios                                           | User                                                                 | -                                      |
+| **PER-04**    | Generar nomenclatura predeterminada de archivos                  | Measure                                                              | MEASURE                                |
+| **PER-05**    | Renombramiento manual de archivos                                | Measure                                                              | MEASURE                                |
+| **PER-06**    | Estructurar cabeceras de metadatos integrados                    | Mesaure                                                              | MEASURE                                |
+| **PER-07**    | Limitar el guardado de setups al Modo Avanzado                   | SessionManager                                                       | -                                      |
+| **PER-08**    | Adjuntar metadatos y observaciones libres sobre mediciones       | Mesaure                                                              | MEASURE                                |
+| **PER-09**    | Adjuntar metadatos y observaciones libres sobre setups           | MeasureSetup<br><br>CalibrationSetup                                 | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
+| **PER-10**    | Limitar la escritura de observaciones en setups al modo Avanzado | SessionManager                                                       | -                                      |
 
 
 ### Pantallas
