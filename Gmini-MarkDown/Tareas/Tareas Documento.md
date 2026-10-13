@@ -6,6 +6,7 @@ kanban-plugin: board
 
 ## Pendientes
 
+- [ ] Verificar tabla de trazabilidad
 - [ ] Agregar definiciones
 - [ ] Justificar Patrones de Diseño
 - [ ] Agregar justificacion para las tecnologias
@@ -37,7 +38,6 @@ kanban-plugin: board
 - [ ] Verificar cardinalidad en BD
 - [ ] Verificar si hace falta poner "file_name" a mas clases
 - [ ] Definir si realmente es conveniente utilizar FastAPI
-- [ ] Crear tabla de trazabilidad
 - [ ] Poner en pausa el uso de FastAPI y enfocarse en los servicios
 
 
