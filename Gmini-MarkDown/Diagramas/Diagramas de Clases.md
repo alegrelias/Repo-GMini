@@ -38,6 +38,7 @@ IObserver <|.. ConnectionService : implementa
 IObservable <|.. ConnectionService : implementa
 IObserver <|.. ConnectionType : implementa
 IObserver <|.. MeasureService : implementa
+IObservable <|.. SessionManager : implementa
 
 %% clases
 
@@ -821,8 +822,16 @@ DeviceState <|.. CalibratedState : implementa
 DeviceState <|.. MeasuringState : implementa
 DeviceState <|.. DeviceErrorState : implementa
 DeviceState <|.. UncalibratedState : implementa
+IObservable <|.. SessionManager : implementa
 
 %% clases
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
+}
+
 class User {
 	- user_id : int
 	- user_name : str
@@ -939,6 +948,8 @@ ConnectionService ..|> IObservable : implementa
 
 MeasureService ..|> IObserver : implementa
 MeasureService ..|> IObservable : implementa
+
+IObservable <|.. SessionManager : implementa
 
 %% clases
 class User {
@@ -1184,6 +1195,8 @@ BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
 BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
 
+IObservable <|.. SessionManager : implementa
+
 class User {
 	- user_id : int
 	- user_name : str
@@ -1205,6 +1218,13 @@ class Token {
 	- user_id : int
 	- token_string : str
 	- created_at : DateTime
+}
+
+class IObservable{
+	<<interface>>
+	+ attach()
+	+ detach()
+	+ notify()
 }
 
 class LocalService{
@@ -1360,6 +1380,8 @@ MeasureSetup <|-- MultiMeasureSetup
 BaseMeasureSetupBuilder <|-- SpectroSetupBuilder
 BaseMeasureSetupBuilder <|-- SingleFreqSetupBuilder
 BaseMeasureSetupBuilder <|-- MultiFreqSetupBuilder
+
+IObservable <|.. SessionManager : implementa
 
 %% clases
 class IObservable{
