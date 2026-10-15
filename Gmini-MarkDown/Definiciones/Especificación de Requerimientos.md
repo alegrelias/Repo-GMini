@@ -127,6 +127,11 @@
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                           |
 | **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
+
+| MED-15          | Renderizar gráficas a partir de los resultados                                                                   |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                              |
+| **Descripción** | El sistema debe ser capaz de generar gráficos utilizando los resultados obtenidos y los parámetros establecidos. |
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
@@ -271,3 +276,8 @@
 | :-------------- | ----------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                   |
 | **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
+
+| **PER-11**      | Permitir exportación de gráficas generadas                                                      |
+| :-------------- | ----------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                             |
+| **Descripción** | El sistema debe permitir a los usuarios exportar las gráficas generadas en una carpeta definida |
