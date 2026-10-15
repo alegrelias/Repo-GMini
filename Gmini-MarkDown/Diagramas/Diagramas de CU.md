@@ -75,12 +75,12 @@ CU8 ==> CU5
 %% Asociaciones
 Usuario --> CU1
 Usuario --> CU5
-Usuario --> CU10
-Usuario --> CU12
 
 %% Relaciones Include/Extend
 CU5 -.include.-> CU9
+CU10 -.extend.-> CU5
 CU11 -.extend.-> CU5
+CU12 -.extend.-> CU5
 ```
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
@@ -144,12 +144,12 @@ Usuario --> CU1
 Usuario --> CU2
 Usuario --> CU3
 Usuario --> CU4
-Usuario --> CU7
 
 %% Relaciones Include/Extend
 CU5 -.extend.-> CU3
 CU6 -.extend.-> CU1
 CU6 -.extend.-> CU2
 CU6 -.extend.-> CU3
+CU7 -.extend.-> CU3
 ```
 
