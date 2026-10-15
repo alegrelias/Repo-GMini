@@ -6,6 +6,7 @@ kanban-plugin: board
 
 ## Pendientes
 
+- [ ] Verificar con Antonio si la gráfica debe actualizarse en vivo a medida que ocurre un barrido o un bucle o si solo se grafica al final.
 - [ ] Agregar definiciones
 - [ ] Justificar Patrones de Diseño
 - [ ] Agregar justificacion para las tecnologias
