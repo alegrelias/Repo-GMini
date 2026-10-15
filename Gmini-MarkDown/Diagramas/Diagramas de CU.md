@@ -60,6 +60,7 @@ subgraph Configuración y Toma de Mediciones
 	CU9([Visualizar Progreso de medición])
 	CU10([Visualizar estadísticos descriptivos básicos])
 	CU11([Ejecutar medición en bucle])
+	CU12([Visualizar gráficas a partir de resultados])
 end
 
 %% Generalización
@@ -75,6 +76,7 @@ CU8 ==> CU5
 Usuario --> CU1
 Usuario --> CU5
 Usuario --> CU10
+Usuario --> CU12
 
 %% Relaciones Include/Extend
 CU5 -.include.-> CU9
@@ -134,6 +136,7 @@ subgraph Almacenamiento y Estructura de Datos
 	CU4([Configurar directorio raíz])
 	CU5([Renombrar archivo manualmente])
 	CU6([Redactar observaciones])
+	CU7([Exportar gráficas generadas])
 end
 
 %% Asociaciones
@@ -141,6 +144,7 @@ Usuario --> CU1
 Usuario --> CU2
 Usuario --> CU3
 Usuario --> CU4
+Usuario --> CU7
 
 %% Relaciones Include/Extend
 CU5 -.extend.-> CU3
