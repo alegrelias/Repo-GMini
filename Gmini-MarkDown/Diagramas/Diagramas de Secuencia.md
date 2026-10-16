@@ -22,7 +22,7 @@ participant dbs as DataBaseService
 participant db as Base de Datos
 
 auth->>dbs: get_user_by_email(email)
-dbs->>db: SELECT email FROM USER WHERE email = @email_param
+dbs->>db: SELECT * FROM USER WHERE email = @email_param
 alt Usuario Inexistente
 	db-->>dbs: NULL
 	dbs-->>auth: null
@@ -40,9 +40,56 @@ alt Usuario Inexistente
 	auth-->>G: True
 	G-->>U: Registro exitoso
 else
-	db-->>dbs: USER.email
+	db-->>dbs: USER.user_name, USER.email, USER.password, USER.root_directory
 	dbs-->>auth: User
 	auth-->>G: False
 	G-->>U: Usuario no registrado
+end
+```
+
+##### Iniciar Sesión
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant auth as AuthService
+
+U->>G: Solicitud de Inicio de Sesión
+G->>auth: login(user_name, password)
+participant dbs as DataBaseService
+participant db as Base de Datos
+auth->>dbs: get_user_by_name(user_name)
+dbs->>db: SELECT * FROM USER WHERE user_name = @user_name_param
+alt Usuario Registrado
+	db-->>dbs: USER.user_name, USER.email, USER.password, USER.root_directory
+	dbs-->>auth: User
+	auth->>auth: verify_password(password)
+	alt Contraseña Correcta
+		participant session as SessionManager
+		auth->>session: set_current_user(user)
+		auth->>auth: token_string = generate_token()
+		create participant T as Token
+		auth->>T: new Token(user_id, token_string, created_at)
+		T-->>auth: Instancia Creada
+		auth->>session: set_active_token(token)
+		participant local as LocalService
+		auth->>local: export_user_token(path, token)
+		local-->>auth: Guardado exitoso
+		auth->>session: set_active_mode(False)
+		auth-->>G: True
+		G-->>U: Inicio de sesión exitoso
+	
+	else Contraseña Incorrecta
+			auth-->>G: False
+			G-->>U: Inicio de sesión rechazado
+	end
+	
+else Usuario Inexistente
+	db-->>dbs: NULL
+	dbs-->>auth: null
+	auth-->>G: False
+	G-->>U: Inicio de sesión rechazado
 end
 ```
