@@ -127,3 +127,28 @@ end
 
 
 ```
+
+##### Cerrar Sesión
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant auth as AuthService
+participant session as SessionManager
+participant local as LocalService
+
+U->>G: Solicitud de Cierre de Sesión
+G->>auth: logout()
+auth->>local: delete_token()
+local-->>auth: Eliminación exitosa
+auth->>session: set_active_token(null)
+auth->>session: set_current_user(null)
+session->>session: notify()
+session->>G: update(observable, event_info)
+auth-->>G: True
+G-->>U: Cierre de Sesión exitoso
+
+
+```
