@@ -30,13 +30,13 @@ flowchart LR
 Usuario((Usuario))
 
 subgraph Calibración del Dispositivo
-	CU1([Configurar la Calibración Electrónica])
-	CU2([Ejecutar Calibración Electrónica])
+	CU5([Configurar la Calibración Electrónica])
+	CU6([Ejecutar Calibración Electrónica])
 end
 
 %% Asociación
-Usuario --> CU1
-Usuario --> CU2
+Usuario --> CU5
+Usuario --> CU6
 ```
 
 #### Subsistema 2: Configuración y Toma de Mediciones
@@ -49,38 +49,38 @@ flowchart LR
 Usuario((Usuario))
 
 subgraph Configuración y Toma de Mediciones
-	CU1([Configurar medición])
-	CU2([Configurar medición de monofrecuencia])
-	CU3([Configurar medición de multifrecuencia])
-	CU4([Configurar medición de espectroscopía])
-	CU5([Ejecutar medición])
-	CU6([Ejecutar medición de monofrecuencia])
-	CU7([Ejecutar medición de multifrecuencia])
-	CU8([Ejecutar medición de espectroscopía])
-	CU9([Visualizar Progreso de medición])
-	CU10([Visualizar estadísticos descriptivos básicos])
-	CU11([Ejecutar medición en bucle])
-	CU12([Visualizar gráficas a partir de resultados])
+	CU7([Configurar medición])
+	CU8([Configurar medición de monofrecuencia])
+	CU9([Configurar medición de multifrecuencia])
+	CU10([Configurar medición de espectroscopía])
+	CU11([Ejecutar medición])
+	CU12([Ejecutar medición de monofrecuencia])
+	CU13([Ejecutar medición de multifrecuencia])
+	CU14([Ejecutar medición de espectroscopía])
+	CU15([Visualizar Progreso de medición])
+	CU16([Visualizar estadísticos descriptivos básicos])
+	CU17([Ejecutar medición en bucle])
+	CU18([Visualizar gráficas a partir de resultados])
 end
 
 %% Generalización
-CU2 ==> CU1
-CU3 ==> CU1
-CU4 ==> CU1
-CU6 ==> CU5
-CU7 ==> CU5
-CU8 ==> CU5
+CU8 ==> CU7
+CU9 ==> CU7
+CU10 ==> CU7
+CU12 ==> CU11
+CU13 ==> CU11
+CU14 ==> CU11
 
 
 %% Asociaciones
-Usuario --> CU1
-Usuario --> CU5
+Usuario --> CU7
+Usuario --> CU11
 
 %% Relaciones Include/Extend
-CU5 -.include.-> CU9
-CU10 -.extend.-> CU5
-CU11 -.extend.-> CU5
-CU12 -.extend.-> CU5
+CU11 -.include.-> CU15
+CU16 -.extend.-> CU11
+CU17 -.extend.-> CU11
+CU18 -.extend.-> CU11
 ```
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
@@ -94,31 +94,30 @@ flowchart LR
 Usuario((Usuario))
 
 subgraph Perfiles de Usuario y Gestión de Setups de Medición
-	CU1([Crear Perfil de Usuario])
-	CU2([Iniciar sesión])
-	CU3([Alternar entre Modos de Uso])
-	CU4([Cerrar sesión])
-	CU5([Visualizar advertencia por cambio de modo])
-	CU6([Aplicar configuraciones])
-	CU7([Importar configuraciones])
-	CU8([Exportar configuraciones])
-	CU9([Visualizar datos guardados])
+	CU19([Crear Perfil de Usuario])
+	CU20([Iniciar sesión])
+	CU21([Alternar entre Modos de Uso])
+	CU22([Cerrar sesión])
+	CU23([Visualizar advertencia por cambio de modo])
+	CU24([Aplicar configuraciones])
+	CU25([Importar configuraciones])
+	CU26([Exportar configuraciones])
+	CU27([Visualizar datos guardados])
 end
 
 %% Asociaciones
-Usuario --> CU1
-Usuario --> CU2
-Usuario --> CU3
-Usuario --> CU4
-Usuario --> CU6
-Usuario --> CU7
-Usuario --> CU8
-Usuario --> CU9
-
+Usuario --> CU19
+Usuario --> CU20
+Usuario --> CU21
+Usuario --> CU22
+Usuario --> CU24
+Usuario --> CU25
+Usuario --> CU26
+Usuario --> CU27
 
 %% Relaciones Include/Extend
 
-CU3 -.include.-> CU5
+CU21 -.include.-> CU23
 ```
 
 #### Subsistema 5: Persistencia
