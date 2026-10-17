@@ -152,3 +152,37 @@ G-->>U: Cierre de Sesión exitoso
 
 
 ```
+
+#### Subsistema 5: Persistencia
+
+##### Módulo 1: Almacenamiento y Estructura de Dato
+
+##### Configurar directorio raíz
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+participant user as User
+
+U->>G: Solicitud de cambio de directorio
+G->>session: get_current_user()
+session-->>G: User
+G->>U: Desplegar selector de directorios
+alt Usuario Confirma
+	U-->>G: Seleccionar ruta
+	G->>dbs: update_user_directory(user_id, path)
+	dbs->>db: UPDATE USER SET root_directory = @param_root_directory WHERE user_id = @param_user_id
+	db-->>dbs: Confirmación de actualización
+	dbs-->>G: True
+	G->>user: set_root_directory(path)
+	G-->>U: Cambio de directorio exitoso
+else Usuario Cancela
+	U-->>G: Cancelar Cambio
+	G-->>U: Cambio de directorio cancelado
+end
+```
