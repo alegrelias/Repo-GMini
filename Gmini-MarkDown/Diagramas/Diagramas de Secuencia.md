@@ -190,8 +190,8 @@ autonumber
 actor U as Usuario
 participant G as Interfaz (GUI)
 participant local as LocalService
-participant dbs as DataBaseService
 participant session as SessionManager
+participant dbs as DataBaseService
 participant db as Base de Datos
 
 U->>G: Solicita importar configuraciones
@@ -199,31 +199,31 @@ G->>U: Desplegar selector de directorios
 alt Usuario Selecciona un directorio
 	U-->>G: Seleccionar ruta
 	alt La configuración es de calibración
-		G->>local: load_calibration_setup_to_file(path)
+		G->>local: load_calibration_setup(path)
 		create participant C as CalibrationSetup
-		local->>C: new CalibrationSetup(observations, channel, z_calc_value_real, z_calc_value_imag)
+		local->>C: cal_setup = new CalibrationSetup(observations, channel, z_calc_value_real, z_calc_value_imag)
 		C-->>local: Instancia creada
-		local->>dbs: save_calibration_setup(cal_setup)
-		dbs->>session: get_current_user()
-		session-->>dbs: User
+		local-->>G: cal_setup
+		G->>session: get_current_user()
+		session-->>G: User
+		G->>dbs: save_calibration_setup(user_id, cal_setup)
 		dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id, ...) VALUES(user_id,...)
 		db-->>dbs: Confirmación de guardado
-		dbs-->>local: True
-		local-->>G: True
+		dbs-->>G: True
 		G-->>U: Importación exitosa
 		
 	else La configuración es de medición	
-		G->>local: load_setup_to_file(path)
+		G->>local: load_setup(path)
 		create participant M as MeasureSetup
-		local->>M: new MeasureSetup(observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel)
+		local->>M: m_setup = new MeasureSetup(observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel)
 		M-->>local: Instancia creada
-		local->>dbs: save_measure_setup(m_setup)
-		dbs->>session: get_current_user()
-		session-->>dbs: User
+		local-->>G: m_setup
+		G->>session: get_current_user()
+		session-->>G: User
+		G->>dbs: save_measure_setup(user_id, m_setup)
 		dbs->>db: INSERT INTO MEASURE_SETUP (user_id, ...) VALUES (user_id, ...)
 		db-->>dbs: Confirmación de guardado
-		dbs-->>local: True
-		local-->>G: True
+		dbs-->>G: True
 		G-->>U: Importación exitosa
 	end
 else Usuario cancela
