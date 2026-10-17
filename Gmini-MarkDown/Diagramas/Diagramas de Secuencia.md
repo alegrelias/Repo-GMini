@@ -266,3 +266,52 @@ else Usuario Cancela
 	G-->>U: Cambio de directorio cancelado
 end
 ```
+
+##### Guardar mediciones con sus resultados
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicitud de Guardado de medición
+G->>session: get_current_user()
+session-->>G: User
+G->>G: measure = get_selected_measure()
+G->>dbs: save_measure(user_id, measure)
+dbs->>dbs: result = measure.get_measure_result()
+dbs->>dbs: device_id = measure.get_device_id()
+dbs->>db: INSERT INTO MEASURE_RESULT(...) VALUES(...)
+db-->>dbs: Confirmación de guardado
+dbs->>db: SELECT last_insert_rowid()
+db-->>dbs: result_id
+dbs->>dbs: measure_setup = measure.measureSetup()
+	dbs->>dbs: setup_id = measure_setup.get_id()
+alt El setup es nuevo
+	dbs-->>dbs: null
+	dbs->>db: INSERT INTO MEASURE_SETUP(...) VALUES(...)
+	db-->>dbs: Confirmación de guardado
+	dbs->>db: SELECT last_insert_rowid()
+	db-->>dbs: measure_setup_id
+else El setup ya existía
+	dbs->>dbs: int
+end
+dbs->>db: INSERT INTO MEASURE(user_id, measure_setup, result, device_id, ...) VALUES(user_id, setup_id, result_id, device_id, ...)
+db-->>dbs: Confirmación de guardado
+dbs-->>G: True
+G-->>U: Medición guardada con éxito
+```
+
+##### Renombrar archivo manualmente
+
+##### Redactar observaciones
+
+##### Guardar Setups de calibración
+
+##### Guardar Setups de medición
+
+##### Exportar gráficas generadas
