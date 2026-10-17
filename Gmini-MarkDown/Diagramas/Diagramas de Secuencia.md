@@ -153,6 +153,39 @@ G-->>U: Cierre de Sesión exitoso
 
 ```
 
+##### Exportar Configuraciones
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+
+U->>G: Solicita exportar configuraciones
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	alt La configuración es de calibración
+		G->>local: export_calibration_setup_to_file(path, CalibrationSetup)
+		local-->>G: True
+		G-->>U: Confirmación de guardado
+	else La configuración es de medición
+		G->>local: export_setup_to_file(path, MeasureSetup)
+		local-->>G: True
+		G-->>U: Confirmación de guardado
+	end
+else Usuario cancela
+	U-->>G: Cancelar guardado
+	G-->>U: Guardado de archivo cancelado
+end
+```
+##### Importar Configuraciones
+
+
+
+
 #### Subsistema 5: Persistencia
 
 ##### Módulo 1: Almacenamiento y Estructura de Dato
