@@ -6,6 +6,10 @@ kanban-plugin: board
 
 ## Pendientes
 
+- [ ] Agregar casos de uso en subsistema 5 para exportar/importar resultados
+- [ ] El caso de uso Visualizar datos guardados está mal definido
+- [ ] El caso de uso Guardar Medicion con sus resultados está mal definido
+- [ ] Agregar caso de uso Guardar mediciones en la BD
 
 
 ## En progreso

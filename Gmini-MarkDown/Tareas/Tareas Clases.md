@@ -8,6 +8,7 @@ kanban-plugin: board
 
 - [ ] Agregar patron singleton para la sesion del usuario (sessionmanager)
 - [ ] definir si hacer el Authservice una interface
+- [ ] agregar atributos de id a las clases
 
 
 ## En Progreso
