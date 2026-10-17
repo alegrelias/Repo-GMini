@@ -53,7 +53,7 @@ MEASURE{
 	int user_id FK
 	int measure_setup FK
 	int result FK
-	int decice_id FK
+	int device_id FK
 	date date
 	string state
 	float device_temp
