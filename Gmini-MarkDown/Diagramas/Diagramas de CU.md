@@ -129,26 +129,26 @@ flowchart LR
 Usuario((Usuario))
 
 subgraph Almacenamiento y Estructura de Datos
-	CU1([Guardar Setups de calibración])
-	CU2([Guardar Setups de medición])
-	CU3([Guardar mediciones con sus resultados])
-	CU4([Configurar directorio raíz])
-	CU5([Renombrar archivo manualmente])
-	CU6([Redactar observaciones])
-	CU7([Exportar gráficas generadas])
+	CU28([Guardar Setups de calibración])
+	CU29([Guardar Setups de medición])
+	CU30([Guardar mediciones con sus resultados])
+	CU31([Configurar directorio raíz])
+	CU32([Renombrar archivo manualmente])
+	CU33([Redactar observaciones])
+	CU34([Exportar gráficas generadas])
 end
 
 %% Asociaciones
-Usuario --> CU1
-Usuario --> CU2
-Usuario --> CU3
-Usuario --> CU4
+Usuario --> CU28
+Usuario --> CU29
+Usuario --> CU30
+Usuario --> CU31
 
 %% Relaciones Include/Extend
-CU5 -.extend.-> CU3
-CU6 -.extend.-> CU1
-CU6 -.extend.-> CU2
-CU6 -.extend.-> CU3
-CU7 -.extend.-> CU3
+CU32 -.extend.-> CU30
+CU33 -.extend.-> CU28
+CU33 -.extend.-> CU29
+CU33 -.extend.-> CU30
+CU34 -.extend.-> CU30
 ```
 
