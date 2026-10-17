@@ -298,7 +298,7 @@ alt El setup es nuevo
 	dbs->>db: SELECT last_insert_rowid()
 	db-->>dbs: measure_setup_id
 else El setup ya existía
-	dbs->>dbs: int
+	dbs-->>dbs: int
 end
 dbs->>db: INSERT INTO MEASURE(user_id, measure_setup, result, device_id, ...) VALUES(user_id, setup_id, result_id, device_id, ...)
 db-->>dbs: Confirmación de guardado
