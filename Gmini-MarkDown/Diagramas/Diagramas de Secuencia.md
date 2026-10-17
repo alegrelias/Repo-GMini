@@ -183,7 +183,54 @@ end
 ```
 ##### Importar Configuraciones
 
+```mermaid
+sequenceDiagram
+autonumber
 
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+participant dbs as DataBaseService
+participant session as SessionManager
+participant db as Base de Datos
+
+U->>G: Solicita importar configuraciones
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	alt La configuración es de calibración
+		G->>local: load_calibration_setup_to_file(path)
+		create participant C as CalibrationSetup
+		local->>C: new CalibrationSetup(observations, channel, z_calc_value_real, z_calc_value_imag)
+		C-->>local: Instancia creada
+		local->>dbs: save_calibration_setup(cal_setup)
+		dbs->>session: get_current_user()
+		session-->>dbs: User
+		dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id, ...) VALUES(user_id,...)
+		db-->>dbs: Confirmación de guardado
+		dbs-->>local: True
+		local-->>G: True
+		G-->>U: Importación exitosa
+		
+	else La configuración es de medición	
+		G->>local: load_setup_to_file(path)
+		create participant M as MeasureSetup
+		local->>M: new MeasureSetup(observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel)
+		M-->>local: Instancia creada
+		local->>dbs: save_measure_setup(m_setup)
+		dbs->>session: get_current_user()
+		session-->>dbs: User
+		dbs->>db: INSERT INTO MEASURE_SETUP (user_id, ...) VALUES (user_id, ...)
+		db-->>dbs: Confirmación de guardado
+		dbs-->>local: True
+		local-->>G: True
+		G-->>U: Importación exitosa
+	end
+else Usuario cancela
+	U-->>G: Cancelar importación
+	G-->>U: Importación de archivo cancelada
+end
+```
 
 
 #### Subsistema 5: Persistencia
