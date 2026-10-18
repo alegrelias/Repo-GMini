@@ -96,6 +96,12 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
+	  
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -118,6 +124,12 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 
 class Device{
@@ -417,6 +429,12 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
+	  
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -666,6 +684,11 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 
 class Device{
@@ -909,6 +932,11 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 
 class Device{
@@ -1099,6 +1127,12 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
+	  
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1340,6 +1374,12 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
+	  
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1530,6 +1570,12 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
+	  
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 class SpecMeasureSetup{
 	- startfreq : float
@@ -1552,6 +1598,11 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	%% getters
+	+ get_id() : int
+	
+	%% setters
+	+ set_observations(obs : str)
 }
 
 class SessionManager{
