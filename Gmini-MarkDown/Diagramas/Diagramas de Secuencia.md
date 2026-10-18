@@ -402,7 +402,28 @@ dbs->>db: INSERT INTO MEASURE_SETUP(user_id,...) VALUES(user_id,...)
 		db-->>dbs: Confirmación de guardado
 	end
 dbs-->>G: True
-G-->>U: Setup de calibración guardado con éxito
+G-->>U: Setup de medición guardado con éxito
 ```
 
 ##### Exportar gráficas generadas
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+
+U->>G: Solicita exportar gráficas generadas
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	G->>local: export_plot(path, Figure)
+	local-->>G: True
+	G-->>U: Confirmación de guardado
+	
+else Usuario cancela
+	U-->>G: Cancelar guardado
+	G-->>U: Guardado de archivo cancelado
+end
+```
