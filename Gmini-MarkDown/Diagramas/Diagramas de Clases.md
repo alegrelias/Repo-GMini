@@ -200,10 +200,11 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_user_by_id(user_id : int): User
+	+ get_user_by_email(email : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
@@ -783,10 +784,11 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_user_by_id(user_id : int): User
+	+ get_user_by_email(email : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
@@ -1205,14 +1207,15 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_user_by_id(user_id : int): User
+	+ get_user_by_email(email : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str)
+	+ update_user_directory(user_id : int, path : str) 
 }
 
 
@@ -1388,14 +1391,15 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_user_by_id(user_id : int): User
+	+ get_user_by_email(email : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str)
+	+ update_user_directory(user_id : int, path : str) 
 }
 
 class MeasureSetup {
@@ -1679,14 +1683,15 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ get_user_by_id(user_id : int): User
 	+ save_measure(measure : Measure)
 	+ save_calibration_setup(cal_setup : CalibrationSetup)
 	+ save_measure_setup(m_setup : MeasureSetup)
+	+ get_user_by_id(user_id : int): User
+	+ get_user_by_email(email : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str)
+	+ update_user_directory(user_id : int, path : str) 
 }
 
 class LocalService{
