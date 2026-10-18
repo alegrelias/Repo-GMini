@@ -311,24 +311,8 @@ db-->>dbs: result_id
 dbs->>dbs: measure_setup = measure.measureSetup()
 	dbs->>dbs: setup_id = measure_setup.get_id()
 alt El setup es nuevo
-	dbs-->>dbs: null
-	dbs->>db: INSERT INTO MEASURE_SETUP(...) VALUES(...)
-	db-->>dbs: Confirmación de guardado
-	
-	dbs->>db: SELECT last_insert_rowid()
-	db-->>dbs: measure_setup_id
-	
-	alt El setup es de Espectroscopía
-		dbs->>db: INSERT INTO SPEC_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
-		db-->>dbs: Confirmación de guardado
-	else El setup es de Monofrecuencia
-		dbs->>db: INSERT INTO SINGLE_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
-		db-->>dbs: Confirmación de guardado
-	else El setup es de Multifrecuencia
-		dbs->>db: INSERT INTO MULTI_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
-		db-->>dbs: Confirmación de guardado
-	end
-	
+	Note over dbs, db: [REF] Ejecutar guardar Setups de medición
+	dbs-->>dbs: measure_setup_id
 else El setup ya existía
 	dbs-->>dbs: int
 end
