@@ -69,9 +69,22 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ set_state(new_state : str)
+	  
+	%% getters
+	+ get_device_id() : int
+	+ get_measure_result() : MeasureResult
+	+ get_file_name() : str
+	+ get_observations() : str
+	+ get_measure_setup() : MeasureSetup
+	
 	+ get_state() : str
 	+ set_default_name()
+	
+	%% setters
+	+ set_file_name(new_name : name)
+	+ set_observation(obs : str)
+	+ set_state(new_state : str)
+
 }
 
 class MeasureSetup {
@@ -600,9 +613,22 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ set_state(new_state : str)
+	  
+	%% getters
+	+ get_device_id() : int
+	+ get_measure_result() : MeasureResult
+	+ get_file_name() : str
+	+ get_observations() : str
+	+ get_measure_setup() : MeasureSetup
+	
 	+ get_state() : str
 	+ set_default_name()
+	
+	%% setters
+	+ set_file_name(new_name : name)
+	+ set_observation(obs : str)
+	+ set_state(new_state : str)
+
 }
 
 class MeasureResult{
@@ -1027,9 +1053,22 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ set_state(new_state : str)
+	  
+	%% getters
+	+ get_device_id() : int
+	+ get_measure_result() : MeasureResult
+	+ get_file_name() : str
+	+ get_observations() : str
+	+ get_measure_setup() : MeasureSetup
+	
 	+ get_state() : str
 	+ set_default_name()
+	
+	%% setters
+	+ set_file_name(new_name : name)
+	+ set_observation(obs : str)
+	+ set_state(new_state : str)
+
 }
 
 class SessionManager{
@@ -1454,9 +1493,22 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	+ set_state(new_state : str)
+	  
+	%% getters
+	+ get_device_id() : int
+	+ get_measure_result() : MeasureResult
+	+ get_file_name() : str
+	+ get_observations() : str
+	+ get_measure_setup() : MeasureSetup
+	
 	+ get_state() : str
 	+ set_default_name()
+	
+	%% setters
+	+ set_file_name(new_name : name)
+	+ set_observation(obs : str)
+	+ set_state(new_state : str)
+
 }
 
 class MeasureResult{
