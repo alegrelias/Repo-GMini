@@ -360,7 +360,7 @@ dbs->>db: INSERT INTO MEASURE_RESULT(...) VALUES(...)
 db-->>dbs: Confirmación de guardado
 dbs->>db: SELECT last_insert_rowid()
 db-->>dbs: result_id
-dbs->>dbs: measure_setup = measure.measureSetup()
+dbs->>dbs: measure_setup = measure.get_measure_setup()
 	dbs->>dbs: setup_id = measure_setup.get_id()
 alt El setup es nuevo
 	Note over dbs, db: [REF] Ejecutar guardar Setups de medición
