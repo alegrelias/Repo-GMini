@@ -275,13 +275,13 @@ autonumber
 actor U as Usuario
 participant G as Interfaz (GUI)
 participant session as SessionManager
+participant M as Measure
 
 U->>G: Solicitud de Guardado de medición
 G->>session: get_current_user()
 session-->>G: User
-create participant M as Measure
-G->>M: measure = get_selected_measure()
-M-->>G: Instancia creada
+G->>G: measure = get_selected_measure()
+G-->>G: Referencia a la instancia
 G->>U: Solicita nombre del archivo
 alt El usuario mantiene el nombre por defecto
 	U-->>G: null
