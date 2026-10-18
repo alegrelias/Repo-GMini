@@ -48,7 +48,13 @@ class User {
 	- email : str
 	- password : str
 	- root_directory : str
+	%% getters
+	+ get_id() : int
+	+ get_root_directory() : str
 	
+	%% setters
+	+ set_user_id(id : int)
+	+ set_root_directory(path : str)
 }
 
 class Token {
@@ -668,7 +674,13 @@ class User {
 	- email : str
 	- password : str
 	- root_directory : str
+	%% getters
+	+ get_id() : int
+	+ get_root_directory() : str
 	
+	%% setters
+	+ set_user_id(id : int)
+	+ set_root_directory(path : str)
 }
 
 class Token {
@@ -923,7 +935,13 @@ class User {
 	- email : str
 	- password : str
 	- root_directory : str
+	%% getters
+	+ get_id() : int
+	+ get_root_directory() : str
 	
+	%% setters
+	+ set_user_id(id : int)
+	+ set_root_directory(path : str)
 }
 
 class CalibrationSetup{
@@ -1049,7 +1067,13 @@ class User {
 	- email : str
 	- password : str
 	- root_directory : str
+	%% getters
+	+ get_id() : int
+	+ get_root_directory() : str
 	
+	%% setters
+	+ set_user_id(id : int)
+	+ set_root_directory(path : str)
 }
 
 class Device{
@@ -1316,7 +1340,13 @@ class User {
 	- email : str
 	- password : str
 	- root_directory : str
+	%% getters
+	+ get_id() : int
+	+ get_root_directory() : str
 	
+	%% setters
+	+ set_user_id(id : int)
+	+ set_root_directory(path : str)
 }
 
 class AuthService{
@@ -1518,7 +1548,13 @@ class User {
 	- email : str
 	- password : str
 	- root_directory : str
+	%% getters
+	+ get_id() : int
+	+ get_root_directory() : str
 	
+	%% setters
+	+ set_user_id(id : int)
+	+ set_root_directory(path : str)
 }
 
 class Measure {
