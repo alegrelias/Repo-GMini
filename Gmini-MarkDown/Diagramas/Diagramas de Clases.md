@@ -115,6 +115,7 @@ class Device{
 }
 
 class MeasureResult{
+	- m_resul_id : int
 	- frequencies : [float]
 	- amplitudes : [float]
 	- phases : [float]
@@ -605,6 +606,7 @@ class Measure {
 }
 
 class MeasureResult{
+	- m_resul_id : int
 	- frequencies : [float]
 	- amplitudes : [float]
 	- phases : [float]
@@ -1075,6 +1077,7 @@ class MultiMeasureSetup{
 }
 
 class MeasureResult{
+	- m_resul_id : int
 	- frequencies : [float]
 	- amplitudes : [float]
 	- phases : [float]
@@ -1457,6 +1460,7 @@ class Measure {
 }
 
 class MeasureResult{
+	- m_resul_id : int
 	- frequencies : [float]
 	- amplitudes : [float]
 	- phases : [float]
