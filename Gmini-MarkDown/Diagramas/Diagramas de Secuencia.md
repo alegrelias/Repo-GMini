@@ -272,7 +272,7 @@ G->>U: Desplegar selector de directorios
 		U-->>G: Seleccionar ruta
 		G->>local: load_measure(path)
 		create participant M as Measure
-		local->>M: new Measure(...)
+		local->>M: new Measure(observations)
 		M-->>local: Instancia creada
 		local-->>G: measure
 		G->>session: get_current_user()
