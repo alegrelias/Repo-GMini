@@ -88,7 +88,7 @@ class Measure {
 	
 	%% setters
 	+ set_file_name(new_name : name)
-	+ set_observation(obs : str)
+	+ set_observations(obs : str)
 	+ set_state(new_state : str)
 
 }
@@ -201,7 +201,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ save_measure(measure : Measure)
+	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
@@ -216,12 +216,13 @@ class DataBaseService{
 
 class AuthService{
 	+ user_token_file_path : str
-	+ login(user_name, email, password) : Token
+	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
 	+ restore_session(token : str)
 	+ verify_password(password : str)
 	+ generate_token() : str
+	- rehash_password(password : str) : str
 }
 
 class SessionManager{
@@ -656,7 +657,7 @@ class Measure {
 	
 	%% setters
 	+ set_file_name(new_name : name)
-	+ set_observation(obs : str)
+	+ set_observations(obs : str)
 	+ set_state(new_state : str)
 
 }
@@ -748,12 +749,13 @@ classDiagram
 %% usuario
 class AuthService{
 	+ user_token_file_path : str
-	+ login(user_name, email, password) : Token
+	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
 	+ restore_session(token : str)
 	+ verify_password(password : str)
 	+ generate_token() : str
+	- rehash_password(password : str) : str
 }
 
 class SessionManager{
@@ -791,7 +793,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ save_measure(measure : Measure)
+	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
@@ -1130,7 +1132,7 @@ class Measure {
 	
 	%% setters
 	+ set_file_name(new_name : name)
-	+ set_observation(obs : str)
+	+ set_observations(obs : str)
 	+ set_state(new_state : str)
 
 }
@@ -1215,7 +1217,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ save_measure(measure : Measure)
+	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
@@ -1365,12 +1367,13 @@ class User {
 
 class AuthService{
 	+ user_token_file_path : str
-	+ login(user_name, email, password) : Token
+	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
 	+ restore_session(token : str)
 	+ verify_password(password : str)
 	+ generate_token() : str
+	- rehash_password(password : str) : str
 }
 
 class Token {
@@ -1403,7 +1406,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ save_measure(measure : Measure)
+	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
@@ -1602,7 +1605,7 @@ class Measure {
 	
 	%% setters
 	+ set_file_name(new_name : name)
-	+ set_observation(obs : str)
+	+ set_observations(obs : str)
 	+ set_state(new_state : str)
 
 }
@@ -1696,7 +1699,7 @@ class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
-	+ save_measure(measure : Measure)
+	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
