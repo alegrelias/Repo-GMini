@@ -38,6 +38,7 @@
 | **MED-11**    | Calcular estadísticos descriptivos básicos                 | MeasureResult                   | -             |
 | **MED-13**    | Limitar configuración de mediciones al Modo Avanzado       | SessionManager                  | -             |
 | **MED-14**    | Persistir últimos datos generados ante un error            | MeasureService/DataBaseService  | MEASURE       |
+| **MED-15**    | Renderizar gráficas a partir de los resultados             | GUI                             |               |
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
@@ -74,3 +75,4 @@
 | **PER-08**    | Adjuntar metadatos y observaciones libres sobre mediciones       | Mesaure                                                              | MEASURE                                |
 | **PER-09**    | Adjuntar metadatos y observaciones libres sobre setups           | MeasureSetup<br><br>CalibrationSetup                                 | MEASURE_SETUP<br><br>CALIBRATION_SETUP |
 | **PER-10**    | Limitar la escritura de observaciones en setups al modo Avanzado | SessionManager                                                       | -                                      |
+| **PER-11**    | Permitir exportación de gráficas generadas                       | LocalService                                                         | -                                      |
