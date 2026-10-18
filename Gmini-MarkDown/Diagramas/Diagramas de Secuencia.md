@@ -234,9 +234,19 @@ U->>G: Solicita importar una configuración
 			G-->>U: Importación exitosa
 	else La configuración es de medición	
 		G->>local: load_setup(path)
-		create participant MS as MeasureSetup
-		local->>MS: m_setup = new MeasureSetup(...)
-		MS-->>local: Instancia creada
+		alt El setup es de Espectroscopía
+			create participant spec as SpecMeasureSetup
+			local->>spec: m_setup = new SpecMeasureSetup(...)
+			spec-->>local: Instancia creada
+		else El setup es de Monofrecuencia
+			create participant single as SingleMeasureSetup
+			local->>single: m_setup = new SingleMeasureSetup(...)
+			single-->>local: Instancia creada
+		else El setup es de Multifrecuencia
+			create participant multi as MultiMeasureSetup
+			local->>multi: m_setup = new MultiMeasureSetup(...)
+			multi-->>local: Instancia creada
+		end
 		local-->>G: m_setup
 		G->>session: get_current_user()
 		session-->>G: User
@@ -270,7 +280,7 @@ G->>U: Desplegar selector de directorios
 		U-->>G: Seleccionar ruta
 		G->>local: load_measure(path)
 		create participant M as Measure
-		local->>M: new Measure(observations)
+		local->>M: new Measure(...)
 		M-->>local: Instancia creada
 		local-->>G: measure
 		G->>session: get_current_user()
