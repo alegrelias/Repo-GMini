@@ -219,6 +219,7 @@ class AuthService{
 	+ logout()
 	+ register(user_name, email, password)
 	+ restore_session(token : str)
+	+ verify_password(password : str)
 }
 
 class SessionManager{
@@ -749,6 +750,7 @@ class AuthService{
 	+ logout()
 	+ register(user_name, email, password)
 	+ restore_session(token : str)
+	+ verify_password(password : str)
 }
 
 class SessionManager{
@@ -1363,6 +1365,7 @@ class AuthService{
 	+ logout()
 	+ register(user_name, email, password)
 	+ restore_session(token : str)
+	+ verify_password(password : str)
 }
 
 class Token {
