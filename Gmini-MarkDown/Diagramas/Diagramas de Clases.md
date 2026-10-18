@@ -100,6 +100,7 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
+	c
 	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
@@ -632,6 +633,7 @@ class Token {
 
 %% conexion y calibracion
 class CalibrationSetup{
+	- cal_setup_id : int
 	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
@@ -874,6 +876,7 @@ class User {
 }
 
 class CalibrationSetup{
+	- cal_setup_id : int
 	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
@@ -1312,6 +1315,7 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
+	- cal_setup_id : int
 	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
@@ -1487,6 +1491,7 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
+	- cal_setup_id : int
 	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
