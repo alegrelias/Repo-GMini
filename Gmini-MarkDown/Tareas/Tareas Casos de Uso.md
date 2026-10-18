@@ -8,7 +8,7 @@ kanban-plugin: board
 
 - [ ] El caso de uso Visualizar datos guardados está mal definido
 - [ ] El caso de uso Guardar Medicion con sus resultados está mal definido
-- [ ] El caso de uso guardad setup de calibracion esta mal definifido
+- [ ] El caso de uso guardad setup de calibracion esta mal definido
 
 
 ## En progreso
