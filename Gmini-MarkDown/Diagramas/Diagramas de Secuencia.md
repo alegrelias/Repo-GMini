@@ -230,7 +230,6 @@ U->>G: Solicita importar una configuración
 			session-->>G: User
 			G->>dbs: save_calibration_setup(user_id, cal_setup)
 			Note over dbs, db: [REF] Ejecutar guardar setup de calibración
-			db-->>dbs: Confirmación de guardado
 			dbs-->>G: True
 			G-->>U: Importación exitosa
 	else La configuración es de medición	
@@ -243,7 +242,6 @@ U->>G: Solicita importar una configuración
 		session-->>G: User
 		G->>dbs: save_measure_setup(user_id, m_setup)
 		Note over dbs, db: [REF] Ejecutar guardar setup de medición
-		db-->>dbs: Confirmación de guardado
 		dbs-->>G: True
 		G-->>U: Importación exitosa
 	end
@@ -279,7 +277,6 @@ G->>U: Desplegar selector de directorios
 			session-->>G: User
 			G->>dbs: save_measure(user_id, measure)
 			Note over dbs, db: [REF] Ejecutar guardar medición con sus resultados
-			db-->>dbs: Confirmación de guardado
 			dbs-->>G: True
 			G-->>U: Importación exitosa
 	else Usuario cancela
