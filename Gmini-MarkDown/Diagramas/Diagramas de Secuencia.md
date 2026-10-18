@@ -235,7 +235,7 @@ end
 
 #### Subsistema 5: Persistencia
 
-##### Módulo 1: Almacenamiento y Estructura de Dato
+##### Módulo 1: Almacenamiento y Estructura de Datos
 
 ##### Configurar directorio raíz
 ```mermaid
@@ -281,7 +281,15 @@ participant db as Base de Datos
 U->>G: Solicitud de Guardado de medición
 G->>session: get_current_user()
 session-->>G: User
-G->>G: measure = get_selected_measure()
+G->>U: Solicita nombre del archivo
+alt El usuario mantiene el nombre por defecto
+	U-->>G: null
+	G->>G: measure = get_selected_measure()
+else El usuario ingresa un nuevo nombre de archivo
+	U-->>G: new_name
+	G->>G: measure = get_selected_measure()
+	G->>G: measure.set_file_name(new_name)
+end
 G->>dbs: save_measure(user_id, measure)
 dbs->>dbs: result = measure.get_measure_result()
 dbs->>dbs: device_id = measure.get_device_id()
@@ -300,13 +308,11 @@ alt El setup es nuevo
 else El setup ya existía
 	dbs-->>dbs: int
 end
-dbs->>db: INSERT INTO MEASURE(user_id, measure_setup, result, device_id, ...) VALUES(user_id, setup_id, result_id, device_id, ...)
+dbs->>db: INSERT INTO MEASURE(user_id, measure_setup, result, device_id, ..., file_name,...) VALUES(user_id, setup_id, result_id, device_id, ...,measure.get_file_name(),...)
 db-->>dbs: Confirmación de guardado
 dbs-->>G: True
 G-->>U: Medición guardada con éxito
 ```
-
-##### Renombrar archivo manualmente
 
 ##### Redactar observaciones
 
