@@ -223,7 +223,7 @@ U->>G: Solicita importar una configuración
 	alt La configuración es de calibración
 			G->>local: load_calibration_setup(path)
 			create participant C as CalibrationSetup
-			local->>C: cal_setup = new CalibrationSetup(observations, channel, z_calc_value_real, z_calc_value_imag)
+			local->>C: cal_setup = new CalibrationSetup(...)
 			C-->>local: Instancia creada
 			local-->>G: cal_setup
 			G->>session: get_current_user()
@@ -236,7 +236,7 @@ U->>G: Solicita importar una configuración
 	else La configuración es de medición	
 		G->>local: load_setup(path)
 		create participant MS as MeasureSetup
-		local->>MS: m_setup = new MeasureSetup(observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel)
+		local->>MS: m_setup = new MeasureSetup(...)
 		MS-->>local: Instancia creada
 		local-->>G: m_setup
 		G->>session: get_current_user()
@@ -272,7 +272,7 @@ G->>U: Desplegar selector de directorios
 		U-->>G: Seleccionar ruta
 		G->>local: load_measure(path)
 		create participant M as Measure
-		local->>M: new Measure(observations)
+		local->>M: new Measure(...)
 		M-->>local: Instancia creada
 		local-->>G: measure
 		G->>session: get_current_user()
