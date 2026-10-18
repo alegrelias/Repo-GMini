@@ -58,6 +58,7 @@ class Token {
 }
 
 class Measure {
+	- measure_id : int
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
@@ -75,6 +76,7 @@ class Measure {
 
 class MeasureSetup {
 	<<abstract>>
+	- measure_setup_id : int
 	- observations : str
 	- exitation_voltage : float
 	- gain : float
@@ -179,7 +181,7 @@ class AuthService{
 	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
-	+ register(user_name, email, password) : Token
+	+ register(user_name, email, password)
 	+ restore_session(token : str)
 }
 
@@ -393,6 +395,7 @@ ConnectionType <|-- WireLess
 
 class MeasureSetup {
 	<<abstract>>
+	- measure_setup_id : int
 	- observations : str
 	- exitation_voltage : float
 	- gain : float
@@ -584,6 +587,7 @@ class MeasureSetupBuilderFactory{
 classDiagram
 %% mediciones
 class Measure {
+	- measure_id : int
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
@@ -675,7 +679,7 @@ class AuthService{
 	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
-	+ register(user_name, email, password) : Token
+	+ register(user_name, email, password)
 	+ restore_session(token : str)
 }
 
@@ -1007,6 +1011,7 @@ class DeviceState{
 	class UncalibratedState
 
 class Measure {
+	- measure_id : int
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
@@ -1043,6 +1048,7 @@ class Token {
 
 class MeasureSetup {
 	<<abstract>>
+	- measure_setup_id : int
 	- observations : str
 	- exitation_voltage : float
 	- gain : float
@@ -1238,7 +1244,7 @@ class AuthService{
 	+ user_token_file_path : str
 	+ login(user_name, email, password) : Token
 	+ logout()
-	+ register(user_name, email, password) : Token
+	+ register(user_name, email, password)
 	+ restore_session(token : str)
 }
 
@@ -1282,6 +1288,7 @@ class DataBaseService{
 
 class MeasureSetup {
 	<<abstract>>
+	- measure_setup_id : int
 	- observations : str
 	- exitation_voltage : float
 	- gain : float
@@ -1429,6 +1436,7 @@ class User {
 }
 
 class Measure {
+	- measure_id : int
 	- measureSetup : MeasureSetup
 	- date : DateTime
 	- file_name : str
@@ -1455,6 +1463,7 @@ class MeasureResult{
 
 class MeasureSetup {
 	<<abstract>>
+	- measure_setup_id : int
 	- observations : str
 	- exitation_voltage : float
 	- gain : float
