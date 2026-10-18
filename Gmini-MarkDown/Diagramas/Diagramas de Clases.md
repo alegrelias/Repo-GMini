@@ -195,14 +195,15 @@ class LocalService{
 	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
+	+ delete_token()
 }
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
 	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
+	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
+	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
 	+ get_user_by_name(user_name : str): User 
@@ -784,14 +785,15 @@ class LocalService{
 	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
+	+ delete_token()	
 }
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
 	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
+	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
+	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
 	+ get_user_by_name(user_name : str): User 
@@ -1214,8 +1216,8 @@ class DataBaseService{
 	%% operaciones en db
 	+ save_user(user : User)
 	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
+	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
+	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
 	+ get_user_by_name(user_name : str): User 
@@ -1395,14 +1397,15 @@ class LocalService{
 	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
+	+ delete_token()
 }
 class DataBaseService{
 	- db_root : str
 	%% operaciones en db
 	+ save_user(user : User)
 	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
+	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
+	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
 	+ get_user_by_name(user_name : str): User 
@@ -1694,8 +1697,8 @@ class DataBaseService{
 	%% operaciones en db
 	+ save_user(user : User)
 	+ save_measure(measure : Measure)
-	+ save_calibration_setup(cal_setup : CalibrationSetup)
-	+ save_measure_setup(m_setup : MeasureSetup)
+	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
+	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
 	+ get_user_by_name(user_name : str): User 
@@ -1716,6 +1719,7 @@ class LocalService{
 	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
+	+ delete_token()
 }
 
 %% builder patern
