@@ -190,10 +190,10 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema debe permitir al usuario exportar las configuraciones guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-12**      | Visualizar datos guardados                                                                                               |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                                                                      |
-| **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas y setups) anteriores aunque la placa no esté conectada. |
+| **SET-12**      | Visualizar datos guardados                                                                                                         |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                |
+| **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas, gráficas y setups) anteriores aunque la placa no esté conectada. |
 
 | **SET-13**      | Mantener la sesión activa en el dispositivo                                                 |
 | :-------------- | ------------------------------------------------------------------------------------------- |
