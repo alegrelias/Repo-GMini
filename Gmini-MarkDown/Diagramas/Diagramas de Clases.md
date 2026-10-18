@@ -192,8 +192,9 @@ class LocalService{
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
-	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
+	+ export_plot(path : str, figure : Figure)
 }
 class DataBaseService{
 	- db_root : str
@@ -774,8 +775,9 @@ class LocalService{
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
-	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
+	+ export_plot(path : str, figure : Figure)
 }
 class DataBaseService{
 	- db_root : str
@@ -1378,8 +1380,9 @@ class LocalService{
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
-	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
+	+ export_plot(path : str, figure : Figure)
 }
 class DataBaseService{
 	- db_root : str
@@ -1694,8 +1697,9 @@ class LocalService{
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
-	+  export_measure_to_file(path : str, measure : Measure)
+	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
+	+ export_plot(path : str, figure : Figure)
 }
 
 %% builder patern
