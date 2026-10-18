@@ -18,6 +18,7 @@ kanban-plugin: board
 - [ ] Agregar a la tabla de trazabilidad los requerimientos visuales
 - [ ] Definir cómo se guarda la sesión, cómo se recupera y cuándo caduca o se invalida.
 - [ ] Definir cómo se notifican los avances y cómo se recuperan los datos parciales si se interrumpe la comunicación.
+- [ ] Agregar file_name como atributo a los setups en la base de datos y las clases o definir si unicamente se le cambia el nombre a las mediciones
 
 
 ## En Progreso
