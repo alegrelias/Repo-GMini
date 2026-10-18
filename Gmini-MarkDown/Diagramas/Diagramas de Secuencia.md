@@ -153,7 +153,7 @@ G-->>U: Cierre de Sesión exitoso
 
 ```
 
-##### Exportar Configuraciones
+##### Exportar Medición
 
 ```mermaid
 sequenceDiagram
@@ -163,7 +163,30 @@ actor U as Usuario
 participant G as Interfaz (GUI)
 participant local as LocalService
 
-U->>G: Solicita exportar configuraciones
+U->>G: Solicita exportar datos
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	G->>local: export_measure_to_file(path, Measure)
+	local-->>G: True
+	G-->>U: Confirmación de guardado
+else Usuario cancela
+	U-->>G: Cancelar guardado
+	G-->>U: Guardado de archivo cancelado
+end
+```
+
+##### Exportar Configuración
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+
+U->>G: Solicita exportar datos
 G->>U: Desplegar selector de directorios
 alt Usuario Selecciona un directorio
 	U-->>G: Seleccionar ruta
@@ -181,7 +204,8 @@ else Usuario cancela
 	G-->>U: Guardado de archivo cancelado
 end
 ```
-##### Importar Configuraciones
+
+##### Importar Configuración
 
 ```mermaid
 sequenceDiagram
@@ -194,44 +218,75 @@ participant session as SessionManager
 participant dbs as DataBaseService
 participant db as Base de Datos
 
-U->>G: Solicita importar configuraciones
-G->>U: Desplegar selector de directorios
-alt Usuario Selecciona un directorio
-	U-->>G: Seleccionar ruta
+U->>G: Solicita importar una configuración
+	alt Usuario Selecciona un directorio
 	alt La configuración es de calibración
-		G->>local: load_calibration_setup(path)
-		create participant C as CalibrationSetup
-		local->>C: cal_setup = new CalibrationSetup(observations, channel, z_calc_value_real, z_calc_value_imag)
-		C-->>local: Instancia creada
-		local-->>G: cal_setup
-		G->>session: get_current_user()
-		session-->>G: User
-		G->>dbs: save_calibration_setup(user_id, cal_setup)
-		dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id, ...) VALUES(user_id,...)
-		db-->>dbs: Confirmación de guardado
-		dbs-->>G: True
-		G-->>U: Importación exitosa
-		
+			G->>local: load_calibration_setup(path)
+			create participant C as CalibrationSetup
+			local->>C: cal_setup = new CalibrationSetup(observations, channel, z_calc_value_real, z_calc_value_imag)
+			C-->>local: Instancia creada
+			local-->>G: cal_setup
+			G->>session: get_current_user()
+			session-->>G: User
+			G->>dbs: save_calibration_setup(user_id, cal_setup)
+			Note over dbs, db: [REF] Ejecutar guardar setup de calibración
+			db-->>dbs: Confirmación de guardado
+			dbs-->>G: True
+			G-->>U: Importación exitosa
 	else La configuración es de medición	
 		G->>local: load_setup(path)
-		create participant M as MeasureSetup
-		local->>M: m_setup = new MeasureSetup(observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel)
-		M-->>local: Instancia creada
+		create participant MS as MeasureSetup
+		local->>MS: m_setup = new MeasureSetup(observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel)
+		MS-->>local: Instancia creada
 		local-->>G: m_setup
 		G->>session: get_current_user()
 		session-->>G: User
 		G->>dbs: save_measure_setup(user_id, m_setup)
-		dbs->>db: INSERT INTO MEASURE_SETUP (user_id, ...) VALUES (user_id, ...)
+		Note over dbs, db: [REF] Ejecutar guardar setup de medición
 		db-->>dbs: Confirmación de guardado
 		dbs-->>G: True
 		G-->>U: Importación exitosa
 	end
-else Usuario cancela
-	U-->>G: Cancelar importación
-	G-->>U: Importación de archivo cancelada
-end
+	else Usuario cancela
+		U-->>G: Cancelar importación
+		G-->>U: Importación de archivo cancelada
+	end
 ```
 
+##### Importar Medición
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicita importar una medición
+
+G->>U: Desplegar selector de directorios
+	alt Usuario Selecciona un directorio
+		U-->>G: Seleccionar ruta
+		G->>local: load_measure(path)
+		create participant M as Measure
+		local->>M: new Measure(observations)
+		M-->>local: Instancia creada
+		local-->>G: measure
+		G->>session: get_current_user()
+			session-->>G: User
+			G->>dbs: save_measure(user_id, measure)
+			Note over dbs, db: [REF] Ejecutar guardar medición con sus resultados
+			db-->>dbs: Confirmación de guardado
+			dbs-->>G: True
+			G-->>U: Importación exitosa
+	else Usuario cancela
+		U-->>G: Cancelar importación
+		G-->>U: Importación de archivo cancelada
+	end
+```
 
 #### Subsistema 5: Persistencia
 
