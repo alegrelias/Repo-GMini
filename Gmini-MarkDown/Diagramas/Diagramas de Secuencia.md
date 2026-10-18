@@ -314,8 +314,21 @@ alt El setup es nuevo
 	dbs-->>dbs: null
 	dbs->>db: INSERT INTO MEASURE_SETUP(...) VALUES(...)
 	db-->>dbs: Confirmación de guardado
+	
 	dbs->>db: SELECT last_insert_rowid()
 	db-->>dbs: measure_setup_id
+	
+	alt El setup es de Espectroscopía
+		dbs->>db: INSERT INTO SPEC_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
+		db-->>dbs: Confirmación de guardado
+	else El setup es de Monofrecuencia
+		dbs->>db: INSERT INTO SINGLE_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
+		db-->>dbs: Confirmación de guardado
+	else El setup es de Multifrecuencia
+		dbs->>db: INSERT INTO MULTI_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
+		db-->>dbs: Confirmación de guardado
+	end
+	
 else El setup ya existía
 	dbs-->>dbs: int
 end
@@ -326,7 +339,86 @@ G-->>U: Medición guardada con éxito
 ```
 
 ##### Guardar Setups de calibración
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant C as CalibrationSetup
+
+U->>G: Solicitud de Guardado de setup de calibración
+G->>session: get_current_user()
+session-->>G: User
+G->>G: cal_setup = get_selected_calibration_setup()
+G-->>G: Referencia a la instancia
+
+G->>U: Solicita observaciones
+alt El usuario mantiene las observaciones en blanco
+	U-->>G: null
+else El usuario escribe sus observaciones
+	U-->>G: observations
+	G->>C: cal_setup.set_observations(observations)
+end
+
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+G->>dbs: save_calibration_setup(user_id, cal_setup)
+dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id,...) VALUES(user_id,...)
+db-->>dbs: Confirmación de guardado
+dbs-->>G: True
+G-->>U: Setup de calibración guardado con éxito
+```
 
 ##### Guardar Setups de medición
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant MS as MeasureSetup
+
+U->>G: Solicitud de Guardado de setup de medición
+G->>session: get_current_user()
+session-->>G: User
+G->>G: m_setup = get_selected_measure_setup()
+G-->>G: Referencia a la instancia
+
+G->>U: Solicita observaciones
+alt El usuario mantiene las observaciones en blanco
+	U-->>G: null
+else El usuario escribe sus observaciones
+	U-->>G: observations
+	G->>MS: m_setup.set_observations(observations)
+end
+
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+G->>dbs: save_measure_setup(user_id, m_setup)
+dbs->>db: INSERT INTO MEASURE_SETUP(user_id,...) VALUES(user_id,...)
+	db-->>dbs: Confirmación de guardado
+	
+	dbs->>db: SELECT last_insert_rowid()
+	db-->>dbs: measure_setup_id
+	
+	alt El setup es de Espectroscopía
+		dbs->>db: INSERT INTO SPEC_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
+		db-->>dbs: Confirmación de guardado
+	else El setup es de Monofrecuencia
+		dbs->>db: INSERT INTO SINGLE_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
+		db-->>dbs: Confirmación de guardado
+	else El setup es de Multifrecuencia
+		dbs->>db: INSERT INTO MULTI_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
+		db-->>dbs: Confirmación de guardado
+	end
+dbs-->>G: True
+G-->>U: Setup de calibración guardado con éxito
+```
 
 ##### Exportar gráficas generadas
