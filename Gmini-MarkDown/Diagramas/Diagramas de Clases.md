@@ -219,7 +219,7 @@ class AuthService{
 	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
-	+ restore_session(token : str)
+	+ restore_session(token : Token)
 	+ verify_password(password : str)
 	+ generate_token() : str
 	- rehash_password(password : str) : str
@@ -752,7 +752,7 @@ class AuthService{
 	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
-	+ restore_session(token : str)
+	+ restore_session(token : Token)
 	+ verify_password(password : str)
 	+ generate_token() : str
 	- rehash_password(password : str) : str
@@ -1370,7 +1370,7 @@ class AuthService{
 	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
-	+ restore_session(token : str)
+	+ restore_session(token : Token)
 	+ verify_password(password : str)
 	+ generate_token() : str
 	- rehash_password(password : str) : str
