@@ -69,11 +69,11 @@ alt Usuario Inexistente
 	dbs-->>auth: Confirmacion de Guardado
 	auth-->>G: True
 	G-->>U: Registro exitoso
-else
+else El usuario existe
 	db-->>dbs: USER.user_name, USER.email, USER.password, USER.root_directory
 	dbs-->>auth: User
 	auth-->>G: False
-	G-->>U: Usuario no registrado
+	G-->>U: Registro cancelado
 end
 ```
 
