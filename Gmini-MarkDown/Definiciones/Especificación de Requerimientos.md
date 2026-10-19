@@ -96,7 +96,6 @@
 | :-------------- | :----------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                        |
 | **Descripción** | El sistema debe permitir ejecutar mediciones continuas del mismo tipo a través del tiempo. |
-|                 |                                                                                            |
 
 | **MED-09**      | Mostrar progreso de la medición                                                                                                                     |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -113,10 +112,10 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones. |
 
-| **MED-12**      | Presentar estadísticos descriptivos básicos                               |
-| :-------------- | :------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                       |
-| **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas automáticas. |
+| **MED-12**      | Presentar estadísticos descriptivos básicos                                                                |
+| :-------------- | :--------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                        |
+| **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas básicas a partir de los resultados obtenidos. |
 
 | **MED-13**      | Limitar configuración de mediciones al Modo Avanzado                                                                              |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
@@ -135,67 +134,103 @@
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
-| **SET-01**      | Crear Perfil de Usuario                             |
+
+| **SET-01**      | Iniciar la aplicación                                                                  |
+| :-------------- | -------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario.                                                                               |
+| **Descripción** | El usuario debe poder ingresar a la aplicación y recuperar la sesión activa si existe. |
+
+| **SET-02**      | Crear Perfil de Usuario                             |
 | :-------------- | --------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                 |
+| **Usuarios**    | Usuario.                                            |
 | **Descripción** | El sistema debe permitir crear perfiles de usuario. |
 
-| **SET-02**      | Iniciar Sesión                                          |
+| **SET-03**      | Solicitar al usuario que inicie sesión luego de registrarse                                                     |
+| :-------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                             |
+| **Descripción** | El sistema debe volver a solicitar los datos de inicio de sesión al usuario una vez este haya creado su perfil. |
+
+| **SET-04**      | Iniciar Sesión                                          |
 | :-------------- | ------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                     |
 | **Descripción** | El sistema debe permitir a los usuarios iniciar sesión. |
 
-| **SET-03**      | Cerrar Sesión                                          |
+| **SET-05**      | Cerrar Sesión                                          |
 | :-------------- | ------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                    |
 | **Descripción** | El sistema debe permitir a los usuarios cerrar sesión. |
 
-| **SET-04**      | Habilitar Modos de Uso                                                                                                                 |
+| **SET-06**      | Habilitar Modos de Uso                                                                                                                 |
 | :-------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                    |
 | **Descripción** | La aplicación debe proveer dos modos de uso intercambiables desde la interfaz gráfica, definidos como "Modo Avanzado" y "Modo Básico". |
 
-| **SET-05**      | Habilitar Modo Avanzado                                                                                        |
+| **SET-07**      | Habilitar Modo Avanzado                                                                                        |
 | :-------------- | -------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                            |
 | **Descripción** | La aplicación debe proveer un "Modo Avanzado" con acceso total a la configuración de parámetros y calibración. |
 
-| **SET-06**      | Habilitar Modo Básico                                                                                                                                                           |
+| **SET-08**      | Habilitar Modo Básico                                                                                                                                                           |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                             |
 | **Descripción** | La aplicación debe proveer un "Modo Básico" con permisos restringidos exclusivamente a la ejecución de mediciones y ejecución de calibración (con los parámetros predefinidos). |
 
-| **SET-07**      | Cambiar entre modos de uso                                                     |
+| **SET-09**      | Cambiar entre modos de uso                                                     |
 | :-------------- | ------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                            |
 | **Descripción** | El sistema tiene que permitir a un usuario realizar cambios de modo dinámicos. |
 
-| **SET-08**      | Advertir sobre cambio de modo                                                                              |
+| **SET-10**      | Advertir sobre cambio de modo                                                                              |
 | :-------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre modos de uso. |
 
-| **SET-09**      | Aplicar configuraciones                                                                 |
+| **SET-11**      | Aplicar configuraciones                                                                 |
 | :-------------- | --------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                     |
 | **Descripción** | El sistema debe permitir al usuario seleccionar una configuración previamente guardada. |
 
-| **SET-10**      | Cargar configuraciones                                                                                                       |
-| :-------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                          |
-| **Descripción** | El sistema debe permitir al usuario importar configuraciones desde el almacenamiento local y guardarlos en la base de datos. |
+| **SET-12**      | Importar configuraciones de medición                                                                                                      |
+| :-------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                       |
+| **Descripción** | El sistema debe permitir al usuario importar configuraciones  de medición desde el almacenamiento local y guardarlos en la base de datos. |
 
-| **SET-11**      | Exportar configuraciones de medición                                                                                      |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                       |
-| **Descripción** | El sistema debe permitir al usuario exportar las configuraciones guardadas en la base de datos a su almacenamiento local. |
+| **SET-13**      | Exportar configuraciones de medición                                                                                                  |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                   |
+| **Descripción** | El sistema debe permitir al usuario exportar las configuraciones de medición guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-12**      | Visualizar datos guardados                                                                                                         |
+| **SET-14**      | Importar configuraciones de calibración                                                                                                      |
+| :-------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                          |
+| **Descripción** | El sistema debe permitir al usuario importar configuraciones de calibración  desde el almacenamiento local y guardarlos en la base de datos. |
+
+| **SET-15**      | Exportar configuraciones de calibración                                                                                                  |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                      |
+| **Descripción** | El sistema debe permitir al usuario exportar las configuraciones de calibración guardadas en la base de datos a su almacenamiento local. |
+
+| **SET-16**      | Importar mediciones                                                                                                     |
+| :-------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                     |
+| **Descripción** | El sistema debe permitir al usuario importar mediciones desde el almacenamiento local y guardarlos en la base de datos. |
+
+| **SET-17**      | Exportar mediciones                                                                                                  |
+| :-------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                  |
+| **Descripción** | El sistema debe permitir al usuario exportar las mediciones guardadas en la base de datos a su almacenamiento local. |
+
+| **SET-18**      | Exportar gráficas generadas                                                                     |
+| :-------------- | ----------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                             |
+| **Descripción** | El sistema debe permitir a los usuarios exportar las gráficas generadas en una carpeta definida |
+
+| **SET-19**      | Visualizar datos guardados                                                                                                         |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                |
 | **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas, gráficas y setups) anteriores aunque la placa no esté conectada. |
 
-| **SET-13**      | Mantener la sesión activa en el dispositivo                                                 |
+| **SET-20**      | Mantener la sesión activa en el dispositivo                                                 |
 | :-------------- | ------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                         |
 | **Descripción** | El sistema debe mantener la sesión del usuario activa aunque se haya cerrado la aplicación. |
@@ -276,8 +311,3 @@
 | :-------------- | ----------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                   |
 | **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
-
-| **PER-11**      | Permitir exportación de gráficas generadas                                                      |
-| :-------------- | ----------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                             |
-| **Descripción** | El sistema debe permitir a los usuarios exportar las gráficas generadas en una carpeta definida |
