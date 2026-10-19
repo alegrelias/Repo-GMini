@@ -8,7 +8,6 @@ kanban-plugin: board
 
 - [ ] Agregar patron singleton para la sesion del usuario (sessionmanager)
 - [ ] definir si hacer el Authservice una interface
-- [ ] agregar atributos de id a las clases
 
 
 ## En Progreso
@@ -18,6 +17,7 @@ kanban-plugin: board
 
 ## Terminadas
 
+- [ ] agregar atributos de id a las clases
 - [ ] Implementar patron adapter para la traduccion de comandos
 - [ ] agregar can_measure() a los state del device
 - [ ] establecer conexion entre los servicios y el comservice

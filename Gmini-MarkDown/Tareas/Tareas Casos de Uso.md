@@ -9,6 +9,7 @@ kanban-plugin: board
 - [ ] El caso de uso Visualizar datos guardados está mal definido
 - [ ] El caso de uso Guardar Medicion con sus resultados está mal definido
 - [ ] El caso de uso guardad setup de calibracion esta mal definido
+- [ ] Definir los casos de uso nuevos
 
 
 ## En progreso
@@ -28,6 +29,7 @@ kanban-plugin: board
 - [ ] Verificar concordancia con clases/reqs/diagrama de CU para el subsistema 3
 - [ ] Verificar concordancia con clases/reqs/diagrama de CU para el subsistema 2
 - [ ] Crear casos de uso independientes para visualizar el progreso
+- [ ] Ajustar numeros de los casos de uso
 
 
 
