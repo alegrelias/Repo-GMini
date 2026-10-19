@@ -3,6 +3,36 @@
 
 ##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
+##### Iniciar la aplicación
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+participant auth as AuthService
+U->>G: Ingresa a la aplicación
+G->>local: load_user_token()
+
+alt El usuario tiene una sesión activa
+
+	local-->>G: token = Token
+	G->>auth: restore_session(token)
+	
+	auth-->>G: True
+	G->>U: Muestra ventana principal
+	
+else El usuario no tiene una sesión activa
+
+	local-->>G: null
+	G->>U: Muestra ventana de Login
+	Note over U, G: [REF] Ejecutar Iniciar Sesión
+	
+end
+```
+
 ##### Crear Perfil de Usuario
 
 ```mermaid
