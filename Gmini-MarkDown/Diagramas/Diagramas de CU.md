@@ -110,6 +110,7 @@ subgraph Perfiles de Usuario y Gestión de Setups de Medición
 	CU31([Importar Mediciones])
 	CU32([Exportar Mediciones])
 	CU33([Visualizar datos guardados])
+	CU34([Exportar gráficas generadas])
 end
 
 %% Asociaciones
@@ -134,6 +135,7 @@ CU31 ==> CU27
 
 CU30 ==> CU28
 CU32 ==> CU28
+CU34 ==> CU28
 ```
 
 #### Subsistema 5: Persistencia
@@ -145,26 +147,24 @@ flowchart LR
 Usuario((Usuario))
 
 subgraph Almacenamiento y Estructura de Datos
-	CU34([Guardar Setups de calibración])
-	CU35([Guardar Setups de medición])
-	CU36([Guardar mediciones con sus resultados])
-	CU37([Configurar directorio raíz])
-	CU38([Renombrar archivo manualmente])
-	CU39([Redactar observaciones])
-	CU40([Exportar gráficas generadas])
+	CU35([Guardar Setups de calibración])
+	CU36([Guardar Setups de medición])
+	CU37([Guardar mediciones con sus resultados])
+	CU38([Configurar directorio raíz])
+	CU39([Renombrar archivo manualmente])
+	CU40([Redactar observaciones])
 end
 
 %% Asociaciones
-Usuario --> CU34
 Usuario --> CU35
 Usuario --> CU36
 Usuario --> CU37
+Usuario --> CU38
 
 %% Relaciones Include/Extend
-CU38 -.extend.-> CU36
-CU39 -.extend.-> CU34
-CU39 -.extend.-> CU35
-CU39 -.extend.-> CU36
+CU39 -.extend.-> CU37
+CU40 -.extend.-> CU35
 CU40 -.extend.-> CU36
+CU40 -.extend.-> CU37
 ```
 
