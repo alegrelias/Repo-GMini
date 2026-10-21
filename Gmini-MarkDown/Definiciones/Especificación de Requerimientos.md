@@ -405,3 +405,18 @@
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado. |
 | **Descripción** | El sistema debe permitir redimensionar, mover y ocultar los paneles visuales, y almacenar dicha configuración como una preferencia persistente del usuario. |
+
+| **ADQ-12**      | Crear nueva sesión experimental |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir al usuario crear una nueva sesión de trabajo para agrupar y organizar lógicamente un conjunto de mediciones, curvas, configuraciones y modelos. |
+
+| **ADQ-13**      | Renombrar sesión experimental |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir modificar el nombre y la descripción de una sesión existente para facilitar su identificación en el historial del investigador.                |
+
+| **ADQ-14**      | Seleccionar y cargar sesión experimental |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe proveer una interfaz o explorador para seleccionar y cargar una sesión histórica en el Workspace, restaurando todos sus datos y gráficos asociados.      |
