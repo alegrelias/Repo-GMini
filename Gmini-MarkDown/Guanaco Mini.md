@@ -148,8 +148,7 @@ Su principal objetivo es permitir a los usuarios realizar funciones como:
 - Realizar labores de calibración del dispositivo.
 
 Al reemplazar la actual comunicación mediante comandos a bajo nivel por esta interfaz gráfica, se elimina la barrera técnica, permitiendo explotar todo el potencial de la placa Guanaco Mini.
-El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. El sistema contemplará un único tipo de usuario con acceso a dos modalidades de trabajo intercambiables desde la interfaz: "Modo Avanzado" y "Modo Básico".
-Los usuarios en "Modo Avanzado" tendrán total acceso al sistema, pudiendo configurar la calibración del dispositivo y los parámetros de las mediciones, pudiendo persistir estos cambios como setups reutilizables. En el "Modo Básico" se ocultarán las herramientas de edición de configuración, con el objetivo de agilizar el flujo de trabajo y prevenir alteraciones accidentales. Los usuarios en este modo estarán restringidos a realizar mediciones y labores de calibración preconfiguradas.
+El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. El sistema utilizará un perfil unificado con acceso a todas las herramientas de la plataforma, organizando la interfaz para presentar las configuraciones avanzadas mediante menús colapsables bajo el principio de revelación progresiva (*progressive disclosure*).
 
 ##### Definiciones, siglas y abreviaturas
 
@@ -250,11 +249,11 @@ Este subsistema centraliza las operaciones de persistencia del sistema, garantiz
 
 ##### Características de los usuarios
 
-Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto. Para poder brindarles a estos mismos una herramienta que sea capaz de adecuarse a cada perfil, se contemplarán los siguientes modos de uso:
+Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto,abarcando desde técnicos experimentados hasta operadores
 
-**Modo Avanzado**: Este modo de uso está pensado para aquellos usuarios con un mayor nivel técnico en cuanto a uso intensivo del dispositivo, análisis de los datos, parametrización y calibración del mismo. Los usuarios con este modo activado podrán dejar preparado el entorno del sistema para que los usuarios en modo básico puedan realizar mediciones sin dificultad. Esta distinción está pensada para líderes de laboratorios, jefes de proyectos de investigación, técnicos con amplia experiencia en EIS, entre otros.
-  
-**Modo Básico**: Este modo de uso está diseñado para aquellos usuarios menos experimentados, los cuales deban realizar tareas sencillas sin enfocarse en los aspectos más complejos del sistema. Aquellos usuarios que utilicen este modo solo podrán realizar mediciones previamente preconfiguradas.
+Para agilizar el flujo de trabajo, el sistema utiliza un **Perfil Unificado de Investigador**. La interfaz aplica el principio de *progressive disclosure* (inspirada en software de grado científico): las funciones de adquisición rápida y visualización están disponibles en el área principal de trabajo, mientras que las configuraciones profundas del hardware (calibración, ajuste fino de frecuencias, ganancia, voltaje de excitación) se acceden bajo demanda mediante paneles colapsables. Esto elimina la necesidad de alternar entre modos o cuentas con distintos privilegios.
+
+El sistema contemplara las sesiones de perfiles individuales para garantizar la organización, trazabilidad y privacidad de los *setups*, sesiones y datos recolectados por cada investigador.
 
 ##### Restricciones
   
@@ -263,8 +262,6 @@ El software no puede modificar el comportamiento interno del dispositivo, debe l
 El software está destinado para ser utilizado únicamente en la placa ESP32.
 
 El sistema contempla únicamente dos vías de comunicación con la placa. Alámbrica e inalámbrica.
-
-El uso de funciones del software está limitado por modos de uso.
   
 El sistema debe garantizar la funcionalidad en el sistema operativo Microsoft Windows.
 
