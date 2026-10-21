@@ -273,3 +273,135 @@
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                                              |
 | **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre las configuraciones establecidas en un setup (de calibración o medición), vinculando este texto al paquete de datos final del mismo. |
+
+
+
+### Nuevos Requerimientos a Integrar
+
+#### Módulo: Automatización de Secuencias (AUT)
+
+| **AUT-01**      | Construir secuencias experimentales automáticas |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe proveer un editor visual para construir flujos automáticos (macros) que combinen diferentes métodos de medición de forma consecutiva. |
+
+| **AUT-02**      | Configurar repeticiones e intervalos en secuencias |
+| :-------------- | :------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir definir la cantidad de repeticiones de un método y establecer tiempos de pausa (delays) entre mediciones o etapas de la secuencia. |
+
+| **AUT-03**      | Exportar secuencias automáticas |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir al usuario exportar y guardar las secuencias de automatización en archivos dentro de su almacenamiento local. |
+
+| **AUT-04**      | Importar secuencias automáticas |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir al usuario cargar secuencias de automatización previamente configuradas desde su almacenamiento local. |
+
+#### Módulo: Análisis Visual y Gráficos (ANA)
+
+| **ANA-01**      | Renderizar gráficos específicos avanzados |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe generar y visualizar gráficos temporales, diagramas de Bode (módulo/fase vs. frecuencia) y diagramas de Cole-Cole (-Im vs. Re). |
+
+| **ANA-02**      | Proveer herramientas de interacción gráfica |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir realizar zoom interactivo, paneo (desplazamiento libre) y utilizar cursores para consultar coordenadas exactas. |
+
+| **ANA-03**      | Gestionar curvas de medición individuales |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir superponer, ocultar, renombrar y asignar colores o estilos de línea diferentes a múltiples curvas dentro de un mismo gráfico. |
+
+| **ANA-04**      | Visualizar datos en formato tabular |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe presentar los resultados numéricos adquiridos en una tabla estructurada, mostrando variables como frecuencia, módulo, fase, componente real e imaginaria. |
+
+| **ANA-05**      | Manipular datos en tabla interactiva |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir interactuar con la tabla de resultados mediante ordenamiento por columnas, filtrado condicional y la capacidad de copiar celdas al portapapeles. |
+
+| **ANA-06**      | Vincular selección entre tabla y gráfico |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe resaltar automáticamente en la gráfica el punto o la curva que el usuario haya seleccionado en la tabla de datos, y viceversa. |
+
+#### Módulo: Modelos Matemáticos y Estadística (MOD)
+
+| **MOD-01**      | Calcular estadística descriptiva temporal y espectral |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe calcular y mostrar promedios y desviaciones estándar sobre mediciones repetidas en el tiempo o en múltiples espectros de frecuencias. |
+
+| **MOD-02**      | Ajustar modelos físicos de impedancia |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir estimar y ajustar parámetros matemáticos para modelos físicos predefinidos, como Debye o Cole-Cole, sobre los datos adquiridos. |
+
+| **MOD-03**      | Configurar modelos de circuitos equivalentes predefinidos (A Revisar) |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe proveer una lista de circuitos eléctricos equivalentes predefinidos y evaluar matemáticamente la calidad del ajuste (fitting) respecto a la medición real. |
+
+#### Módulo: Adquisición, Sesiones y Control (ADQ)
+
+| **ADQ-01**      | Seleccionar canal de medición y patrones físicos |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir alternar entre los canales DUT1 y DUT2 para realizar mediciones, y elegir entre patrones de calibración internos o el ingreso manual de un valor de resistencia externa. |
+
+| **ADQ-02**      | Detener mediciones en curso |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe proveer una opción para solicitar el fin o cancelación segura de una adquisición que ya se encuentra en ejecución. |
+
+| **ADQ-03**      | Mostrar estimación de tiempo de adquisición |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe calcular y mostrar de manera dinámica una estimación del tiempo restante para completar la medición o secuencia actual. |
+
+| **ADQ-04**      | Mantener registro de eventos (Logs) |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe registrar y mostrar al usuario los eventos críticos de la sesión, incluyendo inicios de adquisición, interrupciones, errores y finalizaciones exitosas. |
+
+| **ADQ-05**      | Proveer consola de comandos para diagnóstico |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe proveer una interfaz de consola (CLI) que permita al usuario enviar comandos en texto plano directamente a la placa y visualizar sus respuestas crudas para propósitos de diagnóstico. |
+
+| **ADQ-06**      | Alertar sobre calidad de señal y validez de calibración |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe alertar al usuario si detecta saturación en la señal, baja respuesta digital, o si se ha modificado un parámetro que invalida la calibración actual. |
+
+| **ADQ-07**      | Proveer recalibración automática |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe ofrecer o disparar automáticamente una nueva secuencia de calibración cuando se modifiquen parámetros que invaliden la anterior. |
+
+| **ADQ-08**      | Intentar reconexión automática |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe ejecutar un mecanismo de contingencia para intentar recuperar automáticamente la comunicación si esta se interrumpe de forma inesperada. |
+
+| **ADQ-09**      | Autoguardar y recuperar sesiones experimentales |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe realizar un guardado periódico o temporal del estado de la sesión para evitar pérdida de datos y ofrecer su recuperación tras un fallo de la aplicación. |
+
+| **ADQ-10**      | Importar mediciones de hardware legacy (A Revisar) |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe poder interpretar, importar y visualizar datos provenientes de versiones anteriores del instrumento Guanaco y de la placa AD5933EBZ. |
+
+| **ADQ-11**      | Personalizar y modularizar espacios de trabajo (Workspace) |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado. |
+| **Descripción** | El sistema debe permitir redimensionar, mover y ocultar los paneles visuales, y almacenar dicha configuración como una preferencia persistente del usuario. |
