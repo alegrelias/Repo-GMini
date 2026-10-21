@@ -1,71 +1,70 @@
 ## Requisitos específicos
+
 ### Subsistema 1: Comunicación e Interacción con el Hardware
+
 #### Módulo 1: Conectividad y Estado
 
 | **CON-01**      | Establecer conexión Alámbrica con el hardware                                                                      |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                 |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                |
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión alámbrica. |
 
 | **CON-02**      | Establecer conexión inalámbrica con el hardware                                                                      |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                   |
+| **Usuarios**    | Usuario Registrado.                                                                                                  |
 | **Descripción** | El sistema debe permitir establecer y gestionar la comunicación con la placa ESP32, soportando conexión inalámbrica. |
 
 | **CON-03**      | Traducir comandos de control                                                              |
-| :-------------- | :-------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                        |
+| :-------------- | :---------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                       |
 | **Descripción** | El sistema debe permitir utilizar los comandos de la placa mediante una interfaz gráfica. |
 
 | **CON-04**      | Notificar visualmente el estado activo de conexión                                                                     |
-| :---------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                     |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                    |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado activo de conexión. |
 
 | **CON-05**      | Notificar visualmente el estado Inactivo de conexión                                                                     |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                       |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                      |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado inactivo de conexión. |
 
 | **CON-06**      | Notificar visualmente el estado error de conexión                                                                                                                  |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                 |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                |
 | **Descripción** | El sistema debe informar al usuario mediante indicadores visuales en la interfaz gráfica el estado de error de la comunicación con el dispositivo en todo momento. |
 
-
 #### **Módulo 2: Calibración del Dispositivo**
+
 | **CAL-01**      | Configurar la calibración electrónica del equipo                                            |
 | :-------------- | :------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                         |
 | **Descripción** | El sistema debe permitir parametrizar la secuencia de comandos de calibración del hardware. |
 
 | **CAL-02**      | Ejecutar calibración electrónica del equipo                                            |
-| :-------------- | :----------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                     |
+| :-------------- | :------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                    |
 | **Descripción** | El sistema debe permitir iniciar la secuencia de comandos de calibración del hardware. |
 
 | **CAL-03**      | Bloquear ejecución por descalibración                                                                                                                                                                             |
 | :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                                               |
 | **Descripción** | El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior. |
 
-| **CAL-04**      | Limitar la configuración de calibración al Modo Avanzado                                                                                   |
-| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                        |
-| **Descripción** | El sistema solo debe permitir parametrizar la secuencia de comandos de calibración del hardware si se encuentra activado el Modo Avanzado. |
-### Subsistema 2: Configuración y Toma de Mediciones
-#### Módulo 1: Tipos y Estrategias de Medición
 
+### Subsistema 2: Configuración y Toma de Mediciones
+
+#### Módulo 1: Tipos y Estrategias de Medición
 
 | **MED-01**      | Configurar apartados comunes a una medición                                                                                                                                |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                        |
 | **Descripción** | El sistema debe permitir establecer los apartados comunes a todos los tipos de medición (voltaje de excitación, ganancia, ciclos, canales de multiplexado y valor de rfb). |
 
-| **MED-02**      | Configurar medición de una frecuencia  (Monofrecuencia)                                                                         |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                                                                             |
-| **Descripción** | El sistema debe permitir elegir los parámetros de medición para  mediciones continuas a una única frecuencia fija seleccionada. |
+| **MED-02**      | Configurar medición de una frecuencia (Monofrecuencia)                                                                         |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                            |
+| **Descripción** | El sistema debe permitir elegir los parámetros de medición para mediciones continuas a una única frecuencia fija seleccionada. |
 
 | **MED-03**      | Ejecutar medición de una frecuencia (Monofrecuencia)                                             |
 | :-------------- | :----------------------------------------------------------------------------------------------- |
@@ -117,10 +116,6 @@
 | **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas básicas a partir de los resultados obtenidos. |
 
-| **MED-13**      | Limitar configuración de mediciones al Modo Avanzado                                                                              |
-| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                               |
-| **Descripción** | El sistema solo debe permitir configurar setups de medición (independientemente del tipo) si se encuentra activo el Modo Avanzado |
 
 | MED-14          | Persistir últimos datos generados ante un error                                                                                               |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -131,11 +126,12 @@
 | :-------------- | :--------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                              |
 | **Descripción** | El sistema debe ser capaz de generar gráficos utilizando los resultados obtenidos y los parámetros establecidos. |
+
 ### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
-| **SET-01**      | Iniciar la aplicación                                                                  |
+| **SET-01**      | Inicializar entorno de trabajo                                                         |
 | :-------------- | -------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario.                                                                               |
 | **Descripción** | El usuario debe poder ingresar a la aplicación y recuperar la sesión activa si existe. |
@@ -160,77 +156,52 @@
 | **Usuarios**    | Usuario Registrado.                                    |
 | **Descripción** | El sistema debe permitir a los usuarios cerrar sesión. |
 
-| **SET-06**      | Habilitar Modos de Uso                                                                                                                 |
-| :-------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                    |
-| **Descripción** | La aplicación debe proveer dos modos de uso intercambiables desde la interfaz gráfica, definidos como "Modo Avanzado" y "Modo Básico". |
-
-| **SET-07**      | Habilitar Modo Avanzado                                                                                        |
-| :-------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                            |
-| **Descripción** | La aplicación debe proveer un "Modo Avanzado" con acceso total a la configuración de parámetros y calibración. |
-
-| **SET-08**      | Habilitar Modo Básico                                                                                                                                                           |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                             |
-| **Descripción** | La aplicación debe proveer un "Modo Básico" con permisos restringidos exclusivamente a la ejecución de mediciones y ejecución de calibración (con los parámetros predefinidos). |
-
-| **SET-09**      | Cambiar entre modos de uso                                                     |
-| :-------------- | ------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                            |
-| **Descripción** | El sistema tiene que permitir a un usuario realizar cambios de modo dinámicos. |
-
-| **SET-10**      | Advertir sobre cambio de modo                                                                              |
-| :-------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                        |
-| **Descripción** | El sistema debe desplegar una alerta visual de confirmación cuando se intente alternar entre modos de uso. |
-
-| **SET-11**      | Aplicar configuraciones                                                                 |
+| **SET-06**      | Aplicar configuraciones                                                                 |
 | :-------------- | --------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                     |
 | **Descripción** | El sistema debe permitir al usuario seleccionar una configuración previamente guardada. |
 
-| **SET-12**      | Importar configuraciones de medición                                                                                                      |
-| :-------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                       |
-| **Descripción** | El sistema debe permitir al usuario importar configuraciones  de medición desde el almacenamiento local y guardarlos en la base de datos. |
+| **SET-07**      | Importar configuraciones de medición                                                                                                     |
+| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                      |
+| **Descripción** | El sistema debe permitir al usuario importar configuraciones de medición desde el almacenamiento local y guardarlos en la base de datos. |
 
-| **SET-13**      | Exportar configuraciones de medición                                                                                                  |
+| **SET-08**      | Exportar configuraciones de medición                                                                                                  |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                   |
 | **Descripción** | El sistema debe permitir al usuario exportar las configuraciones de medición guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-14**      | Importar configuraciones de calibración                                                                                                      |
-| :-------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                          |
-| **Descripción** | El sistema debe permitir al usuario importar configuraciones de calibración  desde el almacenamiento local y guardarlos en la base de datos. |
+| **SET-09**      | Importar configuraciones de calibración                                                                                                     |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                         |
+| **Descripción** | El sistema debe permitir al usuario importar configuraciones de calibración desde el almacenamiento local y guardarlos en la base de datos. |
 
-| **SET-15**      | Exportar configuraciones de calibración                                                                                                  |
+| **SET-10**      | Exportar configuraciones de calibración                                                                                                  |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                      |
 | **Descripción** | El sistema debe permitir al usuario exportar las configuraciones de calibración guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-16**      | Importar mediciones                                                                                                     |
+| **SET-11**      | Importar mediciones                                                                                                     |
 | :-------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                     |
 | **Descripción** | El sistema debe permitir al usuario importar mediciones desde el almacenamiento local y guardarlos en la base de datos. |
 
-| **SET-17**      | Exportar mediciones                                                                                                  |
+| **SET-12**      | Exportar mediciones                                                                                                  |
 | :-------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                  |
 | **Descripción** | El sistema debe permitir al usuario exportar las mediciones guardadas en la base de datos a su almacenamiento local. |
 
-| **SET-18**      | Exportar gráficas generadas                                                                     |
+| **SET-13**      | Exportar gráficas generadas                                                                     |
 | :-------------- | ----------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                             |
 | **Descripción** | El sistema debe permitir a los usuarios exportar las gráficas generadas en una carpeta definida |
 
-| **SET-19**      | Visualizar datos guardados                                                                                                         |
+| **SET-14**      | Visualizar datos guardados                                                                                                         |
 | :-------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                |
 | **Descripción** | El sistema debe permitir visualizar datos (mediciones realizadas, gráficas y setups) anteriores aunque la placa no esté conectada. |
 
-| **SET-20**      | Mantener la sesión activa en el dispositivo                                                 |
+| **SET-15**      | Mantener la sesión activa en el dispositivo                                                 |
 | :-------------- | ------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                         |
 | **Descripción** | El sistema debe mantener la sesión del usuario activa aunque se haya cerrado la aplicación. |
@@ -240,24 +211,25 @@
 #### Módulo 1: Compatibilidad del Sistema
 
 | **COM-01**      | Proveer entorno de aplicación de escritorio                                                                                                            |
-| :-------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                     |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                    |
 | **Descripción** | El software debe ser diseñado, compilado y distribuido como una aplicación de escritorio orientada a computadoras personales y portátiles (notebooks). |
 
 | **COM-02**      | Garantizar ejecución nativa en Microsoft Windows                                                                                                                                          |
-| :-------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                        |
+| :-------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                                                       |
 | **Descripción** | El sistema debe garantizar total compatibilidad, estabilidad y funcionalidad de todos sus módulos (especialmente la comunicación de puertos) bajo el sistema operativo Microsoft Windows. |
 
 | **COM-03**      | Proveer soporte secundario para entornos Linux                                                                                                                |
-| :-------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                            |
+| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                           |
 | **Descripción** | El sistema debe contemplar en su arquitectura la portabilidad necesaria para poder ser ejecutado en distribuciones de escritorio del sistema operativo Linux. |
 
 | **COM-04**      | Garantizar el funcionamiento sin conexión a internet                                                   |
 | :-------------- | ------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                    |
 | **Descripción** | El sistema debe ser capaz de funcionar de manera completa aunque no se establezca conexión a internet. |
+
 ### Subsistema 5: Persistencia
 
 #### Módulo 1: Almacenamiento y Estructura de Datos
@@ -292,22 +264,12 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                          |
 | **Descripción** | El sistema debe incluir en el archivo final exportado tanto los datos duros de la medición, como una cabecera que contenga el estado exacto de todos los parámetros de configuración utilizados y el texto de observaciones. |
 
-| **PER-07**      | Limitar el guardado de setups en la base de datos al Modo Avanzado                                                                    |
-| :-------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                   |
-| **Descripción** | Las configuraciones de calibración y medición solo podrán ser guardadas en la Base de Datos si se encuentra activado el Modo Avanzado |
-
-| **PER-08**      | Adjuntar metadatos y observaciones libres sobre mediciones                                                                                                                                              |
+| **PER-07**      | Adjuntar metadatos y observaciones libres sobre mediciones                                                                                                                                              |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                     |
 | **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre el objeto o tejido medido, vinculando este texto al paquete de datos final de una medición. |
 
-| **PER-09**      | Adjuntar metadatos y observaciones libres sobre setups                                                                                                                                                                                           |
+| **PER-08**      | Adjuntar metadatos y observaciones libres sobre setups                                                                                                                                                                                           |
 | :-------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                                              |
 | **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre las configuraciones establecidas en un setup (de calibración o medición), vinculando este texto al paquete de datos final del mismo. |
-
-| **PER-10**      | Limitar la escritura de observaciones en setups al modo Avanzado                                      |
-| :-------------- | ----------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                   |
-| **Descripción** | El sistema solo debe habilitar las observaciones en setups si el Modo Avanzado se encuentra activado. |
