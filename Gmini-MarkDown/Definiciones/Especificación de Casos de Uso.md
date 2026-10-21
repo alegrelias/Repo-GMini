@@ -430,3 +430,37 @@
 | **Escenario principal de éxito** | 1. El usuario selecciona y despliega el campo de área de texto etiquetado como "Observaciones" o "Metadatos".<br>2. El usuario redacta libremente las anotaciones contextuales pertinentes a la prueba (ej. anomalías, estado de la muestra).<br>3. El sistema asocia inmediatamente la cadena de texto ingresada a la estructura de datos que reside en la memoria temporal de la aplicación.<br>4. El flujo retorna al caso base para que, al momento de realizar la persistencia, el texto quede inyectado dentro de la cabecera del archivo final. |
 | **Postcondición**                | El texto de observaciones queda vinculado a la configuración activa, listo para ser incluido permanentemente en la estructura del archivo. |
 | **Extensiones**                  | |
+
+
+
+
+
+
+### Nuevos Casos de Uso a Integrar
+
+#### Subsistema de Automatización
+*   **CU-A1: Configurar secuencia de automatización:** El usuario diseña un flujo de trabajo encadenando métodos de medición, definiendo repeticiones y estableciendo tiempos de espera (delays) entre ellos.
+*   **CU-A2: Exportar secuencia de automatización:** El usuario guarda la secuencia configurada en un archivo local para su posterior uso o para compartirla.
+*   **CU-A3: Importar secuencia de automatización:** El usuario carga un archivo de secuencia previamente guardado en el sistema para ejecutarlo.
+*   **CU-A4: Ejecutar secuencia de automatización:** El usuario inicia la ejecución secuencial e ininterrumpida de todos los métodos y pausas programados en el flujo.
+
+#### Subsistema de Análisis y Visualización (Workspace)
+*   **CU-B1: Manipular curvas de medición:** El usuario superpone, oculta, cambia colores, modifica estilos o renombra las curvas cargadas en el espacio de trabajo gráfico.
+*   **CU-B2: Navegar en gráficos de espectroscopía:** El usuario utiliza el mouse para hacer zoom, desplazarse (paneo) por el gráfico y emplea cursores para visualizar los valores exactos en coordenadas puntuales.
+*   **CU-B3: Visualizar datos en formato tabular:** El sistema despliega los puntos de datos de las mediciones activas en una grilla estructurada de filas y columnas.
+*   **CU-B4: Manipular datos en tabla interactiva:** El usuario interactúa con la tabla para ordenar valores por columna, aplicar filtros condicionales y copiar datos al portapapeles.
+*   **CU-B5: Vincular selección entre tabla y gráfico:** Al seleccionar un punto o fila específica en la tabla de datos, el sistema resalta automáticamente el punto correspondiente en el gráfico (y viceversa).
+*   **CU-B6: Calcular estadística descriptiva:** El usuario selecciona un conjunto de curvas (espectros repetidos) o una serie temporal, y el sistema calcula, grafica y tabula el promedio y la desviación estándar.
+
+#### Subsistema de Modelos Físicos
+*   **CU-C1: Aplicar ajuste de modelo matemático:** El usuario selecciona una medición y ejecuta un ajuste (fitting) matemático para obtener los parámetros de modelos físicos nativos como Debye o Cole-Cole.
+*   **CU-C2: Configurar modelo de circuito equivalente predefinido (A Revisar):** El usuario elige un circuito de una lista preestablecida y el sistema evalúa matemáticamente el ajuste de sus componentes teóricos a los datos empíricos medidos.
+
+#### Subsistema de Adquisición y Control (Ampliaciones)
+*   **CU-D1: Seleccionar canal y patrones físicos:** El usuario elige el canal de multiplexado deseado (DUT1, DUT2) o el patrón de calibración (RCAL interno o resistencia externa) antes de iniciar una tarea.
+*   **CU-D2: Cancelar medición en curso:** El usuario presiona el botón de detención y el sistema aborta de manera segura y controlada una adquisición o secuencia que se esté ejecutando.
+*   **CU-D3: Visualizar registro de eventos (Logs):** El usuario consulta el panel de eventos para revisar el historial cronológico de acciones, errores y finalizaciones de la sesión actual.
+*   **CU-D4: Enviar comandos por consola de diagnóstico:** El usuario escribe y envía comandos en texto plano directamente al firmware de la placa para realizar pruebas técnicas o diagnósticos.
+*   **CU-D5: Visualizar alertas de calidad y calibración:** El sistema notifica al usuario si detecta saturación en la señal, baja amplitud, o si los parámetros modificados requieren una nueva calibración.
+*   **CU-D6: Ejecutar recalibración automática:** Tras recibir una alerta o modificar un parámetro crítico, el usuario acepta y el sistema dispara automáticamente la secuencia de calibración correspondiente.
+*   **CU-D7: Personalizar distribución de paneles (Workspace layout):** El usuario arrastra, redimensiona y oculta ventanas o paneles dentro de la interfaz, y el sistema guarda esta distribución como su preferencia de entorno.
