@@ -117,12 +117,12 @@
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas básicas a partir de los resultados obtenidos. |
 
 
-| MED-14          | Persistir últimos datos generados ante un error                                                                                               |
+| **MED-13**          | Persistir últimos datos generados ante un error                                                                                               |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                           |
 | **Descripción** | El sistema debe guardar automáticamente los últimos datos recolectados ante una pérdida repentina de señal durante el proceso de adquisición. |
 
-| MED-15          | Renderizar gráficas a partir de los resultados                                                                   |
+| **MED-14**          | Renderizar gráficas a partir de los resultados                                                                   |
 | :-------------- | :--------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                              |
 | **Descripción** | El sistema debe ser capaz de generar gráficos utilizando los resultados obtenidos y los parámetros establecidos. |
