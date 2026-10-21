@@ -51,10 +51,6 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                               |
 | **Descripción** | El sistema debe impedir el inicio de nuevas mediciones si detecta que los parámetros críticos del hardware (ganancia, voltaje o resistencia) han sido modificados sin registrar una calibración válida posterior. |
 
-| **CAL-04**      | Limitar la configuración de calibración al Modo Avanzado                                                                                   |
-| :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                        |
-| **Descripción** | El sistema solo debe permitir parametrizar la secuencia de comandos de calibración del hardware si se encuentra activado el Modo Avanzado. |
 
 ### Subsistema 2: Configuración y Toma de Mediciones
 
@@ -120,10 +116,6 @@
 | **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas básicas a partir de los resultados obtenidos. |
 
-| **MED-13**      | Limitar configuración de mediciones al Modo Avanzado                                                                              |
-| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                               |
-| **Descripción** | El sistema solo debe permitir configurar setups de medición (independientemente del tipo) si se encuentra activo el Modo Avanzado |
 
 | MED-14          | Persistir últimos datos generados ante un error                                                                                               |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
