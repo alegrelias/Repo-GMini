@@ -1,5 +1,7 @@
 #### Subsistema 1: Comunicación e Interacción con el Hardware
 
+##### Módulo 1: Conectividad y Estado
+
 - **CU-D4: Enviar comandos por consola de diagnóstico:** El usuario escribe y envía comandos en texto plano directamente al firmware de la placa para realizar pruebas técnicas o diagnósticos.
 
 | **Nombre**                       | Establecer Conexión con el Dispositivo                                                                                                                                                                                                                                      |
@@ -45,6 +47,8 @@
 | **Postcondiciones**              |                                                                                                                                                                                      |
 | **Extensiones**                  | 2.a. La placa se encuentra desconectada.<br>2.a.1. El sistema presenta un indicador visual de color rojo, junto con un mensaje: "Dispositivo Desconectado"                           |
 
+##### Módulo 2: Calibración del Dispositivo
+
 | **Nombre**                       | Configurar Calibración Electrónica                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | :------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Objetivo**                     | Define los pasos específicos para establecer los parámetros de calibración de la placa.                                                                                                                                                                                                                                                                                                                                                              |
@@ -65,11 +69,14 @@
 | **Postcondiciones**              | - Se realiza la calibración del equipo<br>- El sistema permite a los usuarios medir                                                                                                                                                                                                                                                                                                                            |
 | **Extensiones**                  | 3.a. La placa no responde a la secuencia de comandos o se pierde la conexión física.<br>3.a.1. El sistema arroja un mensaje de error en pantalla y aborta el proceso de calibración.                                                                                                                                                                                                                           |
 
+- **CU-D1: Seleccionar canal y patrones físicos:** El usuario elige el canal de multiplexado deseado (R_cal_1/2,DUT1, DUT2) o el patrón de calibración (RCAL interno o resistencia externa) antes de iniciar una tarea.
+
+- **CU-D5: Visualizar alertas de calidad y calibración:** El sistema notifica al usuario si detecta saturación en la señal, baja amplitud, o si los parámetros modificados requieren una nueva calibración.
+
 #### Subsistema 2: Configuración y Toma de Mediciones
 
-- **CU-D1: Seleccionar canal y patrones físicos:** El usuario elige el canal de multiplexado deseado (R_cal_1/2,DUT1, DUT2) o el patrón de calibración (RCAL interno o resistencia externa) antes de iniciar una tarea.
 - **CU-D2: Cancelar medición en curso:** El usuario presiona el botón de detención y el sistema aborta de manera segura y controlada una adquisición o secuencia que se esté ejecutando.
-- **CU-D5: Visualizar alertas de calidad y calibración:** El sistema notifica al usuario si detecta saturación en la señal, baja amplitud, o si los parámetros modificados requieren una nueva calibración.
+
 - **CU-A1: Configurar secuencia de automatización:** El usuario diseña un flujo de trabajo encadenando métodos de medición, definiendo repeticiones y estableciendo tiempos de espera (delays) entre ellos.
 - **CU-A2: Exportar secuencia de automatización:** El usuario guarda la secuencia configurada en un archivo local para su posterior uso o para compartirla.
 - **CU-A3: Importar secuencia de automatización:** El usuario carga un archivo de secuencia previamente guardado en el sistema para ejecutarlo.
@@ -220,19 +227,19 @@
 
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-##### Nuevo modulo "Gestion de sesiones Experimentales"
-
-- **CU-B7: Crear nueva sesión experimental:** El usuario genera un nuevo espacio de trabajo (Workspace) en blanco para comenzar a agrupar lógicamente las nuevas mediciones, configuraciones y curvas de un experimento.
-- **CU-B8: Guardar sesión experimental:** El usuario guarda manualmente el estado completo del Workspace (curvas, tablas, modelos), o el sistema ejecuta esta acción de forma automática en segundo plano (Autoguardado).
-- **CU-B9: Cargar sesión experimental:** El usuario utiliza el explorador lateral para buscar y seleccionar una sesión histórica, restaurando todas sus curvas, datos tabulares y gráficos previos en la pantalla principal.
-- **CU-B10: Renombrar sesión experimental:** El usuario edita el nombre y la descripción de una sesión activa o guardada directamente desde la interfaz para facilitar su identificación futura.
-
-##### Nuevo modulo: "Analisis y visualizacion"
+##### Nuevo modulo: "Analisis y visualizacion "
 
 - **CU-B1: Manipular curvas de medición:** El usuario superpone, oculta, cambia colores, modifica estilos o renombra las curvas cargadas en el espacio de trabajo gráfico.
 - **CU-B2: Navegar en gráficos de espectroscopía:** El usuario utiliza el mouse para hacer zoom, desplazarse (paneo) por el gráfico y emplea cursores para visualizar los valores exactos en coordenadas puntuales.
 - **CU-B3: Visualizar datos en formato tabular:** El sistema despliega los puntos de datos de las mediciones activas en una grilla estructurada de filas y columnas.
 - **CU-B4: Manipular datos en tabla interactiva:** El usuario interactúa con la tabla para ordenar valores por columna, aplicar filtros condicionales y copiar datos al portapapeles.
+
+##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+
+- **CU-B7: Crear nueva sesión experimental:** El usuario genera un nuevo espacio de trabajo en blanco para comenzar a agrupar lógicamente las nuevas mediciones, configuraciones y curvas de un experimento.
+- **CU-B8: Guardar sesión experimental:** El usuario guarda manualmente el estado completo del Workspace (curvas, tablas, modelos), o el sistema ejecuta esta acción de forma automática en segundo plano (Autoguardado).
+- **CU-B9: Cargar sesión experimental:** El usuario utiliza el explorador lateral para buscar y seleccionar una sesión histórica, restaurando todas sus curvas, datos tabulares y gráficos previos en la pantalla principal.
+- **CU-B10: Renombrar sesión experimental:** El usuario edita el nombre y la descripción de una sesión activa o guardada directamente desde la interfaz para facilitar su identificación futura.
 
 | **Nombre**                       | Inicializar entorno de trabajo                                                                                                                                                                                                                                                                                                                                    |
 | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -451,4 +458,4 @@
 | **Precondición**                 | El usuario se encuentra configurando un guardado o revisión de parámetros.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Escenario principal de éxito** | 1. El usuario selecciona y despliega el campo de área de texto etiquetado como "Observaciones" o "Metadatos".<br>2. El usuario redacta libremente las anotaciones contextuales pertinentes a la prueba (ej. anomalías, estado de la muestra).<br>3. El sistema asocia inmediatamente la cadena de texto ingresada a la estructura de datos que reside en la memoria temporal de la aplicación.<br>4. El flujo retorna al caso base para que, al momento de realizar la persistencia, el texto quede inyectado dentro de la cabecera del archivo final. |
 | **Postcondición**                | El texto de observaciones queda vinculado a la configuración activa, listo para ser incluido permanentemente en la estructura del archivo.                                                                                                                                                                                                                                                                                                                                                                                                             |
-| **Extensiones**                  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+| **Extensiones**                  |
