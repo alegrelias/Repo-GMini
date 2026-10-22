@@ -11,63 +11,61 @@ Vargas Da Silva, Eliam Joaquin**
 
 - [**INTRODUCCIÓN**](#introducción)
 - **ANÁLISIS Y DISEÑO**
-	- **[Análisis](#análisis)**
-		- [**Especificación de Requerimientos**](#especificación-de-requerimientos)
-			- [Introducción y ámbito del sistema](#introducción-y-ámbito-del-sistema)
-				- Definiciones, siglas y abreviaturas
-				- Referencias
-			- [Descripción General](#descripción-general)
-				- Funciones del producto
-				- Características de los usuarios
-				- Restricciones
-			- [Requisitos específicos](#requisitos-específicos)
-				- [Subsistema 1: Comunicación e Interacción con el Hardware](#subsistema-1-comunicación-e-interacción-con-el-Hardware)
-					- Modulo 1: Conectividad y Estado
-					- Modulo 2: Calibración del Dispositivo
-				- [Subsistema 2: Configuración y Toma de Mediciones](#subsistema-2-configuración-y-toma-de-mediciones)
-					- Modulo 1: Tipos y Estrategias de Medición
-				- [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](#subsistema-3-configuración-y-gestión-de-perfiles-setups)
-					- Modulo 1: Perfiles de Usuario y Gestión de Setups de Medición
-				- [Subsistema 4: Entorno de Ejecución y Plataforma](#subsistema-4-entorno-de-ejecución-y-plataforma)
-					- Modulo 1: Compatibilidad del Sistema
-				- [Subsistema 5: Persistencia](#subsistema-5-persistencia)
-					- Modulo 1: Almacenamiento y Estructura de Datos
-		- [**Casos de Uso**](#casos-de-uso)
-			- Convenciones Gráficas
-			- Diagramas de Casos de Uso
-			- Especificación de Casos de Uso
-	  **[Diseño](#diseño)**
-		- [**Clases Software**](#clases-software)
-			- Lista de Clases
-			- Diagramas de Clases
-		- [**Base de Datos**](#base-de-datos)
-			- Convenciones Gráficas
-			- Diagrama de Entidad Relación
-		- **[Diagramas de Secuencia](#diagramas-de-secuencia)**
-		- [**Tabla de Trazabilidad**](#tabla-de-trazabilidad)
-		- **[Pantallas](#pantallas)**
-			-  Pantalla de Registro 
-			- Pantalla Principal 
-			- Pantalla de Configuración 
-			- Pantalla de Mediciones y Setups de Usuario 
-			- Pantalla de Perfil de Usuario
+  - **[Análisis](#análisis)**
+    - [**Especificación de Requerimientos**](#especificación-de-requerimientos)
+      - [Introducción y ámbito del sistema](#introducción-y-ámbito-del-sistema)
+        - Definiciones, siglas y abreviaturas
+        - Referencias
+      - [Descripción General](#descripción-general)
+        - Funciones del producto
+        - Características de los usuarios
+        - Restricciones
+      - [Requisitos específicos](#requisitos-específicos)
+        - [Subsistema 1: Comunicación e Interacción con el Hardware](#subsistema-1-comunicación-e-interacción-con-el-Hardware)
+          - Modulo 1: Conectividad y Estado
+          - Modulo 2: Calibración del Dispositivo
+        - [Subsistema 2: Configuración y Toma de Mediciones](#subsistema-2-configuración-y-toma-de-mediciones)
+          - Modulo 1: Tipos y Estrategias de Medición
+        - [Subsistema 3: Configuración y Gestión de Perfiles (Setups)](#subsistema-3-configuración-y-gestión-de-perfiles-setups)
+          - Modulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+        - [Subsistema 4: Entorno de Ejecución y Plataforma](#subsistema-4-entorno-de-ejecución-y-plataforma)
+          - Modulo 1: Compatibilidad del Sistema
+        - [Subsistema 5: Persistencia](#subsistema-5-persistencia)
+          - Modulo 1: Almacenamiento y Estructura de Datos
+    - [**Casos de Uso**](#casos-de-uso) - Convenciones Gráficas - Diagramas de Casos de Uso - Especificación de Casos de Uso
+      **[Diseño](#diseño)**
+    - [**Clases Software**](#clases-software)
+      - Lista de Clases
+      - Diagramas de Clases
+    - [**Base de Datos**](#base-de-datos)
+      - Convenciones Gráficas
+      - Diagrama de Entidad Relación
+    - **[Diagramas de Secuencia](#diagramas-de-secuencia)**
+    - [**Tabla de Trazabilidad**](#tabla-de-trazabilidad)
+    - **[Pantallas](#pantallas)**
+      - Pantalla de Registro
+      - Pantalla Principal
+      - Pantalla de Configuración
+      - Pantalla de Mediciones y Setups de Usuario
+      - Pantalla de Perfil de Usuario
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
-	- Visión general
-	- Cronograma por requerimientos
+  - Visión general
+  - Cronograma por requerimientos
 - [**METODOLOGÍA DE DESARROLLO**](#metodología-de-desarrollo)
-	- Resumen de la metodología elegida
+  - Resumen de la metodología elegida
 - [**HERRAMIENTAS UTILIZADAS**](#herramientas-utilizadas)
-	- Diagrama de Arquitectura de Software
-		- Diagrama de Contexto
-		- Diagrama de Contenedores
-		- Diagrama de Componentes
+  - Diagrama de Arquitectura de Software
+    - Diagrama de Contexto
+    - Diagrama de Contenedores
+    - Diagrama de Componentes
 - [**SOBRE LAS ITERACIONES**](#sobre-las-iteraciones)
 - [**SOBRE LOS ENTREGABLES**](#sobre-los-entregables)
-	- Aplicaciones y plataformas que forman parte del sistema
-	- Requerimientos técnicos para la instalación
+  - Aplicaciones y plataformas que forman parte del sistema
+  - Requerimientos técnicos para la instalación
 - [**PRESENTACIÓN VISUAL PARA APROBAR EL FINAL**](#presentación-visual-para-aprobar-el-final)
 
 ## INTRODUCCIÓN
+
 El proyecto tiene como propósito el desarrollo integral de una plataforma de software y una interfaz gráfica de usuario (GUI) para el hardware "Guanaco Mini” (GMini) desarrollado por el Laboratorio de Electrónica Aplicada y Biomedicina (LEAB) del Instituto de Desarrollo Económico e Innovación de la Universidad Nacional de Tierra del Fuego AeiAS. El cliente interesado en el desarrollo de este software es el Doctor en Ciencias Biológicas e Ingeniero Biomédico Antonio Héctor Dell’osa, el cual en este contexto es miembro del LEAB, autor de la tesis “Espectroscopía de Impedancia para la Detección Rápida de Lesiones Óseas” sobre la cual este proyecto está basado y líder del proyecto GMini. Nuestro contacto con él es mediante su correo electrónico institucional [ahdellosa@untdf.edu.ar](mailto:ahdellosa@untdf.edu.ar) .
 
 Dicho dispositivo está diseñado para proveer una interfaz capaz de realizar mediciones de espectroscopía de impedancia eléctrica y bioimpedancia.
@@ -89,17 +87,11 @@ Por otro lado, la bioimpedancia se ha utilizado o investigado en distintos probl
 También existen aplicaciones e investigaciones relacionadas con:
 
 - detección y seguimiento de edemas o acumulaciones de líquido;
-    
 - evaluación del estado de tejidos musculares;
-    
 - análisis de cambios asociados con lesiones o alteraciones de tejidos;
-    
 - estudio de diferencias entre tejidos sanos y patológicos;
-    
 - monitoreo cardiovascular mediante técnicas como la cardiografía por impedancia;
-    
 - evaluación de tejidos pulmonares mediante Tomografía por Impedancia Eléctrica;
-    
 - investigación de alteraciones producidas por lesiones óseas, inflamación u otros cambios estructurales.
 
 Es importante aclarar que no todas estas aplicaciones tienen el mismo grado de desarrollo clínico. Algunas están ampliamente utilizadas, mientras que otras continúan siendo objeto de investigación. Desde nuestra perspectiva, una dificultad importante aparece cuando las mediciones generan grandes cantidades de datos que deben ser interpretados.
@@ -115,6 +107,7 @@ Este problema involucra aspectos propios de nuestra formación, como procesamien
 Por lo tanto, nuestro objetivo no sería realizar directamente un diagnóstico médico, sino desarrollar herramientas computacionales que ayuden a transformar las mediciones eléctricas en información interpretable, que posteriormente pueda ser analizada y validada por especialistas del área biomédica.
 
 ## Análisis
+
 ### Especificación de Requerimientos
 
 #### Introducción y ámbito del sistema
@@ -124,82 +117,54 @@ El Sistema GMini GUI es una aplicación de escritorio integrada directamente con
 Su principal objetivo es permitir a los usuarios realizar funciones como:
 
 - Tomar mediciones de espectroscopía por bioimpedancia e impedancia eléctrica con una frecuencia o un espectro de frecuencias.
-    
 - Configurar los intervalos en los que se toman las mediciones.
 
 - Traducir y procesar los resultados arrojados por la placa.
-  
 - Permitir visualizar, modificar y exportar.
-	- Configuraciones de cada medición.
-	- Configuraciones de calibración.
-    
+  - Configuraciones de cada medición.
+  - Configuraciones de calibración.
 - Visualizar desde la misma aplicación las mediciones junto con sus resultados.
 
 - Importar y exportar mediciones junto con sus resultados.
-    
 - Almacenar en una base de datos.
-	- Mediciones junto con sus resultados.
-	- Configuraciones de cada medición.
-	- Datos del usuario.
-	- Configuraciones de calibración.
-    
+  - Mediciones junto con sus resultados.
+  - Configuraciones de cada medición.
+  - Datos del usuario.
+  - Configuraciones de calibración.
 - Realizar muestreos continuos.
-    
 - Realizar labores de calibración del dispositivo.
 
 Al reemplazar la actual comunicación mediante comandos a bajo nivel por esta interfaz gráfica, se elimina la barrera técnica, permitiendo explotar todo el potencial de la placa Guanaco Mini.
-El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. El sistema utilizará un perfil unificado con acceso a todas las herramientas de la plataforma, organizando la interfaz para presentar las configuraciones avanzadas mediante menús colapsables bajo el principio de revelación progresiva (*progressive disclosure*).
+El proyecto está dirigido tanto para usuarios técnicos, investigadores y miembros de laboratorios con pocos o nulos conocimientos de programación en cualquiera de sus niveles. El sistema utilizará un perfil unificado con acceso a todas las herramientas de la plataforma, organizando la interfaz para presentar las configuraciones avanzadas mediante menús colapsables bajo el principio de revelación progresiva (_progressive disclosure_).
 
 ##### Definiciones, siglas y abreviaturas
 
 - **Bioimpedancia**: Resistencia que oponen los tejidos biológicos (células, fluidos, bacterias, etc.) al paso de una corriente eléctrica alterna.
-    
 - **CSV (Comma-Separated Values)**: Formato de archivo de texto estructurado que representa datos tabulares separados por comas, ampliamente utilizado para la exportación y análisis de datos científicos.
-    
 - **EIS (Electrical Impedance Spectroscopy)**: Técnica de análisis no destructiva que consiste en aplicar una señal eléctrica alterna (voltaje o corriente de pequeña amplitud) a un material o tejido biológico a través de un rango de distintas frecuencias, con el fin de medir su impedancia (oposición al paso de la corriente).
-    
 - **ESP32**: Microcontrolador de bajo costo y consumo de energía que cuenta con tecnología Wi-Fi y Bluetooth de modo dual integrada, utilizado como núcleo de procesamiento del hardware original.
-    
 - **Espectroscopía (Barrido espectral / Sweep)**:Forma de medición que consiste en realizar una medición de impedancia o bioimpedancia en un determinado intervalo de frecuencias.
-    
 - **Firmware**: Software de bajo nivel que está integrado de forma permanente o semipermanente en el hardware (en este caso, el código desarrollado por el laboratorio que se ejecuta directamente sobre el ESP32).
-    
 - **GMini (Guanaco Mini)**: Dispositivo de hardware desarrollado por el laboratorio cliente, diseñado para realizar mediciones de espectroscopía.
-    
 - **GUI (Graphical User Interface)**: Interfaz Gráfica de Usuario. Entorno visual del software que permite a los operadores interactuar con el sistema y el hardware subyacente mediante elementos gráficos y ventanas, en lugar de comandos de texto.
-    
 - **ISO 8601**: Estándar internacional para la representación de fechas y horas, utilizado como formato básico para generar la nomenclatura predeterminada de los archivos guardados.
-    
 - **JSON (JavaScript Object Notation)**: Formato de texto ligero para el intercambio de datos, fácil de leer y escribir tanto para humanos como para máquinas.
-    
 - **LEAB (Laboratorio de Electrónica Aplicada y Biomedicina)**: Laboratorio perteneciente al Instituto de Desarrollo Económico e Innovación de la Universidad Nacional de Tierra del Fuego. Actúa como creador del hardware y cliente principal del proyecto de software.
-    
 - **Metadatos**: Información adicional (estado de los parámetros de configuración y observaciones libres) que se adjunta en las cabeceras de los archivos locales junto con los datos crudos de la medición.
-    
 - **Monofrecuencia**: Forma de medición que consiste en realizar la medición de impedancia o bioimpedancia a una frecuencia fija, también llamado del inglés “single frequency”.
-    
 - **Muestreo Continuo**: Proceso de recolección de datos y mediciones de manera ininterrumpida o periódica durante un rango de tiempo prolongado, gestionado automáticamente por el software.
-    
 - **Multifrecuencia**: Forma de medición que implica realizar mediciones a diferentes frecuencias fijas (diferentes mediciones monofrecuencia) que pueden tener o no intervalos equidistantes o no en el campo de la frecuencia.
-    
 - **Multiplexado (Canales / Llaves)**: Sistema de llaves (“switchs”) o conmutación que permite seleccionar diferentes canales en forma secuencial o fija.
-    
 - **Puerto Serial / Comunicación Serial**: Interfaz de transferencia de datos en la que la información se envía bit a bit de forma secuencial. Se utilizará (vía cable USB) como uno de los medios de comunicación principal entre la PC y el dispositivo.
-    
 - **Setups (Configuraciones de medición)**: Conjunto de parámetros técnicos (tipo, rango, canales) definidos y guardados localmente por un usuario, que pueden ser exportados, o bien importados y aplicados.
 
 ##### Referencias
 
 - **Espressif Systems**: ESP32 Technical Reference Manual. Espressif Systems, Shanghái (2023). Disponible en: [https://documentation.espressif.com/esp32_datasheet_en.html?q=ESP32](https://www.espressif.com/en/support/documents/technical-documents)
-    
 - **Python Software Foundation**: Python 3 Reference Manual. Disponible en: [https://docs.python.org/3/](https://docs.python.org/3/)
-    
 - **IEEE Computer Society**: IEEE Recommended Practice for Software Requirements Specifications (IEEE Std 830-1998). IEEE, Nueva York (1998).
-    
 - **Laboratorio de Electrónica Aplicada y Biomedicina (LEAB)**: Dispositivo de medición de bioimpedancia Guanaco Mini V2.0 [Rev3]. Universidad Nacional de Tierra del Fuego, A.I.A.S. (2026).
-    
 - **The pandas development team**: pandas-dev/pandas: Pandas. Zenodo. Disponible en: [https://pandas.pydata.org/](https://pandas.pydata.org/)
-    
 - **Hunter, J. D.: Matplotlib**: A 2D graphics environment. Computing in Science & Engineering, 9(3), 90-95 (2007).
 
 ### Descripción General
@@ -210,39 +175,30 @@ El proyecto está dirigido tanto para usuarios técnicos, investigadores y miemb
 Este subsistema agrupa las funciones encargadas de establecer y mantener el enlace de datos bidireccional entre la computadora y la placa ESP32, garantizando una transferencia estable.
 
 - Establecer conexión con el entorno de escritorio mediante conexión alámbrica.
-    
 - Establecer conexión con el entorno de escritorio mediante conexión inalámbrica.
 
 **Subsistema de Configuración y Toma de Mediciones**
 Este subsistema es el encargado de agrupar aquellas funciones que permiten a los usuarios monitorear, parametrizar, calibrar y realizar mediciones de manera controlada, pudiendo determinar aspectos como rangos de frecuencia o estrategias de medición.
 
 - Calibrar el dispositivo.
-    
 - Tomar mediciones de espectroscopía por bioimpedancia e impedancia eléctrica.
-    
 - Seleccionar una frecuencia o un espectro de frecuencias para realizar las mediciones.
-    
 - Configurar los intervalos en los que se toman las mediciones.
-    
 - Visualizar los datos desde la misma aplicación.
-    
 - Contraponer datos para realizar comparaciones.
-    
 - Realizar procesamiento de datos.
-  
+
 **Subsistema de Configuración y Gestión de Perfiles (Setups)**
 Este subsistema es el encargado de habilitar los distintos usuarios para garantizar la seguridad entre perfiles, los datos almacenados y sus configuraciones.
-  
 
 **Subsistema de Entorno de Ejecución y Plataforma**
 Este subsistema es el encargado de garantizar la disponibilidad del proyecto en sistemas operativos Microsoft Windows y ofrecer soporte secundario en kernels de Linux.
-  
+
 **Subsistema Persistencia**
 Este subsistema centraliza las operaciones de persistencia del sistema, garantizando que tanto los datos estructurados como la información de los usuarios se almacenen de manera ordenada y estandarizada.
+
 - Exportar datos.
-    
 - Importar datos.
-    
 - Organizar los datos en una carpeta definida.
 
 - Almacenar resultados e información en una Base de Datos
@@ -251,18 +207,18 @@ Este subsistema centraliza las operaciones de persistencia del sistema, garantiz
 
 Los principales usuarios de la plataforma serán los miembros del LEAB, los cuales serán piezas fundamentales a lo largo del desarrollo del proyecto,abarcando desde técnicos experimentados hasta operadores
 
-Para agilizar el flujo de trabajo, el sistema utiliza un **Perfil Unificado de Investigador**. La interfaz aplica el principio de *progressive disclosure* (inspirada en software de grado científico): las funciones de adquisición rápida y visualización están disponibles en el área principal de trabajo, mientras que las configuraciones profundas del hardware (calibración, ajuste fino de frecuencias, ganancia, voltaje de excitación) se acceden bajo demanda mediante paneles colapsables. Esto elimina la necesidad de alternar entre modos o cuentas con distintos privilegios.
+Para agilizar el flujo de trabajo, el sistema utiliza un **Perfil Unificado de Investigador**. La interfaz aplica el principio de _progressive disclosure_ (inspirada en software de grado científico): las funciones de adquisición rápida y visualización están disponibles en el área principal de trabajo, mientras que las configuraciones profundas del hardware (calibración, ajuste fino de frecuencias, ganancia, voltaje de excitación) se acceden bajo demanda mediante paneles colapsables. Esto elimina la necesidad de alternar entre modos o cuentas con distintos privilegios.
 
-El sistema contemplara las sesiones de perfiles individuales para garantizar la organización, trazabilidad y privacidad de los *setups*, sesiones y datos recolectados por cada investigador.
+El sistema contemplara las sesiones de perfiles individuales para garantizar la organización, trazabilidad y privacidad de los _setups_, sesiones y datos recolectados por cada investigador.
 
 ##### Restricciones
-  
+
 El software no puede modificar el comportamiento interno del dispositivo, debe limitarse a realizar la lista de comandos y eventos ya programadas y documentadas por el LEAB.
 
 El software está destinado para ser utilizado únicamente en la placa ESP32.
 
 El sistema contempla únicamente dos vías de comunicación con la placa. Alámbrica e inalámbrica.
-  
+
 El sistema debe garantizar la funcionalidad en el sistema operativo Microsoft Windows.
 
 El sistema deberá ser capaz de funcionar sin acceso a internet.
@@ -385,7 +341,6 @@ El sistema no busca realizar un diagnóstico médico.
 | :-------------- | :--------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas básicas a partir de los resultados obtenidos. |
-
 
 | MED-14          | Persistir últimos datos generados ante un error                                                                                               |
 | :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -544,21 +499,26 @@ El sistema no busca realizar un diagnóstico médico.
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                                                              |
 | **Descripción** | El sistema debe proveer un campo de entrada de texto libre para documentar observaciones contextuales sobre las configuraciones establecidas en un setup (de calibración o medición), vinculando este texto al paquete de datos final del mismo. |
 
-
 ### Casos de Uso
+
 #### Convenciones gráficas
 
 ##### Actores
+
 ```mermaid
 flowchart LR
 Actor((Actor))
 ```
+
 ##### Casos de Uso
+
 ```mermaid
 flowchart LR
 CU([Caso de Uso])
 ```
+
 ##### Asignaciones
+
 ```mermaid
 flowchart
 Actor((Actor))
@@ -566,7 +526,9 @@ CU([Caso de Uso])
 
 Actor --> CU
 ```
+
 ##### Generalización
+
 ```mermaid
 flowchart LR
 CU1([Caso de Uso Base])
@@ -575,6 +537,7 @@ CU2 ==> CU1
 ```
 
 ##### Limites del Subsistema
+
 ```mermaid
 flowchart LR
 Actor((Actor))
@@ -587,6 +550,7 @@ Actor --> CU
 ```
 
 ##### Extensiones e Inclusiones
+
 ```mermaid
 flowchart LR
 subgraph Subsistema
@@ -600,9 +564,11 @@ CU1 --include--> CU3
 ```
 
 ### Diagramas de Casos de Uso
+
 #### Subsistema 1: Comunicación e Interacción con el Hardware
 
 ##### Módulo 1: Conectividad y Estado
+
 ```mermaid
 flowchart LR
 %%Actores
@@ -625,6 +591,7 @@ CU3 ==> CU1
 ```
 
 ##### Módulo 2: Calibración del Dispositivo
+
 ```mermaid
 flowchart LR
 %% Actores
@@ -641,8 +608,8 @@ Usuario --> CU6
 ```
 
 #### Subsistema 2: Configuración y Toma de Mediciones
-##### Módulo 1: Tipos y Estrategias de Medición
 
+##### Módulo 1: Tipos y Estrategias de Medición
 
 ```mermaid
 flowchart LR
@@ -687,7 +654,6 @@ CU18 -.extend.-> CU11
 #### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 ##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
-
 
 ```mermaid
 flowchart LR
@@ -736,6 +702,7 @@ CU30 ==> CU26
 #### Subsistema 5: Persistencia
 
 ##### Módulo 1: Almacenamiento y Estructura de Datos
+
 ```mermaid
 flowchart LR
 %% Actores
@@ -764,9 +731,11 @@ CU37 -.extend.-> CU33
 CU37 -.extend.-> CU34
 CU38 -.extend.-> CU34
 ```
+
 #### Especificación de Casos de Uso
 
 ## Diseño
+
 ### Clases Software
 
 ### Diagrama General
@@ -820,7 +789,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -844,17 +813,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -871,10 +840,10 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -899,10 +868,10 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -975,11 +944,11 @@ class DataBaseService{
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ update_user_directory(user_id : int, path : str)
 }
 
 
@@ -1030,7 +999,7 @@ class DeviceState{
 	class MeasuringState
 	class DeviceErrorState
 	class UncalibratedState
-	
+
 class ConnectionState{
 		<<interface>>
 		+ connect(context : ConnectionType)
@@ -1102,36 +1071,36 @@ class MultiFreqSetupBuilder{
 }
 
 %% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
-} 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+class ConnectionFactory{
+	+ create_connection(type : str) : ConnectionType
+}
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
 }
 
 %% patron adapter
-class ICalibrationAdapter{ 
+class ICalibrationAdapter{
 	<<interface>>
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiCalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-} 
-
-class IMeasureAdapter{ 
-	<<interface>>
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class GminiCalibrationAdapter{
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiMeasureAdapter{ 
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class IMeasureAdapter{
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
+}
+
+class GminiMeasureAdapter{
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 
 %% relaciones
@@ -1141,7 +1110,7 @@ ConnectionService --> Device : establece conexión
 
 MeasureService --> ConnectionService : envía comandos y observa
 MeasureService --> Measure : ejecuta medición
-MeasureService --> DataBaseService : invoca guardado de emergencia 
+MeasureService --> DataBaseService : invoca guardado de emergencia
 MeasureService --> SessionManager : verifica usuario
 MeasureService --> Device : verifica y actualiza estado
 MeasureService --> IMeasureAdapter : envía setups y recibe comandos
@@ -1211,10 +1180,10 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1300,6 +1269,7 @@ class MultiFreqSetupBuilder{
 ```
 
 ##### Patrón State
+
 ```mermaid
 classDiagram
 %% state patern
@@ -1322,7 +1292,7 @@ class DeviceState{
 	class MeasuringState
 	class DeviceErrorState
 	class UncalibratedState
-	
+
 class ConnectionState{
 		<<interface>>
 		+ connect(context : ConnectionType)
@@ -1336,6 +1306,7 @@ class ConnectionErrorState
 ```
 
 ##### Patrón Adapter
+
 ```mermaid
 classDiagram
 
@@ -1343,32 +1314,33 @@ classDiagram
 IMeasureAdapter <|.. GminiMeasureAdapter
 ICalibrationAdapter <|.. GminiCalibrationAdapter
 
-class ICalibrationAdapter{ 
+class ICalibrationAdapter{
 	<<interface>>
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiCalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-} 
-
-class IMeasureAdapter{ 
-	<<interface>>
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class GminiCalibrationAdapter{
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiMeasureAdapter{ 
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class IMeasureAdapter{
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
+}
+
+class GminiMeasureAdapter{
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 ```
 
 ##### Patrón Observer
+
 ```mermaid
 classDiagram
 
@@ -1387,17 +1359,20 @@ class IObservable{
 ```
 
 ##### Patrón Factory
+
 ```mermaid
 classDiagram
 %% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
-} 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+class ConnectionFactory{
+	+ create_connection(type : str) : ConnectionType
+}
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
 }
 ```
+
 ##### Clases del Dominio
+
 ```mermaid
 classDiagram
 %% mediciones
@@ -1413,17 +1388,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -1453,7 +1428,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -1474,7 +1449,7 @@ class CalibrationSetup{
 	- z_calc_value_imag : float
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1488,6 +1463,7 @@ class Device{
 ```
 
 ##### Servicios de Mediciones y Calibración
+
 ```mermaid
 classDiagram
 %% mediciones y conexion
@@ -1513,6 +1489,7 @@ class CalibrationService{
 ```
 
 ##### Servicios de Usuario y Autenticación
+
 ```mermaid
 classDiagram
 %% usuario
@@ -1540,7 +1517,9 @@ class SessionManager{
 	+ set_active_token(token : Token)
 }
 ```
+
 ##### Servicios de Persistencia
+
 ```mermaid
 classDiagram
 
@@ -1556,7 +1535,7 @@ class LocalService{
 	+ export_measure_to_file(path : str, measure : Measure)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
-	+ delete_token()	
+	+ delete_token()
 }
 class DataBaseService{
 	- db_root : str
@@ -1567,16 +1546,17 @@ class DataBaseService{
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ update_user_directory(user_id : int, path : str)
 }
 
 ```
 
 #### Diagramas de Clases
+
 ###### Subsistema 1: Comunicación e Interacción con el Hardware
 
 ###### Módulo 1: Conectividad y Estado
@@ -1617,7 +1597,7 @@ class Device{
 }
 
 %% state patern
-	
+
 class ConnectionState{
 		<<interface>>
 		+ connect(context : ConnectionType)
@@ -1663,8 +1643,8 @@ class ConnectionService{
 }
 
 %% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
+class ConnectionFactory{
+	+ create_connection(type : str) : ConnectionType
 }
 
 %% relaciones
@@ -1693,8 +1673,8 @@ ConnectionService --> Device : establece conexión
 ConnectionService --> ConnectionType : observa
 ```
 
-
 ###### Módulo 2: Calibración del Dispositivo
+
 ```mermaid
 classDiagram
 DeviceState <|.. FreeDeviceState : implementa
@@ -1721,7 +1701,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -1735,7 +1715,7 @@ class CalibrationSetup{
 	- z_calc_value_imag : float
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1789,16 +1769,16 @@ class Token {
 }
 
 %% patron adapter
-class ICalibrationAdapter{ 
+class ICalibrationAdapter{
 	<<interface>>
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiCalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-} 
+class GminiCalibrationAdapter{
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
+}
 
 %% relaciones
 
@@ -1817,6 +1797,7 @@ CalibrationService ..> ICalibrationAdapter : envía objetos y espera comandos
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
+
 ###### Módulo 1: Tipos y Estrategias de Medición
 
 ```mermaid
@@ -1853,7 +1834,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -1888,17 +1869,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -1934,10 +1915,10 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1991,11 +1972,11 @@ class DataBaseService{
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ update_user_directory(user_id : int, path : str)
 }
 
 
@@ -2059,22 +2040,22 @@ class IObservable{
 }
 
 %% factory method
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
 }
 
 %% adapter pattern
-class IMeasureAdapter{ 
+class IMeasureAdapter{
 	<<interface>>
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 
-class GminiMeasureAdapter{ 
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class GminiMeasureAdapter{
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 
 %% relaciones
@@ -2101,9 +2082,11 @@ IMeasureAdapter <|.. GminiMeasureAdapter : implementa
 
 Device "1"*--"1" DeviceState
 ```
+
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 ###### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+
 ```mermaid
 classDiagram
 
@@ -2128,7 +2111,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -2180,11 +2163,11 @@ class DataBaseService{
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ update_user_directory(user_id : int, path : str)
 }
 
 class MeasureSetup {
@@ -2196,10 +2179,10 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -2285,10 +2268,10 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
-%% factory method 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
-} 
+%% factory method
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
+}
 
 %% relaciones
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
@@ -2343,7 +2326,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -2361,17 +2344,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -2398,10 +2381,10 @@ class MeasureSetup {
 	- rfbvalue : float
 	- settcycles : int
 	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -2428,7 +2411,7 @@ class CalibrationSetup{
 	- z_calc_value_imag : float
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -2473,11 +2456,11 @@ class DataBaseService{
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ update_user_directory(user_id : int, path : str)
 }
 
 class LocalService{
@@ -2540,10 +2523,10 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
-%% factory method 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
-} 
+%% factory method
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
+}
 
 %% relaciones
 
@@ -2574,13 +2557,12 @@ DataBaseService ..> CalibrationSetup : persiste el setup
 MeasureService ..|> IObservable : implementa
 ```
 
-
-
 ### Base de Datos
 
 #### Convenciones Gráficas
 
 ##### Entidades, Atributos y Claves
+
 ```mermaid
 erDiagram
     ENTIDAD_EJEMPLO {
@@ -2591,6 +2573,7 @@ erDiagram
 ```
 
 ##### Cardinalidad y Multiplicidad
+
 ```mermaid
 erDiagram
     LADO_UNO ||--|{ LADO_MUCHOS : "Uno a Muchos (al menos 1)"
@@ -2599,6 +2582,7 @@ erDiagram
 ```
 
 ##### Representación de Herencia
+
 ```mermaid
 erDiagram
     TABLA_PADRE o|--|| TABLA_HIJA_A : "es un (extiende)"
@@ -2606,6 +2590,7 @@ erDiagram
 ```
 
 #### Diagrama de Entidad Relacion
+
 ```mermaid
 erDiagram
 
@@ -2757,6 +2742,7 @@ end
 ```
 
 ##### Iniciar Sesión
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -2789,12 +2775,12 @@ alt Usuario Registrado
 		auth->>session: set_active_mode(False)
 		auth-->>G: True
 		G-->>U: Inicio de sesión exitoso
-	
+
 	else Contraseña Incorrecta
 			auth-->>G: False
 			G-->>U: Inicio de sesión rechazado
 	end
-	
+
 else Usuario Inexistente
 	db-->>dbs: NULL
 	dbs-->>auth: null
@@ -2815,7 +2801,7 @@ participant session as SessionManager
 
 U->>G: Solicitud de Cambio de Modo de Uso
 G->>U: Solicitud de Confirmación
-alt Usuario Acepta 
+alt Usuario Acepta
 	U-->>G: Aceptar
 	G->>session: switch_user_mode()
 	session->>session: notify()
@@ -2828,7 +2814,7 @@ alt Usuario Acepta
 		session-->>G: False
 		G-->>U: Cambio de modo (básico) aplicado
 	end
-	
+
 else Usuario Cancela
 	U-->>G: Cancelar
 	G-->>U: Cambio de modo cancelado
@@ -2838,6 +2824,7 @@ end
 ```
 
 ##### Cerrar Sesión
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -2941,7 +2928,7 @@ U->>G: Solicita importar una configuración
 			Note over dbs, db: [REF] Ejecutar guardar setup de calibración
 			dbs-->>G: True
 			G-->>U: Importación exitosa
-	else La configuración es de medición	
+	else La configuración es de medición
 		G->>local: load_setup(path)
 		create participant MS as MeasureSetup
 		local->>MS: m_setup = new MeasureSetup(...)
@@ -2961,6 +2948,7 @@ U->>G: Solicita importar una configuración
 ```
 
 ##### Importar Medición
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -2999,6 +2987,7 @@ G->>U: Desplegar selector de directorios
 ##### Módulo 1: Almacenamiento y Estructura de Datos
 
 ##### Configurar directorio raíz
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -3029,6 +3018,7 @@ end
 ```
 
 ##### Guardar mediciones con sus resultados
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -3084,6 +3074,7 @@ G-->>U: Medición guardada con éxito
 ```
 
 ##### Guardar Setups de calibración
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -3148,10 +3139,10 @@ participant db as Base de Datos
 G->>dbs: save_measure_setup(user_id, m_setup)
 dbs->>db: INSERT INTO MEASURE_SETUP(user_id,...) VALUES(user_id,...)
 	db-->>dbs: Confirmación de guardado
-	
+
 	dbs->>db: SELECT last_insert_rowid()
 	db-->>dbs: measure_setup_id
-	
+
 	alt El setup es de Espectroscopía
 		dbs->>db: INSERT INTO SPEC_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
 		db-->>dbs: Confirmación de guardado
@@ -3167,6 +3158,7 @@ G-->>U: Setup de medición guardado con éxito
 ```
 
 ##### Exportar gráficas generadas
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -3182,13 +3174,12 @@ alt Usuario Selecciona un directorio
 	G->>local: export_plot(path, Figure)
 	local-->>G: True
 	G-->>U: Confirmación de guardado
-	
+
 else Usuario cancela
 	U-->>G: Cancelar guardado
 	G-->>U: Guardado de archivo cancelado
 end
 ```
-
 
 ### Tabla de trazabilidad
 
@@ -3205,8 +3196,8 @@ end
 | **CON-05**    | Notificar visualmente el estado Inactivo de conexión | ConnectionService/ConnectionState/DisconnectedState                                                                      | -            |
 | **CON-06**    | Notificar visualmente el estado error de conexión    | ConnectionService/ConnectionState/ConnectionErrorState                                                                   | -            |
 
-
 ##### Módulo 2: Calibración del Dispositivo
+
 | **Requisito** | Caso de uso                                              | Clase/servicio                       | Persistencia |
 | ------------- | -------------------------------------------------------- | ------------------------------------ | ------------ |
 | **CAL-01**    | Configurar la calibración electrónica del equipo         | CalibrationService/CalibrationSetup  | -            |
@@ -3215,12 +3206,13 @@ end
 | **CAL-04**    | Limitar la configuración de calibración al Modo Avanzado | SessionManager                       | -            |
 
 #### Subsistema 2: Configuración y Toma de Mediciones
+
 ##### Módulo 1: Tipos y Estrategias de Medición
 
 | **Requisito** | Caso de uso                                                | Clase/servicio                  | Persistencia  |
 | ------------- | ---------------------------------------------------------- | ------------------------------- | ------------- |
 | **MED-01**    | Configurar apartados comunes a una medición                | MeasureSetup                    | -             |
-| **MED-02**    | Configurar medición de una frecuencia  (Monofrecuencia)    | MeasureSetup/SingleMeasureSetup | -             |
+| **MED-02**    | Configurar medición de una frecuencia (Monofrecuencia)     | MeasureSetup/SingleMeasureSetup | -             |
 | **MED-03**    | Ejecutar medición de una frecuencia (Monofrecuencia)       | MeasureService                  | MeasureResult |
 | **MED-04**    | Configurar medición por espectroscopía (Barrido espectral) | MeasureSetup/SpecMeasureSetup   | -             |
 | **MED-05**    | Ejecutar medición por espectroscopía (Barrido espectral)   | MeasureService                  | MeasureResult |
@@ -3274,26 +3266,35 @@ end
 ### Pantallas
 
 #### Pantalla de Login
+
 ![366](pantallas/pantalla_login.png)
 
 #### Pantalla de Registro
+
 ![369](pantallas/pantalla_registro.png)
 
 #### Pantalla Principal
+
 ![](pantallas/pantalla_principal.png)
 
 #### Pantalla de Configuración
+
 ![](pantallas/pantalla_configuracion.png)
 
 #### Pantalla de Mediciones y Setups de Usuario
+
 ![](pantallas/pantalla_mediciones_y_setups.png)
 
 #### Pantalla de Perfil de Usuario
+
 ![](pantallas/pantalla_perfil_de_usuario.png)
 
 ## HERRAMIENTAS UTILIZADAS
+
 ### Diagramas de Arquitectura de Software
+
 #### Diagrama de Contexto
+
 ```mermaid
 C4Context
 
@@ -3335,6 +3336,7 @@ Rel(user, app, "Calibra el dispositivo y realiza mediciones")
 Rel(app, sqlite, "Persiste datos generados")
 Rel(app, ESP32, "Envía comandos de control al dispositivo y recolecta las respuestas")
 ```
+
 #### Diagrama de Componentes
 
 ```mermaid
@@ -3349,13 +3351,13 @@ System_Boundary(GMini-GUI, "Sistema Guanaco Mini") {
 Container_Boundary(app, "Aplicación de Escritorio"){
 
 Component(UI, "Interfaz Gráfica", "PyQt6", "Maneja la interacción visual.")
-    
+
 Component(sesion, "Autenticación y Sesión", "Python 3", "Mantiene la sesión activa.")
 
 Component(mediciones, "Mediciones y Config", "Python 3", "Orquesta las mediciones.")
 
 Component(comunicacion, "Comunicación y HW", "Python 3", "Maneja el puerto serial/Bluetooth.")
-    
+
 Component(persistencia, "Persistencia", "Python 3", "Centraliza el acceso a datos.")
 }
 
