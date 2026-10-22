@@ -1,6 +1,6 @@
-#### Subsistema 1: Comunicación e Interacción con el Hardware
+### Subsistema 1: Comunicación e Interacción con el Hardware
 
-##### Módulo 1: Conectividad y Estado
+#### Módulo 1: Conectividad y Estado
 
 - **CU-D4: Enviar comandos por consola de diagnóstico:** El usuario escribe y envía comandos en texto plano directamente al firmware de la placa para realizar pruebas técnicas o diagnósticos.
 
@@ -47,7 +47,7 @@
 | **Postcondiciones**              |                                                                                                                                                                                      |
 | **Extensiones**                  | 2.a. La placa se encuentra desconectada.<br>2.a.1. El sistema presenta un indicador visual de color rojo, junto con un mensaje: "Dispositivo Desconectado"                           |
 
-##### Módulo 2: Calibración del Dispositivo
+#### Módulo 2: Calibración del Dispositivo
 
 | **Nombre**                       | Configurar Calibración Electrónica                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | :------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -73,7 +73,9 @@
 
 - **CU-D5: Visualizar alertas de calidad y calibración:** El sistema notifica al usuario si detecta saturación en la señal, baja amplitud, o si los parámetros modificados requieren una nueva calibración.
 
-#### Subsistema 2: Configuración y Toma de Mediciones
+### Subsistema 2: Configuración y Toma de Mediciones
+
+#### Módulo 1: Tipos y Estrategias de Medición
 
 - **CU-D2: Cancelar medición en curso:** El usuario presiona el botón de detención y el sistema aborta de manera segura y controlada una adquisición o secuencia que se esté ejecutando.
 
@@ -225,16 +227,9 @@
 | **Postcondiciones**              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Extensiones**                  | 5.3.a El valor de frecuencia es inválido o está fuera de rango:<br>5.3.a.1. El Sistema detecta que el valor es inferior a 0.5 kHz, superior a 100 kHz, o no tiene formato numérico.<br>5.3.a.2 El Sistema aborta la inserción y muestra una advertencia junto al campo: "Valor fuera de rango (0.5 kHz - 100 kHz)".<br><br>5.3.b El valor ingresado ya existe en la lista:<br>5.3.b.1. El Sistema detecta una colisión de datos (duplicado).<br>5.3.b.2 El Sistema ignora la acción de agregar y muestra un mensaje temporal: "Esta frecuencia ya se encuentra en la lista".<br><br>5.6.a El usuario intenta continuar con una lista insuficiente:<br>5.6.a.1 El sistema detecta que la lista está vacía o contiene una sola frecuencia.<br>5.6.a.2 El sistema deshabilita el botón “Finalizar frecuencias” y muestra un cartel “La cantidad de frecuencias es inválida”.                                                   |
 
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
-##### Nuevo modulo: "Analisis y visualizacion "
-
-- **CU-B1: Manipular curvas de medición:** El usuario superpone, oculta, cambia colores, modifica estilos o renombra las curvas cargadas en el espacio de trabajo gráfico.
-- **CU-B2: Navegar en gráficos de espectroscopía:** El usuario utiliza el mouse para hacer zoom, desplazarse (paneo) por el gráfico y emplea cursores para visualizar los valores exactos en coordenadas puntuales.
-- **CU-B3: Visualizar datos en formato tabular:** El sistema despliega los puntos de datos de las mediciones activas en una grilla estructurada de filas y columnas.
-- **CU-B4: Manipular datos en tabla interactiva:** El usuario interactúa con la tabla para ordenar valores por columna, aplicar filtros condicionales y copiar datos al portapapeles.
-
-##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+#### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
 - **CU-B7: Crear nueva sesión experimental:** El usuario genera un nuevo espacio de trabajo en blanco para comenzar a agrupar lógicamente las nuevas mediciones, configuraciones y curvas de un experimento.
 - **CU-B8: Guardar sesión experimental:** El usuario guarda manualmente el estado completo del Workspace (curvas, tablas, modelos), o el sistema ejecuta esta acción de forma automática en segundo plano (Autoguardado).
@@ -384,15 +379,24 @@
 | **Postcondición**                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Extensiones**                  | 5.a. El usuario selecciona el botón "Cargar":<br>5.a.1. El usuario es llevado al panel de ejecución de medición (Aplica el CU Aplicar configuraciones).<br><br>5.b. El usuario selecciona el botón "Importar":<br>5.b.1. El Sistema invoca al caso de uso CU Importar configuraciones.<br><br>5.c. El usuario selecciona el botón "Exportar":<br>5.c.1. El Sistema invoca al caso de uso CU Exportar configuraciones.<br><br>5.d. El usuario selecciona el botón "Borrar":<br>5.d.1. El sistema muestra un panel de confirmación "¿Está seguro que desea borrar este archivo? Esta acción no es reversible."<br>5.d.2. El usuario selecciona "Aceptar".<br>5.d.3. El sistema borra el archivo del disco duro.<br>5.d.4. El sistema actualiza la lista visual volviendo al paso 2.<br>5.d.2.a. El usuario selecciona "Cancelar": El sistema cierra el panel sin borrar nada. |
 
-#### Subsistema 4 : Entorno de Ejecución y Plataforma
+#### Módulo 2: Analisis y visualizacion
 
-##### Modulo nuevo: Interfaz y Trazabilidad
+- **CU-B1: Manipular curvas de medición:** El usuario superpone, oculta, cambia colores, modifica estilos o renombra las curvas cargadas en el espacio de trabajo gráfico.
+- **CU-B2: Navegar en gráficos de espectroscopía:** El usuario utiliza el mouse para hacer zoom, desplazarse (paneo) por el gráfico y emplea cursores para visualizar los valores exactos en coordenadas puntuales.
+- **CU-B3: Visualizar datos en formato tabular:** El sistema despliega los puntos de datos de las mediciones activas en una grilla estructurada de filas y columnas.
+- **CU-B4: Manipular datos en tabla interactiva:** El usuario interactúa con la tabla para ordenar valores por columna, aplicar filtros condicionales y copiar datos al portapapeles.
+
+### Subsistema 4 : Entorno de Ejecución y Plataforma
+
+#### Módulo 2: Interfaz y Trazabilidad
 
 - **CU-D3: Visualizar registro de eventos (Logs):** El usuario consulta el panel de eventos para revisar el historial cronológico de acciones, errores y finalizaciones de la sesión actual.
 
 - **CU-D7: Personalizar distribución de paneles (Workspace layout):** El usuario arrastra, redimensiona y oculta ventanas o paneles dentro de la interfaz, y el sistema guarda esta distribución como su preferencia de entorno.
 
-#### Subsistema 5: Persistencia
+### Subsistema 5: Persistencia
+
+#### Módulo 1: Almacenamiento y Estructura de Datos
 
 | **Nombre**                       | Guardar mediciones con sus resultados                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
