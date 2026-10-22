@@ -39,11 +39,11 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                                                    |
 | **Descripción** | El sistema debe proveer una interfaz de consola (CLI) que permita al usuario enviar comandos en texto plano directamente a la placa y visualizar sus respuestas crudas para propósitos de diagnóstico. |
 
-| **CON-08** | Intentar reconexión automática |
-
-| :-------------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios** | Usuario Registrado. |
+| **CON-08**      | Intentar reconexión automática                                                                                                                           |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                                      |
 | **Descripción** | El sistema debe ejecutar un mecanismo de contingencia para intentar recuperar automáticamente la comunicación si esta se interrumpe de forma inesperada. |
+
 
 #### Módulo 2: Calibración del Dispositivo
 
