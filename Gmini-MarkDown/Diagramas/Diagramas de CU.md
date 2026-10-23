@@ -89,8 +89,6 @@ CU14 ==> CU11
 Usuario --> CU7
 Usuario --> CU11
 Usuario --> CU_A1
-Usuario --> CU_A2
-Usuario --> CU_A3
 Usuario --> CU_A4
 
 %% Relaciones Include/Extend
