@@ -74,8 +74,6 @@ subgraph Configuración y Toma de Mediciones
 
 	%% Casos de Uso de Automatización incorporados
 	CU_A1([Configurar secuencia de automatización])
-	CU_A2([Exportar secuencia de automatización])
-	CU_A3([Importar secuencia de automatización])
 	CU_A4([Ejecutar secuencia de automatización])
 end
 
@@ -127,6 +125,8 @@ subgraph Perfiles de Usuario y Gestión de Sesiones
 	CU_B8([Importar sesión experimental])
 	CU_B9([Cargar sesión experimental])
 	CU_B10([Renombrar sesión experimental])
+	CU_A2([Exportar secuencia de automatización])
+	CU_A3([Importar secuencia de automatización])
 end
 
 %% Asociaciones
@@ -145,6 +145,8 @@ Usuario --> CU_B7
 Usuario --> CU_B8
 Usuario --> CU_B9
 Usuario --> CU_B10
+Usuario --> CU_A2
+Usuario --> CU_A3
 
 ```
 
