@@ -117,7 +117,6 @@ subgraph Perfiles de Usuario y Gestión de Sesiones
 	CU22([Iniciar sesión])
 	CU24([Cerrar sesión])
 	CU26([Aplicar configuraciones])
-	CU27([Importar Datos])
 	CU29([Importar Configuraciones])
 	CU30([Exportar Configuraciones])
 	CU31([Importar Mediciones])
