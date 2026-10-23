@@ -51,7 +51,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -75,17 +75,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -97,15 +97,11 @@ class MeasureSetup {
 	<<abstract>>
 	- measure_setup_id : int
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -125,16 +121,42 @@ class MultiMeasureSetup{
 }
 
 class CalibrationSetup{
-	c
+	- cal_setup_id : int
 	- observations : str
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
-	
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- mux_channel : [0, 1, 2, 3]
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
+	+ set_observations(obs : str)
+}
+
+class AutoSequence {
+	- sequence_id : int
+	- measure_setups : [MeasureSetup]
+	- delay : float
+	- repeat : int
+	- observations : str
+	+ get_id() : int
+	+ get_setups() : [MeasureSetup]
+	+ set_observations(obs : str)
+}
+
+class ExperimentalSession {
+	- session_id : int
+	- date : DateTime
+	- measures : [Measure]
+	- auto_sequences : [AutoSequence]
+	- observations : str
+	+ get_id() : int
+	+ add_measure(measure : Measure)
 	+ set_observations(obs : str)
 }
 
@@ -181,6 +203,8 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	+ execute_sequence(device : Device, sequence : AutoSequence)
+	+ stop_sequence()
 	- update_progress()
 }
 
@@ -189,10 +213,14 @@ class LocalService{
 	+ load_measure(path : str) : Measure
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
+	+ load_auto_sequence(path : str) : AutoSequence
+	+ load_experimental_session(path : str) : ExperimentalSession
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
 	+ export_measure_to_file(path : str, measure : Measure)
+	+ export_auto_sequence_to_file(path : str, sequence : AutoSequence)
+	+ export_experimental_session_to_file(path : str, exp_session : ExperimentalSession)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
 	+ delete_token()
@@ -204,13 +232,17 @@ class DataBaseService{
 	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
+	+ save_auto_sequence(user_id : int, sequence : AutoSequence)
+	+ save_experimental_session(user_id : int, exp_session : ExperimentalSession)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ get_auto_sequences_by_user(user_id : int) : [AutoSequence]
+	+ get_experimental_sessions_by_user(user_id : int) : [ExperimentalSession]
+	+ update_user_directory(user_id : int, path : str)
 }
 
 
@@ -219,7 +251,7 @@ class AuthService{
 	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
-	+ restore_session(token : Token)
+	+ restore_session(token : str)
 	+ verify_password(password : str)
 	+ generate_token() : str
 	- rehash_password(password : str) : str
@@ -261,7 +293,7 @@ class DeviceState{
 	class MeasuringState
 	class DeviceErrorState
 	class UncalibratedState
-	
+
 class ConnectionState{
 		<<interface>>
 		+ connect(context : ConnectionType)
@@ -290,18 +322,10 @@ class IObservable{
 class BaseMeasureSetupBuilder{
 	<<abstract>>
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
 	+ build() : MeasureSetup
 	+ with_observations()
-	+ with_voltage()
-	+ with_gain()
-	+ with_rfb_value()
 	+ with_cycles()
-	+ with_mux_channel()
 }
 
 class SpectroSetupBuilder{
@@ -333,36 +357,36 @@ class MultiFreqSetupBuilder{
 }
 
 %% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
-} 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+class ConnectionFactory{
+	+ create_connection(type : str) : ConnectionType
+}
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
 }
 
 %% patron adapter
-class ICalibrationAdapter{ 
+class ICalibrationAdapter{
 	<<interface>>
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiCalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-} 
-
-class IMeasureAdapter{ 
-	<<interface>>
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class GminiCalibrationAdapter{
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiMeasureAdapter{ 
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class IMeasureAdapter{
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
+}
+
+class GminiMeasureAdapter{
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 
 %% relaciones
@@ -372,7 +396,8 @@ ConnectionService --> Device : establece conexión
 
 MeasureService --> ConnectionService : envía comandos y observa
 MeasureService --> Measure : ejecuta medición
-MeasureService --> DataBaseService : invoca guardado de emergencia 
+MeasureService --> AutoSequence : ejecuta secuencia
+MeasureService --> DataBaseService : invoca guardado de emergencia
 MeasureService --> SessionManager : verifica usuario
 MeasureService --> Device : verifica y actualiza estado
 MeasureService --> IMeasureAdapter : envía setups y recibe comandos
@@ -392,10 +417,14 @@ AuthService --> User : crea usuario
 LocalService --> CalibrationSetup : exporta/importa setup
 LocalService --> MeasureSetup : exporta/importa setup
 LocalService --> Measure : exporta/importa medición
+LocalService --> AutoSequence : exporta/importa secuencia
+LocalService --> ExperimentalSession : exporta/importa sesión
 
-DataBaseService -->  CalibrationSetup : guarda setup
-DataBaseService -->  MeasureSetup : guarda setup
-DataBaseService -->  Measure : guarda medición
+DataBaseService --> CalibrationSetup : guarda setup
+DataBaseService --> MeasureSetup : guarda setup
+DataBaseService --> Measure : guarda medición
+DataBaseService --> AutoSequence : guarda secuencia
+DataBaseService --> ExperimentalSession : guarda sesión
 
 MeasureSetupBuilderFactory --> BaseMeasureSetupBuilder : construye
 BaseMeasureSetupBuilder --> MeasureSetup : instancia
@@ -411,6 +440,10 @@ SessionManager o-- Token
 Measure --> Device
 Measure o-- MeasureSetup
 Measure *-- MeasureResult
+
+AutoSequence o-- MeasureSetup
+ExperimentalSession o-- Measure
+ExperimentalSession o-- AutoSequence
 ```
 
 #### Lista de Clases
@@ -437,15 +470,11 @@ class MeasureSetup {
 	<<abstract>>
 	- measure_setup_id : int
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -486,18 +515,10 @@ class WireLess{
 class BaseMeasureSetupBuilder{
 	<<abstract>>
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
 	+ build() : MeasureSetup
 	+ with_observations()
-	+ with_voltage()
-	+ with_gain()
-	+ with_rfb_value()
 	+ with_cycles()
-	+ with_mux_channel()
 }
 
 class SpectroSetupBuilder{
@@ -527,10 +548,10 @@ class MultiFreqSetupBuilder{
 	+ build() : MultiMeasureSetup
 	+ with_freq_list(freq_list :[float]) : self
 }
-
 ```
 
 ##### Patrón State
+
 ```mermaid
 classDiagram
 %% state patern
@@ -553,7 +574,7 @@ class DeviceState{
 	class MeasuringState
 	class DeviceErrorState
 	class UncalibratedState
-	
+
 class ConnectionState{
 		<<interface>>
 		+ connect(context : ConnectionType)
@@ -567,6 +588,7 @@ class ConnectionErrorState
 ```
 
 ##### Patrón Adapter
+
 ```mermaid
 classDiagram
 
@@ -574,32 +596,33 @@ classDiagram
 IMeasureAdapter <|.. GminiMeasureAdapter
 ICalibrationAdapter <|.. GminiCalibrationAdapter
 
-class ICalibrationAdapter{ 
+class ICalibrationAdapter{
 	<<interface>>
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiCalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-} 
-
-class IMeasureAdapter{ 
-	<<interface>>
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class GminiCalibrationAdapter{
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiMeasureAdapter{ 
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class IMeasureAdapter{
+	<<interface>>
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
+}
+
+class GminiMeasureAdapter{
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 ```
 
 ##### Patrón Observer
+
 ```mermaid
 classDiagram
 
@@ -614,21 +637,23 @@ class IObservable{
 	+ detach()
 	+ notify()
 }
-
 ```
 
 ##### Patrón Factory
+
 ```mermaid
 classDiagram
 %% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
-} 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+class ConnectionFactory{
+	+ create_connection(type : str) : ConnectionType
+}
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
 }
 ```
+
 ##### Clases del Dominio
+
 ```mermaid
 classDiagram
 %% mediciones
@@ -644,17 +669,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -672,7 +697,27 @@ class MeasureResult{
 	+ measure_std() : [float]
 }
 
+class AutoSequence {
+	- sequence_id : int
+	- measure_setups : [MeasureSetup]
+	- delay : float
+	- repeat : int
+	- observations : str
+	+ get_id() : int
+	+ get_setups() : [MeasureSetup]
+	+ set_observations(obs : str)
+}
 
+class ExperimentalSession {
+	- session_id : int
+	- date : DateTime
+	- measures : [Measure]
+	- auto_sequences : [AutoSequence]
+	- observations : str
+	+ get_id() : int
+	+ add_measure(measure : Measure)
+	+ set_observations(obs : str)
+}
 
 %% usuario
 class User {
@@ -684,7 +729,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -703,9 +748,13 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- mux_channel : [0, 1, 2, 3]
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -719,6 +768,7 @@ class Device{
 ```
 
 ##### Servicios de Mediciones y Calibración
+
 ```mermaid
 classDiagram
 %% mediciones y conexion
@@ -727,6 +777,8 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	+ execute_sequence(device : Device, sequence : AutoSequence)
+	+ stop_sequence()
 	- update_progress()
 }
 
@@ -744,6 +796,7 @@ class CalibrationService{
 ```
 
 ##### Servicios de Usuario y Autenticación
+
 ```mermaid
 classDiagram
 %% usuario
@@ -752,7 +805,7 @@ class AuthService{
 	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
-	+ restore_session(token : Token)
+	+ restore_session(token : str)
 	+ verify_password(password : str)
 	+ generate_token() : str
 	- rehash_password(password : str) : str
@@ -771,7 +824,9 @@ class SessionManager{
 	+ set_active_token(token : Token)
 }
 ```
+
 ##### Servicios de Persistencia
+
 ```mermaid
 classDiagram
 
@@ -781,13 +836,17 @@ class LocalService{
 	+ load_measure(path : str) : Measure
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
+	+ load_auto_sequence(path : str) : AutoSequence
+	+ load_experimental_session(path : str) : ExperimentalSession
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
 	+ export_measure_to_file(path : str, measure : Measure)
+	+ export_auto_sequence_to_file(path : str, sequence : AutoSequence)
+	+ export_experimental_session_to_file(path : str, exp_session : ExperimentalSession)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
-	+ delete_token()	
+	+ delete_token()
 }
 class DataBaseService{
 	- db_root : str
@@ -796,18 +855,22 @@ class DataBaseService{
 	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
+	+ save_auto_sequence(user_id : int, sequence : AutoSequence)
+	+ save_experimental_session(user_id : int, exp_session : ExperimentalSession)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ get_auto_sequences_by_user(user_id : int) : [AutoSequence]
+	+ get_experimental_sessions_by_user(user_id : int) : [ExperimentalSession]
+	+ update_user_directory(user_id : int, path : str)
 }
-
 ```
 
 #### Diagramas de Clases
+
 ###### Subsistema 1: Comunicación e Interacción con el Hardware
 
 ###### Módulo 1: Conectividad y Estado
@@ -848,7 +911,7 @@ class Device{
 }
 
 %% state patern
-	
+
 class ConnectionState{
 		<<interface>>
 		+ connect(context : ConnectionType)
@@ -894,8 +957,8 @@ class ConnectionService{
 }
 
 %% factory method
-class ConnectionFactory{ 
-	+ create_connection(type : str) : ConnectionType 
+class ConnectionFactory{
+	+ create_connection(type : str) : ConnectionType
 }
 
 %% relaciones
@@ -924,8 +987,8 @@ ConnectionService --> Device : establece conexión
 ConnectionService --> ConnectionType : observa
 ```
 
-
 ###### Módulo 2: Calibración del Dispositivo
+
 ```mermaid
 classDiagram
 DeviceState <|.. FreeDeviceState : implementa
@@ -952,7 +1015,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -964,9 +1027,13 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- mux_channel : [0, 1, 2, 3]
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1020,16 +1087,16 @@ class Token {
 }
 
 %% patron adapter
-class ICalibrationAdapter{ 
+class ICalibrationAdapter{
 	<<interface>>
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
 }
 
-class GminiCalibrationAdapter{ 
-	+ encode(setup : CalibrationSetup) : str 
-	+ decode(response : str) : bool 
-} 
+class GminiCalibrationAdapter{
+	+ encode(setup : CalibrationSetup) : str
+	+ decode(response : str) : bool
+}
 
 %% relaciones
 
@@ -1048,6 +1115,7 @@ CalibrationService ..> ICalibrationAdapter : envía objetos y espera comandos
 ```
 
 ##### Subsistema 2: Configuración y Toma de Mediciones
+
 ###### Módulo 1: Tipos y Estrategias de Medición
 
 ```mermaid
@@ -1084,7 +1152,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -1119,22 +1187,33 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
 	+ set_state(new_state : str)
 
+}
+
+class AutoSequence {
+	- sequence_id : int
+	- measure_setups : [MeasureSetup]
+	- delay : float
+	- repeat : int
+	- observations : str
+	+ get_id() : int
+	+ get_setups() : [MeasureSetup]
+	+ set_observations(obs : str)
 }
 
 class SessionManager{
@@ -1160,15 +1239,11 @@ class MeasureSetup {
 	<<abstract>>
 	- measure_setup_id : int
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1202,6 +1277,8 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	+ execute_sequence(device : Device, sequence : AutoSequence)
+	+ stop_sequence()
 	- update_progress()
 }
 
@@ -1220,13 +1297,17 @@ class DataBaseService{
 	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
+	+ save_auto_sequence(user_id : int, sequence : AutoSequence)
+	+ save_experimental_session(user_id : int, exp_session : ExperimentalSession)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ get_auto_sequences_by_user(user_id : int) : [AutoSequence]
+	+ get_experimental_sessions_by_user(user_id : int) : [ExperimentalSession]
+	+ update_user_directory(user_id : int, path : str)
 }
 
 
@@ -1234,18 +1315,10 @@ class DataBaseService{
 class BaseMeasureSetupBuilder{
 	<<abstract>>
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
 	+ build() : MeasureSetup
 	+ with_observations()
-	+ with_voltage()
-	+ with_gain()
-	+ with_rfb_value()
 	+ with_cycles()
-	+ with_mux_channel()
 }
 
 class SpectroSetupBuilder{
@@ -1290,22 +1363,22 @@ class IObservable{
 }
 
 %% factory method
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
 }
 
 %% adapter pattern
-class IMeasureAdapter{ 
+class IMeasureAdapter{
 	<<interface>>
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 
-class GminiMeasureAdapter{ 
-	+ encode_setup(setup : MeasureSetup) : str 
-	+ encode_execution(setup : MeasureSetup) : str 
-	+ decode(response : str) : MeasureResult 
+class GminiMeasureAdapter{
+	+ encode_setup(setup : MeasureSetup) : str
+	+ encode_execution(setup : MeasureSetup) : str
+	+ decode(response : str) : MeasureResult
 }
 
 %% relaciones
@@ -1316,9 +1389,12 @@ Measure "1"o--"1" MeasureSetup
 Measure "1"*--"1" MeasureResult
 Measure --> Device : conoce
 
+AutoSequence "1"o--"1..*" MeasureSetup : contiene
+
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 MeasureService ..> Measure : ejecuta medición
+MeasureService ..> AutoSequence : ejecuta secuencia
 MeasureService ..> SessionManager : verifica usuario
 MeasureService ..> IMeasureAdapter : envía setups y recibe comandos
 MeasureService --> ConnectionService : envía comandos y observa
@@ -1332,9 +1408,11 @@ IMeasureAdapter <|.. GminiMeasureAdapter : implementa
 
 Device "1"*--"1" DeviceState
 ```
+
 ##### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
 
 ###### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+
 ```mermaid
 classDiagram
 
@@ -1359,7 +1437,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -1370,7 +1448,7 @@ class AuthService{
 	+ login(user_name, password) : Token
 	+ logout()
 	+ register(user_name, email, password)
-	+ restore_session(token : Token)
+	+ restore_session(token : str)
 	+ verify_password(password : str)
 	+ generate_token() : str
 	- rehash_password(password : str) : str
@@ -1394,10 +1472,14 @@ class LocalService{
 	+ load_measure(path : str) : Measure
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
+	+ load_auto_sequence(path : str) : AutoSequence
+	+ load_experimental_session(path : str) : ExperimentalSession
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
 	+ export_measure_to_file(path : str, measure : Measure)
+	+ export_auto_sequence_to_file(path : str, sequence : AutoSequence)
+	+ export_experimental_session_to_file(path : str, exp_session : ExperimentalSession)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
 	+ delete_token()
@@ -1409,28 +1491,28 @@ class DataBaseService{
 	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
+	+ save_auto_sequence(user_id : int, sequence : AutoSequence)
+	+ save_experimental_session(user_id : int, exp_session : ExperimentalSession)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ get_auto_sequences_by_user(user_id : int) : [AutoSequence]
+	+ get_experimental_sessions_by_user(user_id : int) : [ExperimentalSession]
+	+ update_user_directory(user_id : int, path : str)
 }
 
 class MeasureSetup {
 	<<abstract>>
 	- measure_setup_id : int
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1455,6 +1537,10 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- mux_channel : [0, 1, 2, 3]
 }
 
 class SessionManager{
@@ -1474,18 +1560,10 @@ class SessionManager{
 class BaseMeasureSetupBuilder{
 	<<abstract>>
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
 	+ build() : MeasureSetup
 	+ with_observations()
-	+ with_voltage()
-	+ with_gain()
-	+ with_rfb_value()
 	+ with_cycles()
-	+ with_mux_channel()
 }
 
 class SpectroSetupBuilder{
@@ -1516,10 +1594,10 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
-%% factory method 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
-} 
+%% factory method
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
+}
 
 %% relaciones
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
@@ -1574,7 +1652,7 @@ class User {
 	%% getters
 	+ get_id() : int
 	+ get_root_directory() : str
-	
+
 	%% setters
 	+ set_user_id(id : int)
 	+ set_root_directory(path : str)
@@ -1592,17 +1670,17 @@ class Measure {
 	- observations : str
 	- loop_group_id : str
 	- iteration_number : int
-	  
+
 	%% getters
 	+ get_device_id() : int
 	+ get_measure_result() : MeasureResult
 	+ get_file_name() : str
 	+ get_observations() : str
 	+ get_measure_setup() : MeasureSetup
-	
+
 	+ get_state() : str
 	+ set_default_name()
-	
+
 	%% setters
 	+ set_file_name(new_name : name)
 	+ set_observations(obs : str)
@@ -1624,15 +1702,11 @@ class MeasureSetup {
 	<<abstract>>
 	- measure_setup_id : int
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
-	  
+
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
 	+ set_observations(obs : str)
 }
@@ -1657,10 +1731,40 @@ class CalibrationSetup{
 	- channel : ["RCAL1":0, "RCAL2":1, "Other":2/3]
 	- z_calc_value_real : float
 	- z_calc_value_imag : float
+	- exitation_voltage : float
+	- gain : float
+	- rfbvalue : float
+	- mux_channel : [0, 1, 2, 3]
 	%% getters
 	+ get_id() : int
-	
+
 	%% setters
+	+ set_observations(obs : str)
+}
+
+class AutoSequence {
+	- sequence_id : int
+	- measure_setups : [MeasureSetup]
+	- delay : float
+	- repeat : int
+	- observations : str
+	%% getters
+	+ get_id() : int
+	+ get_setups() : [MeasureSetup]
+	%% setters
+	+ set_observations(obs : str)
+}
+
+class ExperimentalSession {
+	- session_id : int
+	- date : DateTime
+	- measures : [Measure]
+	- auto_sequences : [AutoSequence]
+	- observations : str
+	%% getters
+	+ get_id() : int
+	%% setters
+	+ add_measure(measure : Measure)
 	+ set_observations(obs : str)
 }
 
@@ -1688,6 +1792,8 @@ class MeasureService{
 	+ finish_measure() : [MeasureResult]
 	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
+	+ execute_sequence(device : Device, sequence : AutoSequence)
+	+ stop_sequence()
 	- update_progress()
 }
 
@@ -1702,13 +1808,17 @@ class DataBaseService{
 	+ save_measure(user_id : int, measure : Measure)
 	+ save_calibration_setup(user_id : int, cal_setup : CalibrationSetup)
 	+ save_measure_setup(user_id : int, m_setup : MeasureSetup)
+	+ save_auto_sequence(user_id : int, sequence : AutoSequence)
+	+ save_experimental_session(user_id : int, exp_session : ExperimentalSession)
 	+ get_user_by_id(user_id : int): User
 	+ get_user_by_email(email : str): User
-	+ get_user_by_name(user_name : str): User 
+	+ get_user_by_name(user_name : str): User
 	+ get_measures_by_user(user_id : int) : [Measure]
 	+ get_calibration_setups_by_user(user_id : int) : [CalibrationSetup]
 	+ get_measure_setups_by_user(user_id : int) : [MeasureSetup]
-	+ update_user_directory(user_id : int, path : str) 
+	+ get_auto_sequences_by_user(user_id : int) : [AutoSequence]
+	+ get_experimental_sessions_by_user(user_id : int) : [ExperimentalSession]
+	+ update_user_directory(user_id : int, path : str)
 }
 
 class LocalService{
@@ -1716,10 +1826,14 @@ class LocalService{
 	+ load_measure(path : str) : Measure
 	+ load_calibration_setup(path : str) : CalibrationSetup
 	+ load_setup(path : str) : MeasureSetup
+	+ load_auto_sequence(path : str) : AutoSequence
+	+ load_experimental_session(path : str) : ExperimentalSession
 	+ load_user_token(path : str) : Token
 	+ export_setup_to_file(path : str, setup : MeasureSetup)
 	+ export_calibration_setup_to_file(path : str, setup : CalibrationSetup)
 	+ export_measure_to_file(path : str, measure : Measure)
+	+ export_auto_sequence_to_file(path : str, sequence : AutoSequence)
+	+ export_experimental_session_to_file(path : str, exp_session : ExperimentalSession)
 	+ export_user_token(path : str, token : Token)
 	+ export_plot(path : str, figure : Figure)
 	+ delete_token()
@@ -1729,18 +1843,10 @@ class LocalService{
 class BaseMeasureSetupBuilder{
 	<<abstract>>
 	- observations : str
-	- exitation_voltage : float
-	- gain : float
-	- rfbvalue : float
 	- settcycles : int
-	- mux_channel : [0, 1, 2, 3]
 	+ build() : MeasureSetup
 	+ with_observations()
-	+ with_voltage()
-	+ with_gain()
-	+ with_rfb_value()
 	+ with_cycles()
-	+ with_mux_channel()
 }
 
 class SpectroSetupBuilder{
@@ -1771,10 +1877,10 @@ class MultiFreqSetupBuilder{
 	+ with_freq_list(freq_list :[float]) : self
 }
 
-%% factory method 
-class MeasureSetupBuilderFactory{ 
-	+ create_builder(mode : str) : BaseMeasureSetupBuilder 
-} 
+%% factory method
+class MeasureSetupBuilderFactory{
+	+ create_builder(mode : str) : BaseMeasureSetupBuilder
+}
 
 %% relaciones
 
@@ -1783,6 +1889,10 @@ MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
 Measure "1"*--"1" MeasureResult
 Measure "1"o--"1" MeasureSetup
 
+AutoSequence "1"o--"1..*" MeasureSetup : contiene
+ExperimentalSession "1"o--"0..*" Measure : agrupa
+ExperimentalSession "1"o--"0..*" AutoSequence : incluye
+
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
 CalibrationService ..> SessionManager : verifica usuario
@@ -1790,6 +1900,7 @@ CalibrationService ..> CalibrationSetup : modifica datos
 
 MeasureService ..> SessionManager : verifica usuario
 MeasureService ..> Measure : modifica datos
+MeasureService ..> AutoSequence : ejecuta secuencia
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
@@ -1797,10 +1908,14 @@ SessionManager "1"o--"0..1" User
 LocalService ..> Measure : importa/exporta la medición
 LocalService ..> MeasureSetup : importa/exporta el setup
 LocalService ..> CalibrationSetup : importa/exporta el setup
+LocalService ..> AutoSequence : importa/exporta la secuencia
+LocalService ..> ExperimentalSession : importa/exporta la sesión
 
 DataBaseService ..> Measure : persiste la medición
 DataBaseService ..> MeasureSetup : persiste el setup
 DataBaseService ..> CalibrationSetup : persiste el setup
+DataBaseService ..> AutoSequence : persiste la secuencia
+DataBaseService ..> ExperimentalSession : persiste la sesión
 
 MeasureService ..|> IObservable : implementa
 ```
