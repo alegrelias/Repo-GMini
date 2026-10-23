@@ -38,7 +38,6 @@ subgraph Calibración del Dispositivo
 	CU5([Configurar la Calibración Electrónica])
 	CU6([Ejecutar Calibración Electrónica])
 	CU_D1([Seleccionar canal y patrones físicos])
-	CU_D5([Visualizar alertas de calidad y calibración])
 	CU_D6([Ejecutar recalibración automática])
 end
 
@@ -46,7 +45,6 @@ end
 Usuario --> CU5
 Usuario --> CU6
 Usuario --> CU_D1
-Usuario --> CU_D5
 
 %% Relaciones Extend
 CU_D6 -.extend.-> CU6
@@ -128,7 +126,7 @@ subgraph Perfiles de Usuario y Gestión de Sesiones
 	CU33([Visualizar datos guardados])
 	CU34([Exportar gráficas generadas])
 	CU_B7([Crear nueva sesión experimental])
-	CU_B8([Guardar sesión experimental])
+	CU_B8([Importar sesión experimental])
 	CU_B9([Cargar sesión experimental])
 	CU_B10([Renombrar sesión experimental])
 end

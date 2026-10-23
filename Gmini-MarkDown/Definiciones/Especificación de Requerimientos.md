@@ -44,7 +44,6 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                      |
 | **Descripción** | El sistema debe ejecutar un mecanismo de contingencia para intentar recuperar automáticamente la comunicación si esta se interrumpe de forma inesperada. |
 
-
 #### Módulo 2: Calibración del Dispositivo
 
 | **CAL-01**      | Configurar la calibración electrónica del equipo                                            |
@@ -71,11 +70,6 @@
 | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                                                              |
 | **Descripción** | El sistema debe ofrecer o disparar automáticamente una nueva secuencia de calibración cuando se modifiquen parámetros que invaliden la anterior. |
-
-| **CAL-06**      | Alertar sobre calidad de señal y validez de calibración                                                                                                              |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                                                  |
-| **Descripción** | El sistema debe alertar al usuario si detecta saturación en la señal, baja respuesta digital, o si se ha modificado un parámetro que invalida la calibración actual. |
 
 ### Subsistema 2: Configuración y Toma de Mediciones
 

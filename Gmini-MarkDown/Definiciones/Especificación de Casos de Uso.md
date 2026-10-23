@@ -71,8 +71,6 @@
 
 - **CU-D1: Seleccionar canal y patrones físicos:** El usuario elige el canal de multiplexado deseado (R_cal_1/2,DUT1, DUT2) o el patrón de calibración (RCAL interno o resistencia externa) antes de iniciar una tarea.
 
-- **CU-D5: Visualizar alertas de calidad y calibración:** El sistema notifica al usuario si detecta saturación en la señal, baja amplitud, o si los parámetros modificados requieren una nueva calibración.
-
 ### Subsistema 2: Configuración y Toma de Mediciones
 
 #### Módulo 1: Tipos y Estrategias de Medición
@@ -231,10 +229,10 @@
 
 #### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
-- **CU-B7: Crear nueva sesión experimental:** El usuario genera un nuevo espacio de trabajo en blanco para comenzar a agrupar lógicamente las nuevas mediciones, configuraciones y curvas de un experimento.
-- **CU-B8: Guardar sesión experimental:** El usuario guarda manualmente el estado completo del Workspace (curvas, tablas, modelos), o el sistema ejecuta esta acción de forma automática en segundo plano (Autoguardado).
-- **CU-B9: Cargar sesión experimental:** El usuario utiliza el explorador lateral para buscar y seleccionar una sesión histórica, restaurando todas sus curvas, datos tabulares y gráficos previos en la pantalla principal.
-- **CU-B10: Renombrar sesión experimental:** El usuario edita el nombre y la descripción de una sesión activa o guardada directamente desde la interfaz para facilitar su identificación futura.
+- **CU-: Crear nueva sesión experimental:** El usuario genera un nuevo espacio de trabajo en blanco para comenzar a agrupar lógicamente las nuevas mediciones, configuraciones y curvas de un experimento.
+- **CU-: Importar sesión experimental:** El usuario guarda manualmente el estado completo del Workspace (curvas, tablas, modelos), o el sistema ejecuta esta acción de forma automática en segundo plano (Autoguardado).
+- **CU-: Cargar sesión experimental:** El usuario utiliza el explorador lateral para buscar y seleccionar una sesión histórica, restaurando todas sus curvas, datos tabulares y gráficos previos en la pantalla principal.
+- **CU-: Renombrar sesión experimental:** El usuario edita el nombre y la descripción de una sesión activa o guardada directamente desde la interfaz para facilitar su identificación futura.
 
 | **Nombre**                       | Inicializar entorno de trabajo                                                                                                                                                                                                                                                                                                                                    |
 | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -397,6 +395,9 @@
 ### Subsistema 5: Persistencia
 
 #### Módulo 1: Almacenamiento y Estructura de Datos
+
+- **CU: Guardar sesion experimental**
+- **CU: Guardar sesecuencia automatica**
 
 | **Nombre**                       | Guardar mediciones con sus resultados                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | :------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
