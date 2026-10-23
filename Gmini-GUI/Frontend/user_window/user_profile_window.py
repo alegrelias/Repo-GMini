@@ -45,8 +45,7 @@ class UserProfileWindow(QWidget):
         userFrame.setLayout(frameLayout)
 
         imageLabel = QLabel()
-        imageLabel.setPixmap(QPixmap("Gmini-GUI/Resources/Default Avatar.png").scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
-        imageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        imageLabel.setPixmap(QPixmap("Gmini-GUI/Resources/default_avatar.png").scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
         imageLabel.setMaximumSize(100, 100)
 
         usernameLabel = QLabel("Username: JohnDoe", alignment=Qt.AlignmentFlag.AlignCenter)
@@ -59,7 +58,7 @@ class UserProfileWindow(QWidget):
         logoutButton.setMaximumHeight(30)
         logoutButton.clicked.connect(self.logout)
 
-        frameLayout.addWidget(imageLabel)
+        frameLayout.addWidget(imageLabel, alignment=Qt.AlignmentFlag.AlignCenter)
         frameLayout.addWidget(usernameLabel)
         frameLayout.addWidget(emailLabel)
         frameLayout.addWidget(logoutButton)
