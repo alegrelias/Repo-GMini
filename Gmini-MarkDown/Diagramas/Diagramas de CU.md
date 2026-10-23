@@ -215,6 +215,8 @@ subgraph Almacenamiento y Estructura de Datos
 	CU38([Configurar directorio raíz])
 	CU39([Renombrar archivo manualmente])
 	CU40([Redactar observaciones])
+	CU41([Guardar Sesión Experimental])
+	CU42([Guardar Secuencia Automatica ])
 end
 
 %% Asociaciones
@@ -222,10 +224,14 @@ Usuario --> CU35
 Usuario --> CU36
 Usuario --> CU37
 Usuario --> CU38
+Usuario --> CU41
+Usuario --> CU42
 
 %% Relaciones Include/Extend
 CU39 -.extend.-> CU37
 CU40 -.extend.-> CU35
 CU40 -.extend.-> CU36
 CU40 -.extend.-> CU37
+CU39 -.extend.-> CU41
+CU39 -.extend.-> CU42
 ```
