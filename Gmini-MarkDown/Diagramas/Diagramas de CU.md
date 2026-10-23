@@ -118,7 +118,6 @@ subgraph Perfiles de Usuario y Gestión de Sesiones
 	CU24([Cerrar sesión])
 	CU26([Aplicar configuraciones])
 	CU27([Importar Datos])
-	CU28([Exportar Datos])
 	CU29([Importar Configuraciones])
 	CU30([Exportar Configuraciones])
 	CU31([Importar Mediciones])
@@ -137,20 +136,17 @@ Usuario --> CU21
 Usuario --> CU22
 Usuario --> CU24
 Usuario --> CU26
-Usuario --> CU27
-Usuario --> CU28
+Usuario --> CU29
+Usuario --> CU31
+Usuario --> CU30
+Usuario --> CU32
+Usuario --> CU34
 Usuario --> CU33
 Usuario --> CU_B7
 Usuario --> CU_B8
 Usuario --> CU_B9
 Usuario --> CU_B10
 
-%% generalización
-CU29 ==> CU27
-CU31 ==> CU27
-CU30 ==> CU28
-CU32 ==> CU28
-CU34 ==> CU28
 ```
 
 ##### Módulo 2: Análisis y Visualización (Workspace)
