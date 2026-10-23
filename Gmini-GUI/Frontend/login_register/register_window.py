@@ -82,7 +82,7 @@ class Register(QWidget):
         main_layout.addLayout(email_layout)
 
         ruta_script = os.path.dirname(os.path.abspath(__file__))
-        ruta_imagenes = os.path.abspath(os.path.join(ruta_script, "..", "imagenes"))
+        ruta_imagenes = os.path.abspath(os.path.join(ruta_script, "..", "..", "Resources"))
 
         password_layout_1 = QHBoxLayout()
         password_label_1 = QLabel("Contraseña")

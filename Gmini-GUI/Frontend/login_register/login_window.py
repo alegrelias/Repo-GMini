@@ -87,7 +87,7 @@ class Login(QWidget):
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
 
         ruta_script = os.path.dirname(os.path.abspath(__file__))
-        ruta_imagenes = os.path.abspath(os.path.join(ruta_script, "..", "Resources"))
+        ruta_imagenes = os.path.abspath(os.path.join(ruta_script, "..", "..", "Resources"))
 
         # iconos de ojos abiertos y cerrados usando la ruta exacta
         ruta_cerrado = os.path.join(ruta_imagenes, "ojo_cerrado.jpg")
