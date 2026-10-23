@@ -48,10 +48,11 @@ class UserProfileWindow(QWidget):
         imageLabel.setPixmap(QPixmap("Gmini-GUI/Resources/default_avatar.png").scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
         imageLabel.setMaximumSize(100, 100)
 
-        usernameLabel = QLabel("Username: JohnDoe", alignment=Qt.AlignmentFlag.AlignCenter)
+        usernameLabel = QLabel("JohnDoe", alignment=Qt.AlignmentFlag.AlignCenter)
         usernameLabel.setMaximumHeight(30)
+        usernameLabel.setStyleSheet("font-size: 16px;")
 
-        emailLabel = QLabel("Email: johndoe@example.com", alignment=Qt.AlignmentFlag.AlignCenter)
+        emailLabel = QLabel("johndoe@example.com", alignment=Qt.AlignmentFlag.AlignCenter)
         emailLabel.setMaximumHeight(30)
 
         logoutButton = QPushButton("Cerrar sesion")
