@@ -442,9 +442,6 @@ SessionManager o-- User
 SessionManager o-- Token
 SessionManager o-- ExperimentalSession
 
-User "1" o-- "0..*" ExperimentalSession : posee
-User "1" o-- "0..*" AutoSequence : posee
-
 Measure --> Device
 Measure o-- MeasureSetup
 Measure *-- MeasureResult
@@ -1939,9 +1936,6 @@ Measure "1"o--"1" MeasureSetup
 
 AutoSequence "1"o--"1..*" MeasureSetup : contiene
 ExperimentalSession "1"o--"0..*" Measure : agrupa
-
-User "1"o--"0..*" ExperimentalSession : posee
-User "1"o--"0..*" AutoSequence : posee
 
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
