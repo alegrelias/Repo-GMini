@@ -151,11 +151,11 @@ class AutoSequence {
 
 class ExperimentalSession {
 	- session_id : int
-	- date : DateTime
+	- created_at : DateTime
 	- measures : [Measure]
-	- auto_sequences : [AutoSequence]
 	- observations : str
 	+ get_id() : int
+	+ get_measures() : [Measure]
 	+ add_measure(measure : Measure)
 	+ set_observations(obs : str)
 }
@@ -206,6 +206,11 @@ class MeasureService{
 	+ execute_sequence(device : Device, sequence : AutoSequence)
 	+ stop_sequence()
 	- update_progress()
+}
+
+class AnalysisService{
+	- measures : [Measure]
+	+ apply_debye_model(measure : Measure)
 }
 
 class LocalService{
@@ -259,13 +264,9 @@ class AuthService{
 
 class SessionManager{
 	- current_user : User
-	- advanced_mode_active : boolean
 	- active_token : Token
-	+ switch_user_mode()
 	+ get_current_user() : User
 	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
 	+ set_active_token(token : Token)
 }
@@ -402,6 +403,9 @@ MeasureService --> SessionManager : verifica usuario
 MeasureService --> Device : verifica y actualiza estado
 MeasureService --> IMeasureAdapter : envía setups y recibe comandos
 
+AnalysisService --> Measure : analiza
+AnalysisService --> MeasureResult : aplica modelo
+
 CalibrationService --> CalibrationSetup : crea setup
 CalibrationService --> Device : establece calibración
 CalibrationService --> SessionManager : verifica usuario
@@ -436,6 +440,10 @@ ConnectionType o-- ConnectionState
 
 SessionManager o-- User
 SessionManager o-- Token
+SessionManager o-- ExperimentalSession
+
+User "1" o-- "0..*" ExperimentalSession : posee
+User "1" o-- "0..*" AutoSequence : posee
 
 Measure --> Device
 Measure o-- MeasureSetup
@@ -443,7 +451,6 @@ Measure *-- MeasureResult
 
 AutoSequence o-- MeasureSetup
 ExperimentalSession o-- Measure
-ExperimentalSession o-- AutoSequence
 ```
 
 #### Lista de Clases
@@ -710,11 +717,11 @@ class AutoSequence {
 
 class ExperimentalSession {
 	- session_id : int
-	- date : DateTime
+	- created_at : DateTime
 	- measures : [Measure]
-	- auto_sequences : [AutoSequence]
 	- observations : str
 	+ get_id() : int
+	+ get_measures() : [Measure]
 	+ add_measure(measure : Measure)
 	+ set_observations(obs : str)
 }
@@ -767,11 +774,11 @@ class Device{
 }
 ```
 
-##### Servicios de Mediciones y Calibración
+##### Servicios de Mediciones, Análisis y Calibración
 
 ```mermaid
 classDiagram
-%% mediciones y conexion
+%% mediciones, analisis y conexion
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
@@ -780,6 +787,11 @@ class MeasureService{
 	+ execute_sequence(device : Device, sequence : AutoSequence)
 	+ stop_sequence()
 	- update_progress()
+}
+
+class AnalysisService{
+	- measures : [Measure]
+	+ apply_debye_model(measure : Measure)
 }
 
 class ConnectionService{
@@ -813,13 +825,9 @@ class AuthService{
 
 class SessionManager{
 	- current_user : User
-	- advanced_mode_active : boolean
 	- active_token : Token
-	+ switch_user_mode()
 	+ get_current_user() : User
 	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
 	+ set_active_token(token : Token)
 }
@@ -1061,13 +1069,9 @@ class CalibrationService{
 
 class SessionManager{
 	- current_user : User
-	- advanced_mode_active : boolean
 	- active_token : Token
-	+ switch_user_mode()
 	+ get_current_user() : User
 	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
 	+ set_active_token(token : Token)
 }
@@ -1218,13 +1222,9 @@ class AutoSequence {
 
 class SessionManager{
 	- current_user : User
-	- advanced_mode_active : boolean
 	- active_token : Token
-	+ switch_user_mode()
 	+ get_current_user() : User
 	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
 	+ set_active_token(token : Token)
 }
@@ -1460,6 +1460,17 @@ class Token {
 	- created_at : DateTime
 }
 
+class ExperimentalSession {
+	- session_id : int
+	- created_at : DateTime
+	- measures : [Measure]
+	- observations : str
+	+ get_id() : int
+	+ get_measures() : [Measure]
+	+ add_measure(measure : Measure)
+	+ set_observations(obs : str)
+}
+
 class IObservable{
 	<<interface>>
 	+ attach()
@@ -1545,13 +1556,9 @@ class CalibrationSetup{
 
 class SessionManager{
 	- current_user : User
-	- advanced_mode_active : boolean
 	- active_token : Token
-	+ switch_user_mode()
 	+ get_current_user() : User
 	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
 	+ set_active_token(token : Token)
 }
@@ -1610,11 +1617,56 @@ AuthService ..> LocalService : periste/recupera token
 
 SessionManager "1"o--"0..1" Token
 SessionManager "1"o--"0..1" User
+SessionManager "1"o--"0..1" ExperimentalSession
 
 LocalService ..> CalibrationSetup : exporta/importa
 LocalService ..> MeasureSetup : exporta/importa
+LocalService ..> ExperimentalSession : exporta/importa
 
 MeasureSetupBuilderFactory ..> BaseMeasureSetupBuilder : construye
+```
+
+##### Subsistema 4: Procesamiento y Análisis de Datos
+
+###### Módulo 2: Modelado y Análisis de Impedancia
+
+```mermaid
+classDiagram
+
+class AnalysisService {
+	- measures : [Measure]
+	+ apply_debye_model(measure : Measure)
+}
+
+class Measure {
+	- measure_id : int
+	- measureSetup : MeasureSetup
+	- date : DateTime
+	- file_name : str
+	- state : ['EXECUTING', 'COMPLETE', 'ERROR']
+	- device_id : int
+	- device_temp : float
+	- result : MeasureResult
+	- observations : str
+	- loop_group_id : str
+	- iteration_number : int
+	+ get_measure_result() : MeasureResult
+}
+
+class MeasureResult {
+	- m_resul_id : int
+	- frequencies : [float]
+	- amplitudes : [float]
+	- phases : [float]
+	- impedances : [complex]
+	+ measure_mean() : [float]
+	+ measure_std() : [float]
+}
+
+%% relaciones
+AnalysisService "1" o-- "0..*" Measure : gestiona
+AnalysisService ..> MeasureResult : opera sobre
+Measure "1" *-- "1" MeasureResult : contiene
 ```
 
 ##### Subsistema 5: Persistencia
@@ -1757,12 +1809,12 @@ class AutoSequence {
 
 class ExperimentalSession {
 	- session_id : int
-	- date : DateTime
+	- created_at : DateTime
 	- measures : [Measure]
-	- auto_sequences : [AutoSequence]
 	- observations : str
 	%% getters
 	+ get_id() : int
+	+ get_measures() : [Measure]
 	%% setters
 	+ add_measure(measure : Measure)
 	+ set_observations(obs : str)
@@ -1770,13 +1822,9 @@ class ExperimentalSession {
 
 class SessionManager{
 	- current_user : User
-	- advanced_mode_active : boolean
 	- active_token : Token
-	+ switch_user_mode()
 	+ get_current_user() : User
 	+ set_current_user(user : User)
-	+ get_active_mode() : boolean
-	+ set_active_mode(mode : boolean)
 	+ get_active_token() : Token
 	+ set_active_token(token : Token)
 }
@@ -1891,7 +1939,9 @@ Measure "1"o--"1" MeasureSetup
 
 AutoSequence "1"o--"1..*" MeasureSetup : contiene
 ExperimentalSession "1"o--"0..*" Measure : agrupa
-ExperimentalSession "1"o--"0..*" AutoSequence : incluye
+
+User "1"o--"0..*" ExperimentalSession : posee
+User "1"o--"0..*" AutoSequence : posee
 
 BaseMeasureSetupBuilder ..> MeasureSetup : instancia
 
