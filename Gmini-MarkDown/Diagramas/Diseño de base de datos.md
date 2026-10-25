@@ -46,6 +46,10 @@ CALIBRATION_SETUP{
 	string channel
 	float z_calc_value_real
 	float z_calc_value_imag
+	float exitation_voltage
+	float gain
+	float rfbvalue
+	int mux_channel
 }
 
 MEASURE{
@@ -54,6 +58,7 @@ MEASURE{
 	int measure_setup FK
 	int result FK
 	int device_id FK
+	int exp_session_id FK
 	date date
 	string state
 	float device_temp
@@ -81,11 +86,7 @@ MEASURE_SETUP{
 	int measure_setup_id PK
 	int user_id FK
 	string observations
-	float exitation_voltage
-	float gain
-	float rfbvalue
 	int settcycles
-	int mux_channel
 }
 
 SPEC_MEASURE_SETUP{
@@ -111,9 +112,25 @@ MULTI_MEASURE_SETUP{
 	string frequencies_list
 }
 
-USER ||--o{ MEASURE : mide
+EXPERIMENTAL_SESSION{
+	int exp_session_id PK
+	int user_id FK
+	date creation_date
+}
+
+AUTO_SEQUENCE{
+	int auto_sequence_id PK
+	float delay
+	int repeat
+}
+
+USER ||--o{ EXPERIMENTAL_SESSION : tiene_sesion
+
+EXPERIMENTAL_SESSION ||--o{ MEASURE : contiene
 
 USER ||--o{ CALIBRATION_SETUP : crea
+
+USER ||--o{ AUTO_SEQUENCE : utiliza
 
 USER ||--o{ MEASURE_SETUP : configura
 
@@ -122,6 +139,8 @@ MEASURE ||--|| MEASURE_RESULT : arroja
 MEASURE |{--|| MEASURE_SETUP : tiene
 
 MEASURE o{--|| DEVICE : realiza
+
+AUTO_SEQUENCE o{--|{ MEASURE_SETUP : contiene_setup
 
 MEASURE_SETUP o|--|| SPEC_MEASURE_SETUP : es_un
 MEASURE_SETUP o|--|| SINGLE_MEASURE_SETUP : es_un
