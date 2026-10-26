@@ -54,6 +54,47 @@ end
 
 ```
 
+##### Ejecutar setup de calibracion
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant CS as CalibrationService
+participant Dev as Device
+participant Adp as GminiCalibrationAdapter
+participant Conn as ConnectionService
+
+U->>G: Solicita ejecutar calibración
+G->>G: cal_setup = get_active_calibration_setup()
+G->>CS: calibrate_device(device, cal_setup)
+
+CS->>Adp: encode(cal_setup)
+Adp-->>CS: command (ej. ajustar ganancia, RFB, canal y calibrar)
+
+CS->>Conn: send(device, command)
+CS->>Conn: receive(device)
+Conn-->>CS: raw_response
+
+CS->>Adp: decode(raw_response)
+Adp-->>CS: success (bool)
+
+alt success == True
+    CS->>Dev: set_state(CalibratedState)
+    CS-->>G: True
+    G-->>U: Calibración ejecutada con éxito
+else success == False
+    CS->>Dev: set_state(UncalibratedState)
+    CS-->>G: False / Exception
+    G-->>U: Error en el proceso de calibración
+end
+
+```
+
+
 ### Subsistema 2: Configuración y Toma de Mediciones
 
 #### Módulo 1: Tipos y Estrategias de Medición
@@ -165,6 +206,77 @@ B->>MS: new MeasureSetup(...)
 MS-->>B: Instancia creada
 B-->>G: measure_setup
 G-->>U: Configuración completada
+
+```
+
+##### Ejecutar Auto Secuencia
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant MS as MeasureService
+participant Dev as Device
+participant Adp as GminiMeasureAdapter
+participant CS as ConnectionService
+participant dbs as DataBaseService
+
+U->>G: Solicita ejecutar AutoSecuencia
+G->>G: auto_sequence = get_active_auto_sequence()
+G->>G: session_exp = get_selected_experimental_session()
+
+G->>MS: execute_sequence(device, auto_sequence, session_exp)
+MS->>Dev: get_state().can_measure()
+
+alt El dispositivo puede medir (Estado Calibrado)
+    MS->>Dev: set_state(MeasuringState)
+    
+    loop Repeticiones definidas por el usuario (o hasta cancelar)
+        loop Por cada setup_medicion en auto_sequence
+            
+            MS->>Adp: encode_execution(setup_medicion)
+            Adp-->>MS: command
+            
+            MS->>CS: send(device, command)
+            MS->>CS: receive(device)
+            CS-->>MS: raw_response
+            
+            MS->>Adp: decode(raw_response)
+            create participant MR as MeasureResult
+            Adp->>MR: new MeasureResult(...)
+            MR-->>Adp: result
+            
+            create participant M as Measure
+            MS->>M: new Measure(setup_medicion, result, ...)
+            
+            %% Persistencia inmediata para evitar pérdida de datos en ciclos largos
+            MS->>dbs: save_measure(user_id, session_exp.get_id(), measure)
+            Note over dbs: [REF] Guardar medición con sus resultados
+            dbs-->>MS: True
+            
+            MS->>MS: notify() (Actualiza progreso y gráficas en GUI)
+            
+            alt setup_medicion tiene delay configurado
+                MS->>MS: wait(delay_interno)
+            end
+        end
+        
+        alt auto_sequence tiene delay entre secuencias
+            MS->>MS: wait(delay_secuencia)
+        end
+    end
+    
+    MS->>Dev: set_state(CalibratedState)
+    MS-->>G: Secuencia finalizada con éxito
+    G-->>U: Notifica finalización del proceso y resultados
+
+else El dispositivo NO puede medir (Descalibrado/Error)
+    MS-->>G: Exception / Error
+    G-->>U: Bloquea ejecución y solicita realizar calibración previa
+end
 
 ```
 
