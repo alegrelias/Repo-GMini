@@ -265,6 +265,9 @@ class AuthService{
 class SessionManager{
 	- current_user : User
 	- active_token : Token
+	- active_ExpSession : ExperimentalSession
+	+ get_active_ExpSession : ExperimentalSession
+	+ set_active_ExpSession : ExperimentalSession
 	+ get_current_user() : User
 	+ set_current_user(user : User)
 	+ get_active_token() : Token
@@ -823,6 +826,9 @@ class AuthService{
 class SessionManager{
 	- current_user : User
 	- active_token : Token
+	- active_ExpSession : ExperimentalSession
+	+ get_active_ExpSession : ExperimentalSession
+	+ set_active_ExpSession : ExperimentalSession
 	+ get_current_user() : User
 	+ set_current_user(user : User)
 	+ get_active_token() : Token
@@ -1067,6 +1073,9 @@ class CalibrationService{
 class SessionManager{
 	- current_user : User
 	- active_token : Token
+	- active_ExpSession : ExperimentalSession
+	+ get_active_ExpSession : ExperimentalSession
+	+ set_active_ExpSession : ExperimentalSession
 	+ get_current_user() : User
 	+ set_current_user(user : User)
 	+ get_active_token() : Token
@@ -1220,6 +1229,9 @@ class AutoSequence {
 class SessionManager{
 	- current_user : User
 	- active_token : Token
+	- active_ExpSession : ExperimentalSession
+	+ get_active_ExpSession : ExperimentalSession
+	+ set_active_ExpSession : ExperimentalSession
 	+ get_current_user() : User
 	+ set_current_user(user : User)
 	+ get_active_token() : Token
@@ -1554,6 +1566,9 @@ class CalibrationSetup{
 class SessionManager{
 	- current_user : User
 	- active_token : Token
+	- active_ExpSession : ExperimentalSession
+	+ get_active_ExpSession : ExperimentalSession
+	+ set_active_ExpSession : ExperimentalSession
 	+ get_current_user() : User
 	+ set_current_user(user : User)
 	+ get_active_token() : Token
@@ -1820,6 +1835,9 @@ class ExperimentalSession {
 class SessionManager{
 	- current_user : User
 	- active_token : Token
+	- active_ExpSession : ExperimentalSession
+	+ get_active_ExpSession : ExperimentalSession
+	+ set_active_ExpSession : ExperimentalSession
 	+ get_current_user() : User
 	+ set_current_user(user : User)
 	+ get_active_token() : Token
