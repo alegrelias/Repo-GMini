@@ -3,7 +3,7 @@
 
 ##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
-##### Iniciar la aplicación
+##### Inicializar entorno de trabajo
 
 ```mermaid
 sequenceDiagram
