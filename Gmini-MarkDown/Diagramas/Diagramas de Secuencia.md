@@ -692,3 +692,70 @@ B-->>G: measure_setup
 G-->>U: Configuración completada
 
 ```
+##### Ejecutar medicion
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant MS as MeasureService
+participant Dev as Device
+participant M as Measure
+participant Adp as GminiMeasureAdapter
+participant CS as ConnectionService
+
+U->>G: Solicita ejecutar medición
+G->>MS: execute_measure(measure)
+
+MS->>Dev: get_state().can_measure()
+alt El dispositivo puede medir (Estado Calibrado)
+    MS->>Dev: set_state(MeasuringState)
+    MS->>M: setup = get_measure_setup()
+    
+    alt setup es SpecMeasureSetup (Espectroscopía)
+        MS->>Adp: encode_execution(setup)
+        Adp-->>MS: command (ej. "sweep...")
+        MS->>CS: send(device, command)
+        MS->>CS: receive(device)
+        CS-->>MS: raw_response
+        MS->>MS: notify() (Actualiza progreso GUI)
+        
+    else setup es SingleMeasureSetup (Monofrecuencia)
+        MS->>Adp: encode_execution(setup)
+        Adp-->>MS: command (ej. "singlefreq...")
+        MS->>CS: send(device, command)
+        MS->>CS: receive(device)
+        CS-->>MS: raw_response
+        
+    else setup es MultiMeasureSetup (Multifrecuencia)
+        loop Por cada frecuencia discreta en freq_list
+            MS->>Adp: encode_execution(freq_setup_parcial)
+            Adp-->>MS: command
+            MS->>CS: send(device, command)
+            MS->>CS: receive(device)
+            CS-->>MS: raw_response_parcial
+            MS->>MS: notify() (Actualiza progreso GUI)
+        end
+    end
+
+    MS->>Adp: decode(raw_response)
+    create participant MR as MeasureResult
+    Adp->>MR: new MeasureResult(...)
+    MR-->>Adp: Instancia creada
+    Adp-->>MS: result
+    
+    MS->>M: set_measure_result(result)
+    MS->>Dev: set_state(CalibratedState)
+    
+    MS-->>G: finish_measure() -> [MeasureResult]
+    G-->>U: Visualiza resultados y renderiza gráficas
+
+else El dispositivo NO puede medir (Descalibrado/Error)
+    MS-->>G: Exception / Error
+    G-->>U: Bloquea ejecución y notifica necesidad de calibración
+end
+
+```
