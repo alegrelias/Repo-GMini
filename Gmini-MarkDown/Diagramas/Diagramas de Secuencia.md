@@ -650,3 +650,45 @@ else Usuario cancela
 	G-->>U: Guardado de archivo cancelado
 end
 ```
+
+##### Configurar Setup de Medicion
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant F as MeasureSetupBuilderFactory
+participant B as BaseMeasureSetupBuilder
+
+U->>G: Selecciona tipo de medición (modo)
+G->>F: create_builder(modo)
+F-->>G: builder (Instancia específica)
+
+alt modo == 'Espectroscopía'
+    U->>G: Ingresa parámetros de barrido espectral
+    G->>B: with_start_freq(startfreq)
+    G->>B: with_inc_freq(incfreq)
+    G->>B: with_steps(steps)
+    G->>B: with_repeat(repeat)
+else modo == 'Monofrecuencia'
+    U->>G: Ingresa parámetros de frecuencia fija
+    G->>B: with_freq(freq)
+    G->>B: with_delay(delay)
+    G->>B: with_count(count)
+else modo == 'Multifrecuencia'
+    U->>G: Ingresa lista de frecuencias
+    G->>B: with_freq_list(freq_list)
+end
+
+U->>G: Confirma la configuración
+G->>B: build()
+create participant MS as MeasureSetup
+Note over B, MS: Instancia SpecMeasureSetup, SingleMeasureSetup o MultiMeasureSetup
+B->>MS: new MeasureSetup(...)
+MS-->>B: Instancia creada
+B-->>G: measure_setup
+G-->>U: Configuración completada
+
+```
