@@ -759,3 +759,57 @@ else El dispositivo NO puede medir (Descalibrado/Error)
 end
 
 ```
+
+##### Configurar setups de calibracion
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicita configurar calibración
+G->>U: Despliega formulario de parámetros
+
+U->>G: Ingresa parámetros (voltaje, ganancia, RFB, ciclos, canal, Z real/imag)
+create participant C as CalibrationSetup
+G->>C: new CalibrationSetup(voltage, gain, rfbvalue, cycles, channel, z_real, z_imag)
+C-->>G: cal_setup (Instancia creada)
+
+G->>G: set_active_calibration_setup(cal_setup)
+Note right of G: El setup de calibración queda activo en memoria para ser aplicado a la placa
+
+alt El usuario decide guardar el setup
+    U->>G: Solicita guardar la configuración
+    G->>session: get_current_user()
+    session-->>G: User
+    
+    G->>U: Solicita observaciones (opcional)
+    alt Ingresa observaciones
+        U-->>G: observations
+        G->>C: set_observations(observations)
+    else Deja en blanco
+        U-->>G: null
+    end
+
+    G->>dbs: save_calibration_setup(user_id, cal_setup)
+    dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id, observations, channel, voltage, gain, rfb, cycles, z_real, z_imag) VALUES(...)
+    db-->>dbs: Confirmación de guardado
+    dbs->>db: SELECT last_insert_rowid()
+    db-->>dbs: cal_setup_id
+    dbs->>C: set_id(cal_setup_id)
+    dbs-->>G: True
+    G-->>U: Configuración guardada y activa
+else El usuario solo aplica sin guardar
+    U->>G: Confirma uso temporal
+    G-->>U: Configuración activa para la sesión actual
+end
+
+```
+
+##### Ejecutar 
