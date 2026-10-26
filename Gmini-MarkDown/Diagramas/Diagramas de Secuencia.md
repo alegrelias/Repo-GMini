@@ -107,7 +107,6 @@ alt Usuario Registrado
 		participant local as LocalService
 		auth->>local: export_user_token(path, token)
 		local-->>auth: Guardado exitoso
-		auth->>session: set_active_mode(False)
 		auth-->>G: True
 		G-->>U: Inicio de sesión exitoso
 	
