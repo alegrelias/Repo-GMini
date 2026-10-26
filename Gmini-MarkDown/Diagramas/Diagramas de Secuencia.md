@@ -124,39 +124,6 @@ else Usuario Inexistente
 end
 ```
 
-##### Alternar entre Modos de Uso
-
-```mermaid
-sequenceDiagram
-autonumber
-
-actor U as Usuario
-participant G as Interfaz (GUI)
-participant session as SessionManager
-
-U->>G: Solicitud de Cambio de Modo de Uso
-G->>U: Solicitud de Confirmación
-alt Usuario Acepta 
-	U-->>G: Aceptar
-	G->>session: switch_user_mode()
-	session->>session: notify()
-	session->>G: update(observable, event_info)
-	G->>session: get_active_mode()
-	alt Cambia a Modo Avanzado
-		session-->>G: True
-		G-->>U: Cambio de modo (avanzado) aplicado
-	else Cambia a Modo Básico
-		session-->>G: False
-		G-->>U: Cambio de modo (básico) aplicado
-	end
-	
-else Usuario Cancela
-	U-->>G: Cancelar
-	G-->>U: Cambio de modo cancelado
-end
-
-
-```
 
 ##### Cerrar Sesión
 ```mermaid
