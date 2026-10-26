@@ -492,8 +492,14 @@ participant M as Measure
 U->>G: Solicitud de Guardado de medición
 G->>session: get_current_user()
 session-->>G: User
+
+%% NUEVO: Contexto de la Sesión Experimental
+G->>G: session_exp = get_selected_experimental_session()
+G-->>G: Referencia a la sesión experimental actual
+
 G->>G: measure = get_selected_measure()
 G-->>G: Referencia a la instancia
+
 G->>U: Solicita nombre del archivo
 alt El usuario mantiene el nombre por defecto
 	U-->>G: null
@@ -513,22 +519,27 @@ end
 participant dbs as DataBaseService
 participant db as Base de Datos
 
-G->>dbs: save_measure(user_id, measure)
+%% NUEVO: Se pasa el ID de la sesión al servicio
+G->>dbs: save_measure(user_id, session_exp.get_id(), measure)
 dbs->>dbs: result = measure.get_measure_result()
 dbs->>dbs: device_id = measure.get_device_id()
+
 dbs->>db: INSERT INTO MEASURE_RESULT(...) VALUES(...)
 db-->>dbs: Confirmación de guardado
 dbs->>db: SELECT last_insert_rowid()
 db-->>dbs: result_id
+
 dbs->>dbs: measure_setup = measure.get_measure_setup()
-	dbs->>dbs: setup_id = measure_setup.get_id()
+dbs->>dbs: setup_id = measure_setup.get_id()
 alt El setup es nuevo
 	Note over dbs, db: [REF] Ejecutar guardar Setups de medición
 	dbs-->>dbs: measure_setup_id
 else El setup ya existía
 	dbs-->>dbs: int
 end
-dbs->>db: INSERT INTO MEASURE(user_id, measure_setup, result, device_id, ..., file_name, observations) VALUES(user_id, setup_id, result_id, device_id, ...,measure.get_file_name(),measure.get_observations())
+
+%% NUEVO: Inserción incluyendo session_id
+dbs->>db: INSERT INTO MEASURE(user_id, session_id, measure_setup, result, device_id, ..., file_name, observations) VALUES(user_id, session_exp.get_id(), setup_id, result_id, device_id, ..., measure.get_file_name(), measure.get_observations())
 db-->>dbs: Confirmación de guardado
 dbs-->>G: True
 G-->>U: Medición guardada con éxito
