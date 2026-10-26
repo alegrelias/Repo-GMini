@@ -242,6 +242,41 @@ end
 
 ```
 
+##### Importar Sesión Experimental
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicita importar una Sesión Experimental
+G->>U: Desplegar selector de archivos/directorios
+alt Usuario Selecciona un archivo/directorio
+	U-->>G: Seleccionar ruta
+	G->>local: load_experimental_session(path)
+	create participant ES as ExperimentalSession
+	local->>ES: new ExperimentalSession(...)
+	ES-->>local: Instancia creada
+	local-->>G: experimental_session
+	G->>session: get_current_user()
+	session-->>G: User
+	G->>dbs: save_experimental_session(user_id, experimental_session)
+	Note over dbs, db: [REF] Guardar Sesión Experimental y sus mediciones 
+	dbs-->>G: True
+	G-->>U: Importación exitosa
+else Usuario cancela
+	U-->>G: Cancelar importación
+	G-->>U: Importación cancelada
+end
+
+```
 
 ##### Exportar Medición
 
