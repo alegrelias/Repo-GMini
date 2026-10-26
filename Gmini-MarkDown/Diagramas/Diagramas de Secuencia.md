@@ -182,6 +182,42 @@ G-->>U: Sesión experimental creada con éxito
 
 ```
 
+##### Importar AutoSecuencia
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicita importar una AutoSecuencia
+G->>U: Desplegar selector de archivos
+alt Usuario Selecciona un archivo
+	U-->>G: Seleccionar ruta
+	G->>local: load_auto_sequence(path)
+	create participant AS as AutoSequence
+	local->>AS: new AutoSequence(...)
+	AS-->>local: Instancia creada
+	local-->>G: auto_sequence
+	G->>session: get_current_user()
+	session-->>G: User
+	G->>dbs: save_auto_sequence(user_id, auto_sequence)
+	Note over dbs, db: [REF] Guardar AutoSecuencia
+	dbs-->>G: True
+	G-->>U: Importación exitosa
+else Usuario cancela
+	U-->>G: Cancelar importación
+	G-->>U: Importación cancelada
+end
+
+```
+
+
 ##### Exportar Medición
 
 ```mermaid
