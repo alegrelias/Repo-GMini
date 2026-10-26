@@ -149,6 +149,39 @@ G-->>U: Cierre de Sesión exitoso
 
 ```
 
+##### Crear sesion Experimental
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicita crear sesión experimental (ingresa nombre, ej. "batería")
+G->>session: get_current_user()
+session-->>G: User
+
+create participant ES as ExperimentalSession
+G->>ES: new ExperimentalSession(user_id, session_name, date)
+ES-->>G: Instancia creada
+
+G->>dbs: save_experimental_session(user_id, experimental_session)
+dbs->>db: INSERT INTO EXPERIMENTAL_SESSION(user_id, name, date) VALUES(...)
+db-->>dbs: Confirmación de guardado
+
+dbs->>db: SELECT last_insert_rowid()
+db-->>dbs: session_id
+dbs->>ES: set_session_id(session_id)
+
+dbs-->>G: True
+G-->>U: Sesión experimental creada con éxito
+
+```
+
 ##### Exportar Medición
 
 ```mermaid
