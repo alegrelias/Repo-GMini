@@ -1,7 +1,176 @@
+### Subsistema 1: Comunicación e Interacción con el Hardware
 
-#### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+#### Modulo 2: Calibración del Dispositivo
 
-##### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
+##### Configurar setups de calibracion
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant session as SessionManager
+participant dbs as DataBaseService
+participant db as Base de Datos
+
+U->>G: Solicita configurar calibración
+G->>U: Despliega formulario de parámetros
+
+U->>G: Ingresa parámetros (voltaje, ganancia, RFB, ciclos, canal, Z real/imag)
+create participant C as CalibrationSetup
+G->>C: new CalibrationSetup(voltage, gain, rfbvalue, cycles, channel, z_real, z_imag)
+C-->>G: cal_setup (Instancia creada)
+
+G->>G: set_active_calibration_setup(cal_setup)
+Note right of G: El setup de calibración queda activo en memoria para ser aplicado a la placa
+
+alt El usuario decide guardar el setup
+    U->>G: Solicita guardar la configuración
+    G->>session: get_current_user()
+    session-->>G: User
+
+    G->>U: Solicita observaciones (opcional)
+    alt Ingresa observaciones
+        U-->>G: observations
+        G->>C: set_observations(observations)
+    else Deja en blanco
+        U-->>G: null
+    end
+
+    G->>dbs: save_calibration_setup(user_id, cal_setup)
+    dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id, observations, channel, voltage, gain, rfb, cycles, z_real, z_imag) VALUES(...)
+    db-->>dbs: Confirmación de guardado
+    dbs->>db: SELECT last_insert_rowid()
+    db-->>dbs: cal_setup_id
+    dbs->>C: set_id(cal_setup_id)
+    dbs-->>G: True
+    G-->>U: Configuración guardada y activa
+else El usuario solo aplica sin guardar
+    U->>G: Confirma uso temporal
+    G-->>U: Configuración activa para la sesión actual
+end
+
+```
+
+### Subsistema 2: Configuración y Toma de Mediciones
+
+#### Módulo 1: Tipos y Estrategias de Medición
+
+##### Ejecutar medicion
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant MS as MeasureService
+participant Dev as Device
+participant M as Measure
+participant Adp as GminiMeasureAdapter
+participant CS as ConnectionService
+
+U->>G: Solicita ejecutar medición
+G->>MS: execute_measure(measure)
+
+MS->>Dev: get_state().can_measure()
+alt El dispositivo puede medir (Estado Calibrado)
+    MS->>Dev: set_state(MeasuringState)
+    MS->>M: setup = get_measure_setup()
+
+    alt setup es SpecMeasureSetup (Espectroscopía)
+        MS->>Adp: encode_execution(setup)
+        Adp-->>MS: command (ej. "sweep...")
+        MS->>CS: send(device, command)
+        MS->>CS: receive(device)
+        CS-->>MS: raw_response
+        MS->>MS: notify() (Actualiza progreso GUI)
+
+    else setup es SingleMeasureSetup (Monofrecuencia)
+        MS->>Adp: encode_execution(setup)
+        Adp-->>MS: command (ej. "singlefreq...")
+        MS->>CS: send(device, command)
+        MS->>CS: receive(device)
+        CS-->>MS: raw_response
+
+    else setup es MultiMeasureSetup (Multifrecuencia)
+        loop Por cada frecuencia discreta en freq_list
+            MS->>Adp: encode_execution(freq_setup_parcial)
+            Adp-->>MS: command
+            MS->>CS: send(device, command)
+            MS->>CS: receive(device)
+            CS-->>MS: raw_response_parcial
+            MS->>MS: notify() (Actualiza progreso GUI)
+        end
+    end
+
+    MS->>Adp: decode(raw_response)
+    create participant MR as MeasureResult
+    Adp->>MR: new MeasureResult(...)
+    MR-->>Adp: Instancia creada
+    Adp-->>MS: result
+
+    MS->>M: set_measure_result(result)
+    MS->>Dev: set_state(CalibratedState)
+
+    MS-->>G: finish_measure() -> [MeasureResult]
+    G-->>U: Visualiza resultados y renderiza gráficas
+
+else El dispositivo NO puede medir (Descalibrado/Error)
+    MS-->>G: Exception / Error
+    G-->>U: Bloquea ejecución y notifica necesidad de calibración
+end
+
+```
+
+##### Configurar Setup de Medicion
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant F as MeasureSetupBuilderFactory
+participant B as BaseMeasureSetupBuilder
+
+U->>G: Selecciona tipo de medición (modo)
+G->>F: create_builder(modo)
+F-->>G: builder (Instancia específica)
+
+alt modo == 'Espectroscopía'
+    U->>G: Ingresa parámetros de barrido espectral
+    G->>B: with_start_freq(startfreq)
+    G->>B: with_inc_freq(incfreq)
+    G->>B: with_steps(steps)
+    G->>B: with_repeat(repeat)
+else modo == 'Monofrecuencia'
+    U->>G: Ingresa parámetros de frecuencia fija
+    G->>B: with_freq(freq)
+    G->>B: with_delay(delay)
+    G->>B: with_count(count)
+else modo == 'Multifrecuencia'
+    U->>G: Ingresa lista de frecuencias
+    G->>B: with_freq_list(freq_list)
+end
+
+U->>G: Confirma la configuración
+G->>B: build()
+create participant MS as MeasureSetup
+Note over B, MS: Instancia SpecMeasureSetup, SingleMeasureSetup o MultiMeasureSetup
+B->>MS: new MeasureSetup(...)
+MS-->>B: Instancia creada
+B-->>G: measure_setup
+G-->>U: Configuración completada
+
+```
+
+### Subsistema 3: Configuración y Gestión de Perfiles (Setups)
+
+#### Módulo 1: Perfiles de Usuario y Gestión de Setups de Medición
 
 ##### Inicializar entorno de trabajo
 
@@ -20,16 +189,16 @@ alt El usuario tiene una sesión activa
 
 	local-->>G: token = Token
 	G->>auth: restore_session(token)
-	
+
 	auth-->>G: True
 	G->>U: Muestra ventana principal
-	
+
 else El usuario no tiene una sesión activa
 
 	local-->>G: null
 	G->>U: Muestra ventana de Login
 	Note over U, G: [REF] Ejecutar Iniciar Sesión
-	
+
 end
 ```
 
@@ -78,6 +247,7 @@ end
 ```
 
 ##### Iniciar Sesión
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -109,12 +279,12 @@ alt Usuario Registrado
 		local-->>auth: Guardado exitoso
 		auth-->>G: True
 		G-->>U: Inicio de sesión exitoso
-	
+
 	else Contraseña Incorrecta
 			auth-->>G: False
 			G-->>U: Inicio de sesión rechazado
 	end
-	
+
 else Usuario Inexistente
 	db-->>dbs: NULL
 	dbs-->>auth: null
@@ -123,8 +293,8 @@ else Usuario Inexistente
 end
 ```
 
-
 ##### Cerrar Sesión
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -183,6 +353,7 @@ G-->>U: Sesión experimental creada con éxito
 ```
 
 ##### Importar AutoSecuencia
+
 ```mermaid
 
 sequenceDiagram
@@ -268,7 +439,7 @@ alt Usuario Selecciona un archivo/directorio
 	G->>session: get_current_user()
 	session-->>G: User
 	G->>dbs: save_experimental_session(user_id, experimental_session)
-	Note over dbs, db: [REF] Guardar Sesión Experimental y sus mediciones 
+	Note over dbs, db: [REF] Guardar Sesión Experimental y sus mediciones
 	dbs-->>G: True
 	G-->>U: Importación exitosa
 else Usuario cancela
@@ -301,6 +472,30 @@ else Usuario cancela
 	G-->>U: Guardado cancelado
 end
 
+```
+
+##### Exportar gráficas generadas
+
+```mermaid
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+
+U->>G: Solicita exportar gráficas generadas
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	G->>local: export_plot(path, Figure)
+	local-->>G: True
+	G-->>U: Confirmación de guardado
+
+else Usuario cancela
+	U-->>G: Cancelar guardado
+	G-->>U: Guardado de archivo cancelado
+end
 ```
 
 ##### Exportar Medición
@@ -382,7 +577,7 @@ U->>G: Solicita importar una configuración
 			Note over dbs, db: [REF] Ejecutar guardar setup de calibración
 			dbs-->>G: True
 			G-->>U: Importación exitosa
-	else La configuración es de medición	
+	else La configuración es de medición
 		G->>local: load_setup(path)
 		alt El setup es de Espectroscopía
 			create participant spec as SpecMeasureSetup
@@ -412,6 +607,7 @@ U->>G: Solicita importar una configuración
 ```
 
 ##### Importar Medición
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -450,6 +646,7 @@ G->>U: Desplegar selector de directorios
 ##### Módulo 1: Almacenamiento y Estructura de Datos
 
 ##### Configurar directorio raíz
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -480,6 +677,7 @@ end
 ```
 
 ##### Guardar mediciones con sus resultados
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -546,6 +744,7 @@ G-->>U: Medición guardada con éxito
 ```
 
 ##### Guardar Setups de calibración
+
 ```mermaid
 sequenceDiagram
 autonumber
@@ -610,10 +809,10 @@ participant db as Base de Datos
 G->>dbs: save_measure_setup(user_id, m_setup)
 dbs->>db: INSERT INTO MEASURE_SETUP(user_id,...) VALUES(user_id,...)
 	db-->>dbs: Confirmación de guardado
-	
+
 	dbs->>db: SELECT last_insert_rowid()
 	db-->>dbs: measure_setup_id
-	
+
 	alt El setup es de Espectroscopía
 		dbs->>db: INSERT INTO SPEC_MEASURE_SETUP(m_setup,...) VALUES(m_setup,...)
 		db-->>dbs: Confirmación de guardado
@@ -627,189 +826,3 @@ dbs->>db: INSERT INTO MEASURE_SETUP(user_id,...) VALUES(user_id,...)
 dbs-->>G: True
 G-->>U: Setup de medición guardado con éxito
 ```
-
-##### Exportar gráficas generadas
-```mermaid
-sequenceDiagram
-autonumber
-
-actor U as Usuario
-participant G as Interfaz (GUI)
-participant local as LocalService
-
-U->>G: Solicita exportar gráficas generadas
-G->>U: Desplegar selector de directorios
-alt Usuario Selecciona un directorio
-	U-->>G: Seleccionar ruta
-	G->>local: export_plot(path, Figure)
-	local-->>G: True
-	G-->>U: Confirmación de guardado
-	
-else Usuario cancela
-	U-->>G: Cancelar guardado
-	G-->>U: Guardado de archivo cancelado
-end
-```
-
-##### Configurar Setup de Medicion
-
-```mermaid
-sequenceDiagram
-autonumber
-
-actor U as Usuario
-participant G as Interfaz (GUI)
-participant F as MeasureSetupBuilderFactory
-participant B as BaseMeasureSetupBuilder
-
-U->>G: Selecciona tipo de medición (modo)
-G->>F: create_builder(modo)
-F-->>G: builder (Instancia específica)
-
-alt modo == 'Espectroscopía'
-    U->>G: Ingresa parámetros de barrido espectral
-    G->>B: with_start_freq(startfreq)
-    G->>B: with_inc_freq(incfreq)
-    G->>B: with_steps(steps)
-    G->>B: with_repeat(repeat)
-else modo == 'Monofrecuencia'
-    U->>G: Ingresa parámetros de frecuencia fija
-    G->>B: with_freq(freq)
-    G->>B: with_delay(delay)
-    G->>B: with_count(count)
-else modo == 'Multifrecuencia'
-    U->>G: Ingresa lista de frecuencias
-    G->>B: with_freq_list(freq_list)
-end
-
-U->>G: Confirma la configuración
-G->>B: build()
-create participant MS as MeasureSetup
-Note over B, MS: Instancia SpecMeasureSetup, SingleMeasureSetup o MultiMeasureSetup
-B->>MS: new MeasureSetup(...)
-MS-->>B: Instancia creada
-B-->>G: measure_setup
-G-->>U: Configuración completada
-
-```
-##### Ejecutar medicion
-
-```mermaid
-
-sequenceDiagram
-autonumber
-
-actor U as Usuario
-participant G as Interfaz (GUI)
-participant MS as MeasureService
-participant Dev as Device
-participant M as Measure
-participant Adp as GminiMeasureAdapter
-participant CS as ConnectionService
-
-U->>G: Solicita ejecutar medición
-G->>MS: execute_measure(measure)
-
-MS->>Dev: get_state().can_measure()
-alt El dispositivo puede medir (Estado Calibrado)
-    MS->>Dev: set_state(MeasuringState)
-    MS->>M: setup = get_measure_setup()
-    
-    alt setup es SpecMeasureSetup (Espectroscopía)
-        MS->>Adp: encode_execution(setup)
-        Adp-->>MS: command (ej. "sweep...")
-        MS->>CS: send(device, command)
-        MS->>CS: receive(device)
-        CS-->>MS: raw_response
-        MS->>MS: notify() (Actualiza progreso GUI)
-        
-    else setup es SingleMeasureSetup (Monofrecuencia)
-        MS->>Adp: encode_execution(setup)
-        Adp-->>MS: command (ej. "singlefreq...")
-        MS->>CS: send(device, command)
-        MS->>CS: receive(device)
-        CS-->>MS: raw_response
-        
-    else setup es MultiMeasureSetup (Multifrecuencia)
-        loop Por cada frecuencia discreta en freq_list
-            MS->>Adp: encode_execution(freq_setup_parcial)
-            Adp-->>MS: command
-            MS->>CS: send(device, command)
-            MS->>CS: receive(device)
-            CS-->>MS: raw_response_parcial
-            MS->>MS: notify() (Actualiza progreso GUI)
-        end
-    end
-
-    MS->>Adp: decode(raw_response)
-    create participant MR as MeasureResult
-    Adp->>MR: new MeasureResult(...)
-    MR-->>Adp: Instancia creada
-    Adp-->>MS: result
-    
-    MS->>M: set_measure_result(result)
-    MS->>Dev: set_state(CalibratedState)
-    
-    MS-->>G: finish_measure() -> [MeasureResult]
-    G-->>U: Visualiza resultados y renderiza gráficas
-
-else El dispositivo NO puede medir (Descalibrado/Error)
-    MS-->>G: Exception / Error
-    G-->>U: Bloquea ejecución y notifica necesidad de calibración
-end
-
-```
-
-##### Configurar setups de calibracion
-
-```mermaid
-
-sequenceDiagram
-autonumber
-
-actor U as Usuario
-participant G as Interfaz (GUI)
-participant session as SessionManager
-participant dbs as DataBaseService
-participant db as Base de Datos
-
-U->>G: Solicita configurar calibración
-G->>U: Despliega formulario de parámetros
-
-U->>G: Ingresa parámetros (voltaje, ganancia, RFB, ciclos, canal, Z real/imag)
-create participant C as CalibrationSetup
-G->>C: new CalibrationSetup(voltage, gain, rfbvalue, cycles, channel, z_real, z_imag)
-C-->>G: cal_setup (Instancia creada)
-
-G->>G: set_active_calibration_setup(cal_setup)
-Note right of G: El setup de calibración queda activo en memoria para ser aplicado a la placa
-
-alt El usuario decide guardar el setup
-    U->>G: Solicita guardar la configuración
-    G->>session: get_current_user()
-    session-->>G: User
-    
-    G->>U: Solicita observaciones (opcional)
-    alt Ingresa observaciones
-        U-->>G: observations
-        G->>C: set_observations(observations)
-    else Deja en blanco
-        U-->>G: null
-    end
-
-    G->>dbs: save_calibration_setup(user_id, cal_setup)
-    dbs->>db: INSERT INTO CALIBRATION_SETUP(user_id, observations, channel, voltage, gain, rfb, cycles, z_real, z_imag) VALUES(...)
-    db-->>dbs: Confirmación de guardado
-    dbs->>db: SELECT last_insert_rowid()
-    db-->>dbs: cal_setup_id
-    dbs->>C: set_id(cal_setup_id)
-    dbs-->>G: True
-    G-->>U: Configuración guardada y activa
-else El usuario solo aplica sin guardar
-    U->>G: Confirma uso temporal
-    G-->>U: Configuración activa para la sesión actual
-end
-
-```
-
-##### Ejecutar 
