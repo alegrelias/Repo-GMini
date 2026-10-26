@@ -217,6 +217,31 @@ end
 
 ```
 
+##### Exportar AutoSecuencia
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+
+U->>G: Solicita exportar una AutoSecuencia
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	G->>local: export_auto_sequence_to_file(path, AutoSequence)
+	local-->>G: True
+	G-->>U: Confirmación de guardado
+else Usuario cancela
+	U-->>G: Cancelar guardado
+	G-->>U: Guardado cancelado
+end
+
+```
+
 
 ##### Exportar Medición
 
