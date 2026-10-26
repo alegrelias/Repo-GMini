@@ -278,6 +278,31 @@ end
 
 ```
 
+##### Exportar Sesión Experimental
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant local as LocalService
+
+U->>G: Solicita exportar una Sesión Experimental
+G->>U: Desplegar selector de directorios
+alt Usuario Selecciona un directorio
+	U-->>G: Seleccionar ruta
+	G->>local: export_experimental_session(path, ExperimentalSession)
+	local-->>G: True
+	G-->>U: Confirmación de guardado
+else Usuario cancela
+	U-->>G: Cancelar guardado
+	G-->>U: Guardado cancelado
+end
+
+```
+
 ##### Exportar Medición
 
 ```mermaid
