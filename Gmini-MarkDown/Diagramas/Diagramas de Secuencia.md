@@ -1,5 +1,59 @@
 ### Subsistema 1: Comunicación e Interacción con el Hardware
 
+#### Módulo 1: Conectividad y Estado
+
+##### Establecer conexion con la placa
+
+```mermaid
+
+sequenceDiagram
+autonumber
+
+actor U as Usuario
+participant G as Interfaz (GUI)
+participant CF as ConnectionFactory
+participant CS as ConnectionService
+participant Dev as Device
+
+U->>G: Solicita conectar dispositivo (tipo, puerto/protocolo)
+G->>CF: create_connection(type)
+
+alt tipo == 'Alámbrica'
+    create participant W as Wire
+    CF->>W: new Wire(baudrate, port_name, timeout)
+    W-->>CF: instancia (Wire)
+    CF-->>G: connection_type
+else tipo == 'Inalámbrica'
+    create participant WL as WireLess
+    CF->>WL: new WireLess(protocol)
+    WL-->>CF: instancia (WireLess)
+    CF-->>G: connection_type
+end
+
+G->>CS: connect(device, connection_type)
+participant CT as ConnectionType
+Note over CS, CT: connection_type es la instancia devuelta por la Factory
+CS->>CT: connect()
+Note over CT: Intenta establecer el enlace con la placa ESP32
+
+alt Conexión Exitosa
+    CT->>CT: set_state(ConnectedState)
+    CS->>CS: active_conections[device] = connection_type
+    CS->>Dev: set_state(UncalibratedState)
+    CS->>CS: notify()
+    CS-->>G: update(observable, event_info)
+    CS-->>G: True
+    G-->>U: Notifica visualmente el estado Activo de conexión
+else Error de Conexión
+    CT->>CT: set_state(ConnectionErrorState)
+    CS->>CS: notify()
+    CS-->>G: update(observable, event_info)
+    CS-->>G: False / Exception
+    G-->>U: Notifica visualmente el estado de Error de conexión
+end
+
+```
+
 #### Modulo 2: Calibración del Dispositivo
 
 ##### Configurar setups de calibracion
@@ -93,7 +147,6 @@ else success == False
 end
 
 ```
-
 
 ### Subsistema 2: Configuración y Toma de Mediciones
 
@@ -233,42 +286,42 @@ MS->>Dev: get_state().can_measure()
 
 alt El dispositivo puede medir (Estado Calibrado)
     MS->>Dev: set_state(MeasuringState)
-    
+
     loop Repeticiones definidas por el usuario (o hasta cancelar)
         loop Por cada setup_medicion en auto_sequence
-            
+
             MS->>Adp: encode_execution(setup_medicion)
             Adp-->>MS: command
-            
+
             MS->>CS: send(device, command)
             MS->>CS: receive(device)
             CS-->>MS: raw_response
-            
+
             MS->>Adp: decode(raw_response)
             create participant MR as MeasureResult
             Adp->>MR: new MeasureResult(...)
             MR-->>Adp: result
-            
+
             create participant M as Measure
             MS->>M: new Measure(setup_medicion, result, ...)
-            
+
             %% Persistencia inmediata para evitar pérdida de datos en ciclos largos
             MS->>dbs: save_measure(user_id, session_exp.get_id(), measure)
             Note over dbs: [REF] Guardar medición con sus resultados
             dbs-->>MS: True
-            
+
             MS->>MS: notify() (Actualiza progreso y gráficas en GUI)
-            
+
             alt setup_medicion tiene delay configurado
                 MS->>MS: wait(delay_interno)
             end
         end
-        
+
         alt auto_sequence tiene delay entre secuencias
             MS->>MS: wait(delay_secuencia)
         end
     end
-    
+
     MS->>Dev: set_state(CalibratedState)
     MS-->>G: Secuencia finalizada con éxito
     G-->>U: Notifica finalización del proceso y resultados
