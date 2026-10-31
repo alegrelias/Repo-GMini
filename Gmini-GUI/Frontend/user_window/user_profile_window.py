@@ -15,6 +15,9 @@ from PyQt6.QtGui import QPixmap
 class UserProfileWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.inicializar_ui()
+
+    def inicializar_ui(self):
         self.setWindowTitle("GMini")
         self.setFixedSize(1280, 720)
 
