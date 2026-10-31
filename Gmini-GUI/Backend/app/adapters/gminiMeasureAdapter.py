@@ -1,5 +1,6 @@
 import json
 from app.adapters.iMeasureAdapter import IMeasureAdapter
+from app.models.calibrationSetup import CalibrationSetup
 from app.models.measureSetup import MeasureSetup, SingleMeasureSetup, SpecMeasureSetup, MultiMeasureSetup
 from app.models.measureResult import MeasureResult
 
@@ -8,27 +9,24 @@ Adaptador concreto para realizar mediciones con la placa Guanaco Mini
 Traduce objetos del dominio a comandos de la consola de texto plano
 """
 class GminiMeasureAdapter(IMeasureAdapter):
-    #Mapea el valor de la resistencia RFB en Ohms al indice que espera la placa, segun la hoja de datos: 0 (470), 1 (150), 2 (1000).
+    
     def _get_rfb_index(self, rfb_value: float) -> int:
         mapeo = {470.0: 0, 150.0: 1, 1000.0: 2}
-        return mapeo.get(rfb_value, 0)  #devuelve por defecto 0 si no lo encuentra
+        return mapeo.get(rfb_value, 0)
 
-    #Genera el bloque de comandos para configurar los componentes analogicos
-    def encode_setup(self, setup: MeasureSetup) -> str:
-        #Formateamos los comandos segun la especificacion de la consola
+    #AHORA RECIBE CalibrationSetup
+    def encode_setup(self, setup: CalibrationSetup) -> str:
         comandos = [
             "outfmt json",
             "impfmt full",
-            f"voltage {int(setup._exitation_voltage)}",
-            f"gain {int(setup._gain)}",                  
-            f"setrfb {self._get_rfb_index(setup._rfbvalue)}",
-            f"settcycles {setup._settcycles}",
-            f"select {setup._mux_channel[0]}"
+            f"voltage {int(setup.get_exitation_voltage())}",
+            f"gain {int(setup.get_gain())}",
+            f"setrfb {self._get_rfb_index(setup.get_rfbvalue())}",
+            f"settcycles {setup.get_settcycles()}",
+            f"select {setup.get_mux_channel()[0]}"
         ]
-        
-        #Unimos todos los comandos con saltos de línea
         return "\n".join(comandos) + "\n"
-    #Genera el comando exacto para iniciar la medicion según el tipo de Setup
+
     def encode_execution(self, setup: MeasureSetup) -> str:
         if isinstance(setup, SingleMeasureSetup):
             return f"singlefreq {setup.freq} {setup.delay} {setup.count}\n"
@@ -37,7 +35,6 @@ class GminiMeasureAdapter(IMeasureAdapter):
             return f"sweep {setup.startfreq} {setup.incfreq} {setup.steps} {setup.repeat}\n"
             
         elif isinstance(setup, MultiMeasureSetup):
-            #Se usa delay=0 y count=1 para tomar una muestra rapida por cada frecuencia
             comandos = [f"singlefreq {freq} 0 1" for freq in setup.freq_list]
             return "\n".join(comandos) + "\n"
             

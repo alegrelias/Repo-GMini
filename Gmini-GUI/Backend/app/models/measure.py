@@ -1,13 +1,13 @@
+import uuid
 from datetime import datetime
 from typing import Optional, Literal
 from app.models.measureSetup import MeasureSetup
 from app.models.measureResult import MeasureResult
 
 class Measure:
-    def __init__(self, measureSetup: MeasureSetup, device_id: int):
-        #atributos 
+    def __init__(self, measure_setup: MeasureSetup, device_id: int):
         self._measure_id: Optional[int] = None
-        self._measure_setup: MeasureSetup = measureSetup
+        self._measure_setup: MeasureSetup = measure_setup
         self._date: datetime = datetime.now()
         self._file_name: str = ""
         self._state: Literal['EXECUTING', 'COMPLETE', 'ERROR'] = 'EXECUTING'
@@ -15,7 +15,9 @@ class Measure:
         self._device_temp: float = 0.0
         self._result: Optional[MeasureResult] = None
         self._observations: str = ""
-        self._loop_group_id: str = ""
+        
+        #UUID
+        self._loop_group_id: str = uuid.uuid4().hex 
         self._iteration_number: int = 1
 
     #geters
