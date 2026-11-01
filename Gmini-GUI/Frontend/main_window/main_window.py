@@ -2,38 +2,31 @@ from ast import main
 import sys
 from PyQt6.QtWidgets import (
     QApplication,
-    QFrame,
     QHBoxLayout,
     QLabel,
-    QMainWindow,
-    QMenu,
-    QGridLayout,
     QPushButton,
-    QSizePolicy,
+    QRadioButton,
     QToolBar,
-    QToolButton,
     QVBoxLayout,
     QWidget,
 )
 from PyQt6.QtCore import Qt
 
-class CollapseFrame(QFrame):
+class CollapseWidget(QWidget):
     def __init__(self, title, parent=None):
         super().__init__(parent)
         self.title = title
-        self.is_collapsed = True 
+        self.is_collapsed = False 
 
         self.toggle_button = QPushButton(text=self.title)
         self.toggle_button.setCheckable(True)
-        self.toggle_button.setChecked(False)
+        self.toggle_button.setChecked(True)
         self.toggle_button.clicked.connect(self.toggle)
-
-        self.setFrameShape(QFrame.Shape.Box)
+        self.setStyleSheet("background-color: #313244;")
 
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout()
         self.content_widget.setLayout(self.content_layout)
-        self.content_widget.hide()
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.toggle_button)
@@ -49,12 +42,13 @@ class CollapseFrame(QFrame):
             self.content_widget.hide()
             self.is_collapsed = True
 
-    def add_widget(self, widget):
-        self.content_layout.addWidget(widget)
+    def layout(self):
+        return self.content_layout
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.setStyleSheet("background-color: #1e1e2e; color: #cdd6f4;")
         self.inicializar_ui()
 
     def inicializar_ui(self):
@@ -84,39 +78,68 @@ class MainWindow(QWidget):
         layout.addWidget(mainWidget)
         mainWidget.setLayout(QHBoxLayout())
 
-        leftFrame = QFrame()
-        leftFrame.setFrameShape(QFrame.Shape.Box)
+        leftWidget = QWidget()
+        leftWidget.setFixedWidth(320)
         leftLayout = QVBoxLayout()
-        leftFrame.setLayout(leftLayout)
+        leftWidget.setLayout(leftLayout)
 
-        middleFrame = QFrame()
-        middleFrame.setFrameShape(QFrame.Shape.Box)
+        middleWidget = QWidget()
+        middleWidget.setStyleSheet("background-color: #313244;")
         middleLayout = QVBoxLayout()
-        middleFrame.setLayout(middleLayout)
+        middleWidget.setLayout(middleLayout)
 
-        rightFrame = QFrame()
-        rightFrame.setFrameShape(QFrame.Shape.Box)
+        rightWidget = QWidget()
+        rightWidget.setFixedWidth(320)
         rightLayout = QVBoxLayout()
-        rightFrame.setLayout(rightLayout)
+        rightWidget.setLayout(rightLayout)
 
         mensaje = QLabel("¡Bienvenido a la Pantalla Principal!")
         mensaje.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        middleLayout.addWidget(mensaje)
 
         self.setLayout(layout)
-        mainWidget.layout().addWidget(leftFrame,1)
-        mainWidget.layout().addWidget(middleFrame,3)
-        mainWidget.layout().addWidget(rightFrame,1)
 
-        conexionFrame = CollapseFrame("Conexion")
-        conexionFrame.add_widget(QLabel("Contenido de Conexion"))
-        leftLayout.addWidget(conexionFrame)
+        mainWidget.layout().addWidget(leftWidget,1)
+        mainWidget.layout().addWidget(middleWidget,3)
+        mainWidget.layout().addWidget(rightWidget,1)
 
-        calibracionFrame = CollapseFrame("Calibracion")
-        calibracionFrame.add_widget(QLabel("Contenido de Calibracion"))
-        leftLayout.addWidget(calibracionFrame)
+        # Left widget
+        dispositivoWidget = CollapseWidget("Dispositivo")
+        dispositivoWidget.layout().addWidget(QLabel("Contenido de Dispositivo"))
+        leftLayout.addWidget(dispositivoWidget)
+
+        metodoWidget = CollapseWidget("Metodo de Medicion")
+        espectroRadio = QRadioButton("Espectroscopia")
+        espectroRadio.setChecked(True)
+        monofreqRadio = QRadioButton("Monofrecuencia (Dom. de tiempo)")
+        multifreqTiempoRadio = QRadioButton("Multifrecuencia (Dom. de tiempo)")
+        multifreqFrecuenciaRadio = QRadioButton("Multifrecuencia (Dom. de frecuencia)")
+        metodoWidget.layout().addWidget(espectroRadio)
+        metodoWidget.layout().addWidget(monofreqRadio)
+        metodoWidget.layout().addWidget(multifreqTiempoRadio)
+        metodoWidget.layout().addWidget(multifreqFrecuenciaRadio)
+        leftLayout.addWidget(metodoWidget)
+
+        parametrosWidget = CollapseWidget("Parametros")
+        parametrosWidget.layout().addWidget(QLabel("Contenido de Parametros"))
+        leftLayout.addWidget(parametrosWidget)
 
         leftLayout.addStretch()
 
+        # Right widget
+        controlWidget = CollapseWidget("Control")
+        controlWidget.layout().addWidget(QLabel("Contenido de Control"))
+        rightLayout.addWidget(controlWidget)
+
+        calibracionWidget = CollapseWidget("Calibracion")
+        calibracionWidget.layout().addWidget(QLabel("Contenido de Calibracion"))
+        rightLayout.addWidget(calibracionWidget)
+
+        historialWidget = CollapseWidget("Historial")
+        historialWidget.layout().addWidget(QLabel("Contenido de Historial"))
+        rightLayout.addWidget(historialWidget)
+        
+        rightLayout.addStretch()
 
     def nueva_sesion(self):
         pass
