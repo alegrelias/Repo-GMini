@@ -95,7 +95,7 @@ class MainWindow(QWidget):
 
         toolbar.addAction("Nueva sesion", self.nueva_sesion)
         toolbar.addAction("Graficas", self.graficas)
-        toolbar.addAction("Calibracion", self.calibracion)
+        # toolbar.addAction("Calibracion", self.calibracion)
         toolbar.addAction("Analisis", self.analisis)
         toolbar.addAction("Exportar", self.exportar)
         toolbar.addAction("Importar", self.importar)
@@ -156,11 +156,18 @@ class MainWindow(QWidget):
 
         # Right widget
         controlWidget = CollapseWidget("Control")
-        controlWidget.layout().addWidget(QLabel("Contenido de Control"))
+        iniciarButton = QPushButton("Iniciar medicion")
+        iniciarButton.clicked.connect(self.iniciar)
+        pararButton = QPushButton("Parar medicion")
+        pararButton.clicked.connect(self.parar)
+        controlWidget.layout().addWidget(iniciarButton)
+        controlWidget.layout().addWidget(pararButton)
         rightLayout.addWidget(controlWidget)
 
         calibracionWidget = CollapseWidget("Calibracion")
-        calibracionWidget.layout().addWidget(QLabel("Contenido de Calibracion"))
+        calibracionButton = QPushButton("Iniciar Calibracion")
+        calibracionButton.clicked.connect(self.calibracion)
+        calibracionWidget.layout().addWidget(calibracionButton)
         rightLayout.addWidget(calibracionWidget)
 
         historialWidget = CollapseWidget("Historial")
@@ -188,6 +195,12 @@ class MainWindow(QWidget):
         pass
 
     def guardar(self):
+        pass
+
+    def iniciar(self):
+        pass
+
+    def parar(self):
         pass
 
 
