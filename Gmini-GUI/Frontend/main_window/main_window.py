@@ -21,11 +21,11 @@ class CollapseFrame(QFrame):
     def __init__(self, title, parent=None):
         super().__init__(parent)
         self.title = title
-        self.is_collapsed = False
+        self.is_collapsed = True 
 
         self.toggle_button = QPushButton(text=self.title)
         self.toggle_button.setCheckable(True)
-        self.toggle_button.setChecked(True)
+        self.toggle_button.setChecked(False)
         self.toggle_button.clicked.connect(self.toggle)
 
         self.setFrameShape(QFrame.Shape.Box)
@@ -33,6 +33,7 @@ class CollapseFrame(QFrame):
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout()
         self.content_widget.setLayout(self.content_layout)
+        self.content_widget.hide()
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.toggle_button)
@@ -61,8 +62,15 @@ class MainWindow(QWidget):
         self.setWindowTitle("Pantalla Principal")
 
         layout = QVBoxLayout()
-        mainWidget = QWidget()
+        titleWidget = QWidget()
         toolbar = QToolBar()
+        mainWidget = QWidget()
+
+        titleWidget.setLayout(QHBoxLayout())
+        titleWidget.layout().addWidget(QLabel("GMini"))
+        titleWidget.layout().addStretch()
+        titleWidget.layout().addWidget(QLabel("LEAB"))
+        layout.addWidget(titleWidget)
 
         toolbar.addAction("Nueva sesion", self.nueva_sesion)
         toolbar.addAction("Graficas", self.graficas)
@@ -103,6 +111,9 @@ class MainWindow(QWidget):
         conexionFrame.add_widget(QLabel("Contenido de Conexion"))
         leftLayout.addWidget(conexionFrame)
 
+        calibracionFrame = CollapseFrame("Calibracion")
+        calibracionFrame.add_widget(QLabel("Contenido de Calibracion"))
+        leftLayout.addWidget(calibracionFrame)
 
         leftLayout.addStretch()
 
