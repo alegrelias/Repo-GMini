@@ -15,6 +15,11 @@ from PyQt6.QtGui import QPixmap
 class UserProfileWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.setObjectName("UserProfileWindow")
+        self.setStyleSheet("""
+            QWidget { background-color: #1e1e2e; color: #cdd6f4; }
+            QFrame { background-color: #313244; border: 1px solid #313244; border-radius: 5px; }
+        """)
         self.inicializar_ui()
 
     def inicializar_ui(self):
