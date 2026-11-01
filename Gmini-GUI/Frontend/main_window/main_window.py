@@ -25,7 +25,7 @@ class TextBox(QWidget):
         self.layout.addWidget(self.titleLabel)
 
         self.valueBox = QLineEdit()
-        self.valueBox.setPlaceholderText(self.title)
+        self.valueBox.setStyleSheet("background-color: #45475a;")
         self.layout.addWidget(self.valueBox)
 
     def get_value(self):
@@ -39,12 +39,13 @@ class CollapseWidget(QWidget):
         super().__init__(parent)
         self.title = title
         self.is_collapsed = False 
+        self.setStyleSheet("background-color: #313244;")
 
         self.toggle_button = QPushButton(text=self.title)
+        self.toggle_button.setStyleSheet("background-color: #313244;")
         self.toggle_button.setCheckable(True)
         self.toggle_button.setChecked(True)
         self.toggle_button.clicked.connect(self.toggle)
-        self.setStyleSheet("background-color: #313244;")
 
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout()
@@ -70,7 +71,11 @@ class CollapseWidget(QWidget):
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setStyleSheet("background-color: #1e1e2e; color: #cdd6f4;")
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #1e1e2e; color: #cdd6f4;
+            }
+        """)
         self.inicializar_ui()
 
     def inicializar_ui(self):
@@ -133,9 +138,9 @@ class MainWindow(QWidget):
         metodoWidget = CollapseWidget("Metodo de Medicion")
         espectroRadio = QRadioButton("Espectroscopia")
         espectroRadio.setChecked(True)
-        monofreqRadio = QRadioButton("Monofrecuencia (Dom. de tiempo)")
-        multifreqTiempoRadio = QRadioButton("Multifrecuencia (Dom. de tiempo)")
-        multifreqFrecuenciaRadio = QRadioButton("Multifrecuencia (Dom. de frecuencia)")
+        monofreqRadio = QRadioButton("Monofrecuencia (Dom. tiempo)")
+        multifreqTiempoRadio = QRadioButton("Multifrecuencia (Dom. tiempo)")
+        multifreqFrecuenciaRadio = QRadioButton("Multifrecuencia (Dom. frecuencia)")
         metodoWidget.layout().addWidget(espectroRadio)
         metodoWidget.layout().addWidget(monofreqRadio)
         metodoWidget.layout().addWidget(multifreqTiempoRadio)
@@ -143,7 +148,8 @@ class MainWindow(QWidget):
         leftLayout.addWidget(metodoWidget)
 
         parametrosWidget = CollapseWidget("Parametros")
-        parametrosWidget.layout().addWidget(QLabel("Contenido de Parametros"))
+        for i in range(5):
+            parametrosWidget.layout().addWidget(TextBox(f"Parametro {i+1}"))
         leftLayout.addWidget(parametrosWidget)
 
         leftLayout.addStretch()
