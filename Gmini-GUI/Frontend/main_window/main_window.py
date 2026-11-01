@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QPushButton,
     QRadioButton,
     QToolBar,
@@ -11,6 +12,27 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtCore import Qt
+
+class TextBox(QWidget):
+    def __init__(self, title, parent=None):
+        super().__init__(parent)
+        self.title = title
+
+        self.layout = QHBoxLayout()
+        self.setLayout(self.layout)
+
+        self.titleLabel = QLabel(self.title)
+        self.layout.addWidget(self.titleLabel)
+
+        self.valueBox = QLineEdit()
+        self.valueBox.setPlaceholderText(self.title)
+        self.layout.addWidget(self.valueBox)
+
+    def get_value(self):
+        return self.valueBox.text()
+
+    def set_value(self, value):
+        self.valueBox.setText(value)
 
 class CollapseWidget(QWidget):
     def __init__(self, title, parent=None):
