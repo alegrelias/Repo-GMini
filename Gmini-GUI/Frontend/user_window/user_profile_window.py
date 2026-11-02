@@ -11,6 +11,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtGui import QPixmap
+from Gmini-GUI.Frontend.user_window.user_window import UserProfileWindow
+
+
 
 class UserProfileWindow(QWidget):
     def __init__(self):
@@ -198,7 +201,8 @@ class UserProfileWindow(QWidget):
         pass
 
 
-app = QApplication(sys.argv)
-window = UserProfileWindow()
-window.show()
-app.exec()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = UserProfileWindow()
+    window.show()
+    sys.exit(app.exec())

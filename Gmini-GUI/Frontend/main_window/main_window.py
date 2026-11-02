@@ -13,6 +13,16 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtCore import Qt
+from Gmini_GUI.Frontend.user_window.user_profile_window import UserProfileWindow
+
+class ClickableLabel(QLabel):
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
 
 class TextBox(QWidget):
     def __init__(self, title, parent=None):
@@ -91,7 +101,9 @@ class MainWindow(QWidget):
         titleWidget.setLayout(QHBoxLayout())
         titleWidget.layout().addWidget(QLabel("GMini"))
         titleWidget.layout().addStretch()
-        titleWidget.layout().addWidget(QLabel("LEAB"))
+        userLabel = ClickableLabel("Perfil")
+        userLabel.clicked.connect(self.open_user_profile)
+        titleWidget.layout().addWidget(userLabel)
         layout.addWidget(titleWidget)
 
         toolbar.addAction("Nueva sesion", self.nueva_sesion)
@@ -221,6 +233,10 @@ class MainWindow(QWidget):
 
     def desconectar(self):
         pass
+
+    def open_user_profile(self):
+        self.userProfileWindow = UserProfileWindow()
+        self.userProfileWindow.show()
 
 
 if __name__ == "__main__":
