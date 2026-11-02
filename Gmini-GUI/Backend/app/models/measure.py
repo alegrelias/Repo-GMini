@@ -14,7 +14,7 @@ class Measure:
         self._measure_setup: MeasureSetup = measure_setup
         self._date: datetime = datetime.now()
         self._file_name: str = ""
-        self._state: Literal['EXECUTING', 'COMPLETE', 'ERROR', 'PENDING'] = 'PENDING'
+        self._state: Literal['EXECUTING', 'COMPLETE', 'ERROR'] = 'EXECUTING'
         self._device_id: int = device_id
         self._device_temp: float = 0.0
         self._result: Optional[MeasureResult] = None
@@ -68,7 +68,7 @@ class Measure:
     def set_observations(self, obs: str) -> None:
         self._observations = obs
 
-    def set_state(self, new_state: Literal['EXECUTING', 'COMPLETE', 'ERROR', 'PENDING']) -> None:
+    def set_state(self, new_state: Literal['EXECUTING', 'COMPLETE', 'ERROR']) -> None:
         self._state = new_state
 
     def set_result(self, result: MeasureResult) -> None:
