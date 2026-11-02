@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QRadioButton,
+    QTabWidget,
     QToolBar,
     QVBoxLayout,
     QWidget,
@@ -132,7 +133,22 @@ class MainWindow(QWidget):
 
         # Left widget
         dispositivoWidget = CollapseWidget("Dispositivo")
-        dispositivoWidget.layout().addWidget(QLabel("Contenido de Dispositivo"))
+        dispositivoTab = QTabWidget()
+
+        bluetoothTab = QWidget()
+        bluetoothTab.setLayout(QVBoxLayout())
+        bluetoothTab.layout().addWidget(QLabel("Guanaco MINI"))
+        disconnectBtButton = QPushButton("Desconectar")
+        disconnectBtButton.clicked.connect(self.desconectar)
+        bluetoothTab.layout().addWidget(disconnectBtButton)
+
+        usbTab = QWidget()
+        usbTab.setLayout(QVBoxLayout())
+        usbTab.layout().addWidget(QLabel("Guanaco MINI"))
+
+        dispositivoTab.addTab(bluetoothTab, "Bluetooth")
+        dispositivoTab.addTab(usbTab, "USB")
+        dispositivoWidget.layout().addWidget(dispositivoTab)
         leftLayout.addWidget(dispositivoWidget)
 
         metodoWidget = CollapseWidget("Metodo de Medicion")
@@ -201,6 +217,9 @@ class MainWindow(QWidget):
         pass
 
     def parar(self):
+        pass
+
+    def desconectar(self):
         pass
 
 
