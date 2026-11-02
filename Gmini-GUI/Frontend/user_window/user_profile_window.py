@@ -11,7 +11,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 from PyQt6.QtGui import QPixmap
-from Gmini-GUI.Frontend.user_window.user_window import UserProfileWindow
 
 
 

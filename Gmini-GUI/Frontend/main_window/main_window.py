@@ -1,5 +1,5 @@
 from ast import main
-import sys
+import os,sys
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -12,10 +12,11 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from PyQt6.QtCore import Qt
-from Gmini_GUI.Frontend.user_window.user_profile_window import UserProfileWindow
+from PyQt6.QtCore import Qt, pyqtSignal
 
 class ClickableLabel(QLabel):
+    clicked = pyqtSignal()
+
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -23,6 +24,7 @@ class ClickableLabel(QLabel):
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
+        super().mousePressEvent(event)
 
 class TextBox(QWidget):
     def __init__(self, title, parent=None):
@@ -235,6 +237,10 @@ class MainWindow(QWidget):
         pass
 
     def open_user_profile(self):
+        ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        if ruta_raiz not in sys.path:
+            sys.path.append(ruta_raiz)
+        from user_window.user_profile_window import UserProfileWindow
         self.userProfileWindow = UserProfileWindow()
         self.userProfileWindow.show()
 
