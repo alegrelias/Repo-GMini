@@ -133,14 +133,11 @@ def test_calibrate_device_blocked_in_basic_mode():
     device = Device(device_id=1)
     cal_setup = CalibrationSetup(400.0, 1, 470, 15, 0)
 
-
     session = SessionManager()
     session.set_current_user(MagicMock(spec=User))
     session.set_active_mode(False)
 
-
     service = CalibrationService(MagicMock(), MagicMock(), session)
-
 
     with pytest.raises(PermissionError):
         service.calibrate_device(device, cal_setup)
@@ -152,24 +149,19 @@ def test_calibrate_device_hardware_error_transitions_to_uncalibrated():
     device = Device(device_id=1)
     cal_setup = CalibrationSetup(400.0, 1, 470, 15, 0)
 
-
     mock_conn = MagicMock()
     mock_conn.receive.return_value = "-5"
-
 
     mock_adapter = MagicMock()
     mock_adapter.encode.return_value = "calibrate 0\n"
     mock_adapter.decode.return_value = False
 
-
     session = SessionManager()
     session.set_current_user(MagicMock(spec=User))
     session.set_active_mode(True)
 
-
     service = CalibrationService(mock_conn, mock_adapter, session)
     result = service.calibrate_device(device, cal_setup)
-
 
     assert result is False
     assert isinstance(device.get_state(), UncalibratedState)
