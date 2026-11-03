@@ -13,7 +13,6 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap
 
 
-
 class UserProfileWindow(QWidget):
     def __init__(self):
         super().__init__()
