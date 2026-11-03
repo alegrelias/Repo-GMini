@@ -14,19 +14,6 @@ class GminiMeasureAdapter(IMeasureAdapter):
         mapeo = {470.0: 0, 150.0: 1, 1000.0: 2}
         return mapeo.get(rfb_value, 0)
 
-    #AHORA RECIBE CalibrationSetup
-    def encode_setup(self, setup: CalibrationSetup) -> str:
-        comandos = [
-            "outfmt json",
-            "impfmt full",
-            f"voltage {int(setup.get_exitation_voltage())}",
-            f"gain {int(setup.get_gain())}",
-            f"setrfb {self._get_rfb_index(setup.get_rfbvalue())}",
-            f"settcycles {setup.get_settcycles()}",
-            f"select {setup.get_mux_channel()[0]}"
-        ]
-        return "\n".join(comandos) + "\n"
-
     def encode_execution(self, setup: MeasureSetup) -> str:
         if isinstance(setup, SingleMeasureSetup):
             return f"singlefreq {setup.freq} {setup.delay} {setup.count}\n"
