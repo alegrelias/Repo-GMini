@@ -11,14 +11,13 @@ from app.adapters.iMeasureAdapter import IMeasureAdapter
 from app.services.connectionService import ConnectionService
 from app.services.sessionManager import SessionManager
 
-"""Servicio principal para la configuración y toma de mediciones. Observa a ConnectionService para actuar 
-    ante cortes bruscos y es observado por la GUI para actualizar barras de progreso y resultados intermedios"""
+"""Servicio principal para la ejecución de mediciones.Los datos de configuración viajan empaquetados directamente dentro de Measure"""
 class MeasureService(IObservable, IObserver):
     def __init__(self, 
                  connection_service: ConnectionService,
                  adapter: IMeasureAdapter,
                  session_manager: SessionManager,
-                 db_service: Optional[Any] = None): 
+                 db_service: Optional[Any] = None):
         self._connection_service = connection_service
         self._adapter = adapter
         self._session_manager = session_manager
@@ -28,19 +27,6 @@ class MeasureService(IObservable, IObserver):
         self._executed_results: List[MeasureResult] = []
         self._connection_service.attach(self)
 
-    """Envia los parametros de configuracion previos a la placa"""
-    def apply_setup(self, device: Device, setup: Any) -> bool:
-        try:
-            command = self._adapter.encode_setup(setup)
-            if command:
-                self._connection_service.send(device, command)
-                _ = self._connection_service.receive(device)
-            return True
-        except Exception as e:
-            device.set_state(DeviceErrorState())
-            self.notify(f"SETUP_ERROR: {e}")
-            return False
-
     """Ejecuta una medición individual verificando previamente el bloqueo por descalibración """
     def execute_measure(self, device: Device, measure: Measure) -> bool:
         #Validar sesion activa
@@ -48,23 +34,25 @@ class MeasureService(IObservable, IObserver):
         if not user:
             raise PermissionError("Debe iniciar sesión para ejecutar mediciones.")
 
-        #Bloqueo por descalibración o estado inválido
+        #Bloqueo por descalibracion o estado invalido
         if not device.can_measure():
             raise RuntimeError(
                 "El dispositivo no puede medir en su estado actual "
                 "(requiere calibración previa o se encuentra ocupado/en error)."
             )
 
-        #Preparar estado de la medición y del dispositivo
+        #Preparar estado de la medicion y del dispositivo
         self._current_measure = measure
         measure.set_state('EXECUTING')
         if not measure.get_file_name():
             measure.set_default_name() 
+
         device.set_state(MeasuringState())
         self._update_progress("MEASURE_STARTED")
 
         try:
-            exec_cmd = self._adapter.encode_execution(measure.get_measure_setup())
+            setup = measure.get_measure_setup()
+            exec_cmd = self._adapter.encode_execution(setup)
             
             self._connection_service.send(device, exec_cmd)
             raw_response = self._connection_service.receive(device)
@@ -81,7 +69,7 @@ class MeasureService(IObservable, IObserver):
         except Exception as e:
             measure.set_state('ERROR')
             device.set_state(DeviceErrorState())
-            self._emergency_save(measure) 
+            self._emergency_save(measure)  
             self._update_progress(f"MEASURE_ERROR: {e}")
             return False
         finally:
@@ -102,7 +90,6 @@ class MeasureService(IObservable, IObserver):
             success = self.execute_measure(device, measure)
             completed_measures.append(measure)
 
-            #Si falla la conexion en medio del bucle, abortamos el ciclo
             if not success:
                 break
 
@@ -114,17 +101,17 @@ class MeasureService(IObservable, IObserver):
         return completed_measures
 
     def finish_measure(self) -> List[MeasureResult]:
-        """Devuelve la lista de resultados recolectados y limpia el buffer temporal."""
+        """Devuelve la lista de resultados recolectados y limpia el buffer temporal"""
         results = list(self._executed_results)
         self._executed_results.clear()
         return results
 
     def _update_progress(self, status_msg: str = "PROGRESS_UPDATED") -> None:
-        """Método privado según diagrama para emitir avance a la GUI (MED-09, MED-10)."""
+        """Notifica el avance a la GUI (MED-09, MED-10)."""
         self.notify(status_msg)
 
     def _emergency_save(self, measure: Measure) -> None:
-        """Persiste los últimos datos recolectados ante un error (MED-14)."""
+        """Persiste los ultimos datos recolectados ante un corte abrupto"""
         user = self._session_manager.get_current_user()
         if self._db_service and user:
             try:
