@@ -201,7 +201,6 @@ class WireLess{
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
-	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	+ execute_sequence(device : Device, sequence : AutoSequence)
 	+ stop_sequence()
@@ -782,7 +781,6 @@ classDiagram
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
-	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	+ execute_sequence(device : Device, sequence : AutoSequence)
 	+ stop_sequence()
@@ -1284,7 +1282,6 @@ class MeasureResult{
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
-	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	+ execute_sequence(device : Device, sequence : AutoSequence)
 	+ stop_sequence()
@@ -1853,7 +1850,6 @@ class Token {
 class MeasureService{
 	+ execute_measure(measure : Measure)
 	+ finish_measure() : [MeasureResult]
-	+ apply_setup(device : Device, setup : MeasureSetup)
 	+ execute_loop(device : Device, base_setup : MeasureSetup, iterations : int, delay : float)
 	+ execute_sequence(device : Device, sequence : AutoSequence)
 	+ stop_sequence()

@@ -14,7 +14,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 
-class ClickableLabel(QLabel): 
+class ClickableLabel(QLabel):
     clicked = pyqtSignal()
 
     def __init__(self, text="", parent=None):
