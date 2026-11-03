@@ -92,7 +92,7 @@ class DataBaseService:
                 )
             """)
 
-            #ablas Hijas de MEASURE_SETUP 
+            #Tablas Hijas de MEASURE_SETUP 
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS SPEC_MEASURE_SETUP (
                     spec_ms_id INTEGER PRIMARY KEY AUTOINCREMENT,
