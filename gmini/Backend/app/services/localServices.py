@@ -1,27 +1,23 @@
 import os
 import sys
+import yaml
 from datetime import datetime
 from typing import Any, Mapping
 
-import yaml
-
-ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ruta_raiz not in sys.path:
-    sys.path.append(ruta_raiz)
     
-from Backend.app.models.measure import Measure
-from Backend.app.models.measureResult import MeasureResult
-from Backend.app.models.measureSetup import (
+from gmini.Backend.app.models.measure import Measure
+from gmini.Backend.app.models.measureResult import MeasureResult
+from gmini.Backend.app.models.measureSetup import (
     MultiMeasureSetup,
     SingleMeasureSetup,
     SpecMeasureSetup,
 )
-from Backend.app.models.calibrationSetup import CalibrationSetup
-from Backend.app.models.measureSetup import MeasureSetup
-# from Backend.app.models.autosequences import AutoSequence
-# from Backend.app.models.sessions import ExperimentalSession
-# from Backend.app.models.tokens import Token
-# from Backend.app.models.figures import Figure
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Backend.app.models.measureSetup import MeasureSetup
+# from gmini.Backend.app.models.autosequences import AutoSequence
+# from gmini.Backend.app.models.sessions import ExperimentalSession
+# from gmini.Backend.app.models.tokens import Token
+# from gmini.Backend.app.models.figures import Figure
 
 class LocalService:
 

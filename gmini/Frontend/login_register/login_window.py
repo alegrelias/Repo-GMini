@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (QApplication, QLabel, QWidget, QLineEdit, QPushButt
 from PyQt6.QtGui import QFont, QPixmap, QIcon 
 from PyQt6.QtCore import Qt 
 from register_window import Register 
+from gmini.Frontend.main_window.main_window import MainWindow
 
 class Login(QWidget):     
     def __init__(self):         
@@ -158,10 +159,6 @@ class Login(QWidget):
         self.hide()     
 
     def open_main_window(self):         
-        ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))         
-        if ruta_raiz not in sys.path:             
-            sys.path.append(ruta_raiz)                      
-        from main_window.main_window import Mainwindow                  
         self.main_window = Mainwindow()         
         self.main_window.show() 
 
