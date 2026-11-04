@@ -42,6 +42,7 @@ gmini/Backend/tests/testCalibrationAndBuilders.py
 gmini/Backend/tests/testMeasureServiceAndAdapter.py
 gmini/Backend/tests/test_local_calibration_service.py
 gmini/Backend/tests/test_local_measure_service.py
+gmini/Backend/tests/test_local_setup_service.py
 gmini/Backend/tests/test_routers/__init__.py
 gmini/Backend/tests/test_services/__init__.py
 gmini/Frontend/advanced_window/advanced_window.py
