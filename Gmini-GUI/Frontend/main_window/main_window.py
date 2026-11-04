@@ -14,6 +14,13 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 
+ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_raiz not in sys.path:
+    sys.path.append(ruta_raiz)
+
+from user_window.user_profile_window import UserProfileWindow
+
+
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()
 
@@ -237,10 +244,6 @@ class MainWindow(QWidget):
         pass
 
     def open_user_profile(self):
-        ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-        if ruta_raiz not in sys.path:
-            sys.path.append(ruta_raiz)
-        from user_window.user_profile_window import UserProfileWindow
         self.userProfileWindow = UserProfileWindow()
         self.userProfileWindow.show()
 
