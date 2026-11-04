@@ -1,10 +1,21 @@
-import os,sys
+import os
+import sys
+from datetime import datetime
+from typing import Any, Mapping
+
+import yaml
 
 ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_raiz not in sys.path:
     sys.path.append(ruta_raiz)
     
 from Backend.app.models.measure import Measure
+from Backend.app.models.measureResult import MeasureResult
+from Backend.app.models.measureSetup import (
+    MultiMeasureSetup,
+    SingleMeasureSetup,
+    SpecMeasureSetup,
+)
 from Backend.app.models.calibrationSetup import CalibrationSetup
 from Backend.app.models.measureSetup import MeasureSetup
 # from Backend.app.models.autosequences import AutoSequence
@@ -15,7 +26,134 @@ from Backend.app.models.measureSetup import MeasureSetup
 class LocalService:
 
     def load_measure(self, path: str) -> Measure:
-        pass
+        with open(path, "r", encoding="utf-8") as measure_file:
+            data = yaml.safe_load(measure_file)
+
+        if not isinstance(data, Mapping):
+            raise ValueError("A measure YAML file must contain a mapping at its root")
+
+        measure_setup = self._load_measure_setup(
+            self._value(data, "measure_setup", required=True)
+        )
+        device_id = self._value(data, "device_id", required=True)
+        measure = Measure(measure_setup=measure_setup, device_id=int(device_id))
+
+        if self._has_value(data, "measure_id"):
+            measure.set_id(int(self._value(data, "measure_id")))
+        if self._has_value(data, "date"):
+            measure._date = self._parse_date(self._value(data, "date"))
+        if self._has_value(data, "file_name"):
+            measure.set_file_name(str(self._value(data, "file_name")))
+        if self._has_value(data, "state"):
+            measure.set_state(self._value(data, "state"))
+        if self._has_value(data, "device_temp"):
+            measure.set_device_temp(float(self._value(data, "device_temp")))
+        if self._has_value(data, "observations"):
+            measure.set_observations(str(self._value(data, "observations")))
+        if self._has_value(data, "loop_group_id"):
+            measure._loop_group_id = str(self._value(data, "loop_group_id"))
+        if self._has_value(data, "iteration_number"):
+            measure.set_iteration_number(int(self._value(data, "iteration_number")))
+        if self._has_value(data, "result") and self._value(data, "result") is not None:
+            measure.set_result(self._load_measure_result(self._value(data, "result")))
+
+        return measure
+
+    def _load_measure_setup(self, data: Any) -> MeasureSetup:
+        if not isinstance(data, Mapping):
+            raise ValueError("'measure_setup' must be a mapping")
+
+        setup_type = self._value(data, "type")
+        if setup_type is None:
+            if self._has_value(data, "freq"):
+                setup_type = "single"
+            elif self._has_value(data, "startfreq"):
+                setup_type = "spectro"
+            elif self._has_value(data, "freq_list"):
+                setup_type = "multi"
+        if setup_type is None:
+            raise ValueError(
+                "'measure_setup' must specify a type or recognizable setup fields"
+            )
+
+        setup_type = str(setup_type).lower()
+        observations = str(self._value(data, "observations", default=""))
+        if setup_type in {"single", "singlemeasuresetup"}:
+            setup = SingleMeasureSetup(
+                freq=float(self._value(data, "freq", required=True)),
+                delay=int(self._value(data, "delay", default=0)),
+                count=int(self._value(data, "count", default=0)),
+            )
+        elif setup_type in {"spectro", "spec", "specmeasuresetup"}:
+            setup = SpecMeasureSetup(
+                startfreq=float(self._value(data, "startfreq", required=True)),
+                incfreq=float(self._value(data, "incfreq", required=True)),
+                steps=int(self._value(data, "steps", required=True)),
+                repeat=int(self._value(data, "repeat", default=1)),
+            )
+        elif setup_type in {"multi", "multimeasuresetup"}:
+            setup = MultiMeasureSetup(
+                freq_list=list(self._value(data, "freq_list", required=True))
+            )
+        else:
+            raise ValueError(f"Unknown measure setup type: {setup_type}")
+
+        if self._has_value(data, "measure_setup_id"):
+            setup.set_id(int(self._value(data, "measure_setup_id")))
+        setup.set_observations(observations)
+        return setup
+
+    def _load_measure_result(self, data: Any) -> MeasureResult:
+        if not isinstance(data, Mapping):
+            raise ValueError("'result' must be a mapping")
+
+        impedances = []
+        for impedance in self._value(data, "impedances", default=[]):
+            if isinstance(impedance, (list, tuple)) and len(impedance) == 2:
+                impedances.append(complex(float(impedance[0]), float(impedance[1])))
+            else:
+                impedances.append(complex(impedance))
+
+        result = MeasureResult(
+            frequencies=list(self._value(data, "frequencies", default=[])),
+            amplitudes=list(self._value(data, "amplitudes", default=[])),
+            phases=list(self._value(data, "phases", default=[])),
+            impedances=impedances,
+        )
+        if self._has_value(data, "m_resul_id"):
+            result.set_id(int(self._value(data, "m_resul_id")))
+        return result
+
+    @staticmethod
+    def _value(
+        data: Mapping[str, Any],
+        name: str,
+        default: Any = None,
+        required: bool = False,
+    ) -> Any:
+        for key in (name, f"_{name}"):
+            if key in data:
+                return data[key]
+        if required:
+            raise ValueError(f"Missing required measure field: '{name}'")
+        return default
+
+    @classmethod
+    def _has_value(cls, data: Mapping[str, Any], name: str) -> bool:
+        return name in data or f"_{name}" in data
+
+    @staticmethod
+    def _parse_date(value: Any) -> datetime:
+        if isinstance(value, datetime):
+            return value
+        if isinstance(value, str):
+            try:
+                return datetime.fromisoformat(value)
+            except ValueError as exc:
+                raise ValueError(
+                    "The measure date must be an ISO 8601 datetime"
+                ) from exc
+        raise ValueError("The measure date must be an ISO 8601 datetime")
 
     def load_calibration_setup(self, path: str) -> CalibrationSetup:
         pass
