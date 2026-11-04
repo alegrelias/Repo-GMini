@@ -3,20 +3,24 @@ from app.core.observer import IObservable, IObserver
 from app.models.user import User
 from app.models.token import Token
 
-"""Notifica a la GUI cuando cambia el usuario"""
+
 class SessionManager(IObservable):
     _instance: Optional['SessionManager'] = None
+    _current_user: Optional[User]
+    _advanced_mode_active: bool
+    _active_token: Optional[Token]
+    _observers: List[IObserver]
 
     def __new__(cls) -> 'SessionManager':
         if cls._instance is None:
             cls._instance = super(SessionManager, cls).__new__(cls)
-            cls._instance._current_user: Optional[User] = None
-            cls._instance._advanced_mode_active: bool = False
-            cls._instance._active_token: Optional[Token] = None
-            cls._instance._observers: List[IObserver] = []
+            cls._instance._current_user = None
+            cls._instance._advanced_mode_active = False
+            cls._instance._active_token = None
+            cls._instance._observers = []
         return cls._instance
 
-    # --- Getters y Setters ---
+    #Getters y setters 
     def get_current_user(self) -> Optional[User]:
         return self._current_user
 
@@ -32,7 +36,7 @@ class SessionManager(IObservable):
         self.notify("MODE_CHANGED")
 
     def switch_user_mode(self) -> None:
-        """Alterna entre Modo Basico (False) y Modo experto (True)"""
+        """Alterna entre Modo Básico (False) y Modo Experto (True)"""
         self._advanced_mode_active = not self._advanced_mode_active
         self.notify("MODE_CHANGED")
 
