@@ -156,7 +156,46 @@ class LocalService:
         raise ValueError("The measure date must be an ISO 8601 datetime")
 
     def load_calibration_setup(self, path: str) -> CalibrationSetup:
-        pass
+        with open(path, "r", encoding="utf-8") as calibration_file:
+            data = yaml.safe_load(calibration_file)
+
+        if not isinstance(data, Mapping):
+            raise ValueError(
+                "A calibration setup YAML file must contain a mapping at its root"
+            )
+
+        mux_channel = self._value(data, "mux_channel", required=True)
+        if isinstance(mux_channel, (list, tuple)):
+            mux_channels = [int(channel) for channel in mux_channel]
+        else:
+            # Existing database records can contain a single channel value.
+            mux_channels = [int(mux_channel)]
+
+        calibration_setup = CalibrationSetup(
+            channel=str(self._value(data, "channel", required=True)),
+            z_calc_value_real=float(
+                self._value(data, "z_calc_value_real", required=True)
+            ),
+            z_calc_value_imag=float(
+                self._value(data, "z_calc_value_imag", required=True)
+            ),
+            exitation_voltage=float(
+                self._value(data, "exitation_voltage", required=True)
+            ),
+            gain=float(self._value(data, "gain", required=True)),
+            rfbvalue=float(self._value(data, "rfbvalue", required=True)),
+            settcycles=int(self._value(data, "settcycles", required=True)),
+            mux_channel=mux_channels,
+        )
+
+        if self._has_value(data, "cal_setup_id"):
+            calibration_setup.set_id(int(self._value(data, "cal_setup_id")))
+        if self._has_value(data, "observations"):
+            calibration_setup.set_observations(
+                str(self._value(data, "observations"))
+            )
+
+        return calibration_setup
 
     def load_setup(self, path: str) -> MeasureSetup:
         pass
