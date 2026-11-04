@@ -20,12 +20,11 @@ class SingleFreqSetupBuilder(BaseMeasureSetupBuilder):
     def with_count(self, count: int) -> 'SingleFreqSetupBuilder':
         self._count = count
         return self
-          #Construye la entidad solo con sus parámetros especificos
+    #Construye la entidad solo con sus parámetros especificos
     def build(self) -> SingleMeasureSetup:
-        setup = SingleMeasureSetup(
+        return SingleMeasureSetup(
             freq=self._freq,
             delay=self._delay,
-            count=self._count
+            count=self._count,
+            observations=self._observations
         )
-        setup.set_observations(self._observations)
-        return setup

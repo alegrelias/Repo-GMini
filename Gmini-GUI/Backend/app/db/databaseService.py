@@ -83,11 +83,6 @@ class DataBaseService:
                     measure_setup_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER,
                     observations TEXT,
-                    exitation_voltage REAL,
-                    gain REAL,
-                    rfbvalue REAL,
-                    settcycles INTEGER,
-                    mux_channel INTEGER,
                     FOREIGN KEY (user_id) REFERENCES USER(user_id)
                 )
             """)
@@ -267,34 +262,38 @@ class DataBaseService:
             return cursor.lastrowid
 
     def save_measure_setup(self, user_id: int, m_setup: MeasureSetup) -> int:
+        obs = m_setup.get_observations() if hasattr(m_setup, "get_observations") else ""
+
         with self._get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                INSERT INTO MEASURE_SETUP (
-                    user_id, observations, exitation_voltage, gain, rfbvalue, settcycles, mux_channel
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                user_id,
-                m_setup.get_observations() if hasattr(m_setup, "get_observations") else "",
-                getattr(m_setup, "_exitation_voltage", None),
-                getattr(m_setup, "_gain", None),
-                getattr(m_setup, "_rfbvalue", None),
-                getattr(m_setup, "_settcycles", None),
-                getattr(m_setup, "_mux_channel", None)
-            ))
+                INSERT INTO MEASURE_SETUP (user_id, observations)
+                VALUES (?, ?)
+            """, (user_id, obs))
             setup_id = cursor.lastrowid
 
             if isinstance(m_setup, SpecMeasureSetup):
                 cursor.execute("""
                     INSERT INTO SPEC_MEASURE_SETUP (m_setup, startfreq, incfreq, steps, repeat)
                     VALUES (?, ?, ?, ?, ?)
-                """, (setup_id, m_setup.get_start_freq(), m_setup.get_inc_freq(), m_setup.get_steps(), m_setup.get_repeat()))
+                """, (
+                    setup_id,
+                    m_setup.get_start_freq(),
+                    m_setup.get_inc_freq(),
+                    m_setup.get_steps(),
+                    m_setup.get_repeat()
+                ))
 
             elif isinstance(m_setup, SingleMeasureSetup):
+                delay_val = m_setup.get_delay() if hasattr(m_setup, "get_delay") else getattr(m_setup, "_delay", 0)
+                count_val = (
+                    m_setup.get_count() if hasattr(m_setup, "get_count")
+                    else getattr(m_setup, "_count", getattr(m_setup, "_repeat", 1))
+                )
                 cursor.execute("""
                     INSERT INTO SINGLE_MEASURE_SETUP (m_setup, freq, delay, count)
                     VALUES (?, ?, ?, ?)
-                """, (setup_id, m_setup.get_freq(), getattr(m_setup, "_delay", 0), getattr(m_setup, "_count", 1)))
+                """, (setup_id, m_setup.get_freq(), delay_val, count_val))
 
             elif isinstance(m_setup, MultiMeasureSetup):
                 cursor.execute("""
@@ -303,7 +302,9 @@ class DataBaseService:
                 """, (setup_id, json.dumps(m_setup.get_freq_list())))
 
             conn.commit()
-            if hasattr(m_setup, "_measure_setup_id"):
+            if hasattr(m_setup, "set_id"):
+                m_setup.set_id(setup_id)
+            else:
                 m_setup._measure_setup_id = setup_id
             return setup_id
 
@@ -455,38 +456,43 @@ class DataBaseService:
         base = cursor.fetchone()
         if not base:
             return None
+
         obs = base["observations"] or ""
+        builder = None
 
         cursor.execute("SELECT * FROM SPEC_MEASURE_SETUP WHERE m_setup = ?", (setup_id,))
         spec = cursor.fetchone()
         if spec:
-            return (
+            builder = (
                 SpectroSetupBuilder()
                 .with_start_freq(spec["startfreq"])
                 .with_inc_freq(spec["incfreq"])
                 .with_steps(spec["steps"])
                 .with_repeat(spec["repeat"])
-                .with_observations(obs)
-                .build()
             )
 
-        cursor.execute("SELECT * FROM SINGLE_MEASURE_SETUP WHERE m_setup = ?", (setup_id,))
-        single = cursor.fetchone()
-        if single:
-            b = SingleFreqSetupBuilder().with_freq(single["freq"]).with_observations(obs)
-            if hasattr(b, "with_delay"):
-                b.with_delay(single["delay"])
-            if hasattr(b, "with_count"):
-                b.with_count(single["count"])
-            return b.build()
+        if not builder:
+            cursor.execute("SELECT * FROM SINGLE_MEASURE_SETUP WHERE m_setup = ?", (setup_id,))
+            single = cursor.fetchone()
+            if single:
+                builder = SingleFreqSetupBuilder().with_freq(single["freq"])
+                if hasattr(builder, "with_delay"):
+                    builder.with_delay(single["delay"])
+                if hasattr(builder, "with_count"):
+                    builder.with_count(single["count"])
 
-        cursor.execute("SELECT * FROM MULTI_MEASURE_SETUP WHERE m_setup = ?", (setup_id,))
-        multi = cursor.fetchone()
-        if multi:
-            return (
-                MultiFreqSetupBuilder()
-                .with_freq_list(json.loads(multi["frequencies_list"]))
-                .with_observations(obs)
-                .build()
-            )
-        return None
+        if not builder:
+            cursor.execute("SELECT * FROM MULTI_MEASURE_SETUP WHERE m_setup = ?", (setup_id,))
+            multi = cursor.fetchone()
+            if multi:
+                builder = MultiFreqSetupBuilder().with_freq_list(json.loads(multi["frequencies_list"]))
+
+        if not builder:
+            return None
+
+        setup_obj = builder.with_observations(obs).build()
+        if hasattr(setup_obj, "set_id"):
+            setup_obj.set_id(setup_id)
+        else:
+            setup_obj._measure_setup_id = setup_id
+        return setup_obj
