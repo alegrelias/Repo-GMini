@@ -2,12 +2,8 @@ import uuid, sys, os
 from datetime import datetime
 from typing import Optional, Literal
 
-ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ruta_raiz not in sys.path:
-    sys.path.append(ruta_raiz)
-
-from Backend.app.models.measureSetup import MeasureSetup
-from Backend.app.models.measureResult import MeasureResult
+from gmini.Backend.app.models.measureSetup import MeasureSetup
+from gmini.Backend.app.models.measureResult import MeasureResult
 
 class Measure:
     """

@@ -2,10 +2,10 @@ from datetime import datetime
 
 import pytest
 
-from Backend.app.models.measure import Measure
-from Backend.app.models.measureResult import MeasureResult
-from Backend.app.models.measureSetup import SingleMeasureSetup
-from Backend.app.services.localServices import LocalService
+from gmini.Backend.app.models.measure import Measure
+from gmini.Backend.app.models.measureResult import MeasureResult
+from gmini.Backend.app.models.measureSetup import SingleMeasureSetup
+from gmini.Backend.app.services.localServices import LocalService
 
 
 def test_load_measure_from_yaml(tmp_path):

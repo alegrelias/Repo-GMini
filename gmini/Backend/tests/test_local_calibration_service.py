@@ -1,7 +1,7 @@
 import pytest
 
-from Backend.app.models.calibrationSetup import CalibrationSetup
-from Backend.app.services.localServices import LocalService
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Backend.app.services.localServices import LocalService
 
 
 def test_load_calibration_setup_from_yaml(tmp_path):
