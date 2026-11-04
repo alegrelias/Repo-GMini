@@ -1,5 +1,5 @@
-from app.adapters.iCalibrationAdapter import ICalibrationAdapter
-from app.models.calibrationSetup import CalibrationSetup
+from gmini.Backend.app.adapters.iCalibrationAdapter import ICalibrationAdapter
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
 
 """Adaptador concreto de calibración para la placa Guanaco Mini"""
 class GminiCalibrationAdapter(ICalibrationAdapter):

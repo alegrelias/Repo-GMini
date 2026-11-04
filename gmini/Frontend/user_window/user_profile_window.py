@@ -55,7 +55,7 @@ class UserProfileWindow(QWidget):
         userFrame.setLayout(frameLayout)
 
         imageLabel = QLabel()
-        imageLabel.setPixmap(QPixmap("Gmini-GUI/Resources/default_avatar.png").scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        imageLabel.setPixmap(QPixmap("gmini/Resources/default_avatar.png").scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
         imageLabel.setMaximumSize(100, 100)
 
         usernameLabel = QLabel("JohnDoe", alignment=Qt.AlignmentFlag.AlignCenter)

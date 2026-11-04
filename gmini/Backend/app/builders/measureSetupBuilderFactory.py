@@ -1,7 +1,7 @@
-from app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
-from app.builders.spectroSetupBuilder import SpectroSetupBuilder
-from app.builders.singleFreqSetupBuilder import SingleFreqSetupBuilder
-from app.builders.multiFreqSetupBuilder import MultiFreqSetupBuilder
+from gmini.Backend.app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
+from gmini.Backend.app.builders.spectroSetupBuilder import SpectroSetupBuilder
+from gmini.Backend.app.builders.singleFreqSetupBuilder import SingleFreqSetupBuilder
+from gmini.Backend.app.builders.multiFreqSetupBuilder import MultiFreqSetupBuilder
 
 
 class MeasureSetupBuilderFactory:
