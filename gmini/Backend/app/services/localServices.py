@@ -28,7 +28,7 @@ class LocalService:
         if not isinstance(data, Mapping):
             raise ValueError("A measure YAML file must contain a mapping at its root")
 
-        measure_setup = self._load_measure_setup(
+        measure_setup = self.load_setup(
             self._value(data, "measure_setup", required=True)
         )
         device_id = self._value(data, "device_id", required=True)
@@ -54,50 +54,6 @@ class LocalService:
             measure.set_result(self._load_measure_result(self._value(data, "result")))
 
         return measure
-
-    def _load_measure_setup(self, data: Any) -> MeasureSetup:
-        if not isinstance(data, Mapping):
-            raise ValueError("'measure_setup' must be a mapping")
-
-        setup_type = self._value(data, "type")
-        if setup_type is None:
-            if self._has_value(data, "freq"):
-                setup_type = "single"
-            elif self._has_value(data, "startfreq"):
-                setup_type = "spectro"
-            elif self._has_value(data, "freq_list"):
-                setup_type = "multi"
-        if setup_type is None:
-            raise ValueError(
-                "'measure_setup' must specify a type or recognizable setup fields"
-            )
-
-        setup_type = str(setup_type).lower()
-        observations = str(self._value(data, "observations", default=""))
-        if setup_type in {"single", "singlemeasuresetup"}:
-            setup = SingleMeasureSetup(
-                freq=float(self._value(data, "freq", required=True)),
-                delay=int(self._value(data, "delay", default=0)),
-                count=int(self._value(data, "count", default=0)),
-            )
-        elif setup_type in {"spectro", "spec", "specmeasuresetup"}:
-            setup = SpecMeasureSetup(
-                startfreq=float(self._value(data, "startfreq", required=True)),
-                incfreq=float(self._value(data, "incfreq", required=True)),
-                steps=int(self._value(data, "steps", required=True)),
-                repeat=int(self._value(data, "repeat", default=1)),
-            )
-        elif setup_type in {"multi", "multimeasuresetup"}:
-            setup = MultiMeasureSetup(
-                freq_list=list(self._value(data, "freq_list", required=True))
-            )
-        else:
-            raise ValueError(f"Unknown measure setup type: {setup_type}")
-
-        if self._has_value(data, "measure_setup_id"):
-            setup.set_id(int(self._value(data, "measure_setup_id")))
-        setup.set_observations(observations)
-        return setup
 
     def _load_measure_result(self, data: Any) -> MeasureResult:
         if not isinstance(data, Mapping):
@@ -193,8 +149,63 @@ class LocalService:
 
         return calibration_setup
 
-    def load_setup(self, path: str) -> MeasureSetup:
-        pass
+    def load_setup(self, path: str | Mapping[str, Any]) -> MeasureSetup:
+        if isinstance(path, Mapping):
+            data = path
+        else:
+            with open(path, "r", encoding="utf-8") as setup_file:
+                data = yaml.safe_load(setup_file)
+
+        if not isinstance(data, Mapping):
+            raise ValueError("A setup YAML file must contain a mapping at its root")
+
+        setup_data = self._value(data, "measure_setup", default=data)
+        if not isinstance(setup_data, Mapping):
+            raise ValueError("'measure_setup' must be a mapping")
+
+        setup_type = self._value(setup_data, "type")
+        if setup_type is None:
+            if self._has_value(setup_data, "freq"):
+                setup_type = "single"
+            elif self._has_value(setup_data, "startfreq"):
+                setup_type = "spectro"
+            elif self._has_value(setup_data, "freq_list"):
+                setup_type = "multi"
+        if setup_type is None:
+            raise ValueError(
+                "'measure_setup' must specify a type or recognizable setup fields"
+            )
+
+        setup_type = str(setup_type).lower()
+        observations = str(self._value(setup_data, "observations", default=""))
+        if setup_type in {"single", "singlemeasuresetup"}:
+            setup = SingleMeasureSetup(
+                freq=float(self._value(setup_data, "freq", required=True)),
+                delay=int(self._value(setup_data, "delay", default=0)),
+                count=int(self._value(setup_data, "count", default=0)),
+            )
+        elif setup_type in {"spectro", "spec", "specmeasuresetup"}:
+            setup = SpecMeasureSetup(
+                startfreq=float(
+                    self._value(setup_data, "startfreq", required=True)
+                ),
+                incfreq=float(self._value(setup_data, "incfreq", required=True)),
+                steps=int(self._value(setup_data, "steps", required=True)),
+                repeat=int(self._value(setup_data, "repeat", default=1)),
+            )
+        elif setup_type in {"multi", "multimeasuresetup"}:
+            setup = MultiMeasureSetup(
+                freq_list=list(
+                    self._value(setup_data, "freq_list", required=True)
+                )
+            )
+        else:
+            raise ValueError(f"Unknown measure setup type: {setup_type}")
+
+        if self._has_value(setup_data, "measure_setup_id"):
+            setup.set_id(int(self._value(setup_data, "measure_setup_id")))
+        setup.set_observations(observations)
+        return setup
 
     # def load_auto_sequence(self, path: str) -> AutoSequence:
        # pass
