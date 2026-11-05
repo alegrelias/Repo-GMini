@@ -473,6 +473,7 @@ class MainWindow(QMainWindow):
     def open_user_profile(self):
         self.userProfileWindow = UserProfileWindow()
         self.userProfileWindow.show()
+        self.close()
 
     def _apply_measure_setup(self, setup):
         self._applying_import = True

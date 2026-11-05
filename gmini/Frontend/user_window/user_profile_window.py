@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMainWindow,
     QPushButton,
     QVBoxLayout,
     QWidget,
@@ -14,7 +15,7 @@ from PyQt6.QtGui import QPixmap
 
 
 
-class UserProfileWindow(QWidget):
+class UserProfileWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setObjectName("UserProfileWindow")
@@ -36,9 +37,11 @@ class UserProfileWindow(QWidget):
 
         bottomLayout = QHBoxLayout()
 
-        self.setLayout(QVBoxLayout())
-        self.layout().addWidget(topWidget)
-        self.layout().addLayout(bottomLayout)
+        central_widget = QWidget()
+        central_layout = QVBoxLayout(central_widget)
+        central_layout.addWidget(topWidget)
+        central_layout.addLayout(bottomLayout)
+        self.setCentralWidget(central_widget)
 
         titleLabel = QLabel("GMini")
         ownerLabel = QLabel("LEAB")
@@ -184,7 +187,7 @@ class UserProfileWindow(QWidget):
 
         bottomLayout.addWidget(changePasswordFrame)
 
-        self.layout().addStretch()
+        central_layout.addStretch()
 
 
     def logout(self):
