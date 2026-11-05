@@ -146,33 +146,39 @@ class MainWindow(QWidget):
         toolbar.addWidget(
             self._create_toolbar_menu(
                 "Exportar",
+                ("Medicion", self.exportar_medicion),
+                "Configuracion",
                 (
-                    ("Exportar medicion", self.exportar_medicion),
-                    ("Exportar calibracion", self.exportar_calibracion),
-                    ("Exportar configuracion", self.exportar_configuracion),
+                    ("Medicion", self.exportar_configuracion),
+                    ("Calibracion", self.exportar_calibracion),
                 ),
             )
         )
         toolbar.addWidget(
             self._create_toolbar_menu(
                 "Importar",
+                ("Medicion", self.importar_medicion),
+                "Configuracion",
                 (
-                    ("Importar medicion", self.importar_medicion),
-                    ("Importar calibracion", self.importar_calibracion),
-                    ("Importar configuracion", self.importar_configuracion),
+                    ("Medicion", self.importar_configuracion),
+                    ("Calibracion", self.importar_calibracion),
                 ),
             )
         )
         toolbar.addAction("Guardar", self.guardar)
         return toolbar
 
-    def _create_toolbar_menu(self, title, actions):
+    def _create_toolbar_menu(
+        self, title, main_action, submenu_title, submenu_actions
+    ):
         button = QToolButton()
         button.setText(title)
         button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         menu = QMenu(button)
-        for action_text, callback in actions:
-            menu.addAction(action_text, callback)
+        menu.addAction(*main_action)
+        submenu = menu.addMenu(submenu_title)
+        for action_text, callback in submenu_actions:
+            submenu.addAction(action_text, callback)
         button.setMenu(menu)
         return button
 
