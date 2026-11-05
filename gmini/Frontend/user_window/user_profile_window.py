@@ -19,10 +19,7 @@ class UserProfileWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setObjectName("UserProfileWindow")
-        self.setStyleSheet("""
-            QWidget { background-color: #1e1e2e; color: #cdd6f4; }
-            QFrame { background-color: #313244; border: 1px solid #313244; border-radius: 5px; }
-        """)
+        self.setStyleSheet("background-color: #1e1e2e; color: #cdd6f4;")
         self.inicializar_ui()
 
     def inicializar_ui(self):
@@ -35,12 +32,15 @@ class UserProfileWindow(QMainWindow):
         topWidget.setMaximumHeight(50)
         topWidget.setLayout(topLayout)
 
+        bottomWidget = QWidget()
+        bottomWidget.setStyleSheet("QFrame { background-color: #313244; border: 1px solid #313244; border-radius: 5px; }")
         bottomLayout = QHBoxLayout()
+        bottomWidget.setLayout(bottomLayout)
 
         central_widget = QWidget()
         central_layout = QVBoxLayout(central_widget)
         central_layout.addWidget(topWidget)
-        central_layout.addLayout(bottomLayout)
+        central_layout.addWidget(bottomWidget)
         self.setCentralWidget(central_widget)
 
         titleLabel = QLabel("GMini")
