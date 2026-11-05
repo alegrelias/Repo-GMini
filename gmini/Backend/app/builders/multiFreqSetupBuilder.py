@@ -13,10 +13,7 @@ class MultiFreqSetupBuilder(BaseMeasureSetupBuilder):
         return self
 
     def build(self) -> MultiMeasureSetup:
-        #Instancia la entidad pura con la lista de frecuencias
-        setup = MultiMeasureSetup(
-            freq_list=self._freq_list
+        return MultiMeasureSetup(
+            freq_list=self._freq_list,
+            observations=self._observations
         )
-        #Asigna los atributos comunes heredados del BaseMeasureSetupBuilder
-        setup.set_observations(self._observations)
-        return setup

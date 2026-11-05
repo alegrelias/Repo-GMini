@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
-#Constructor abstracto para configuraciones de medicion (limpio de calibracion)
+from app.models.measureSetup import MeasureSetup
+
 class BaseMeasureSetupBuilder(ABC):
     def __init__(self):
         self._observations: str = ""
 
-    def with_observations(self, obs: str) -> 'BaseMeasureSetupBuilder':
+    def with_observations(self, obs: str):
         self._observations = obs
         return self
 
     @abstractmethod
-    def build(self):
+    def build(self) -> MeasureSetup:
         pass
