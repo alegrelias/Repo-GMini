@@ -28,14 +28,10 @@ class SpectroSetupBuilder(BaseMeasureSetupBuilder):
         return self
 
     def build(self) -> SpecMeasureSetup:
-        #Instancia la entidad pura con los parámetros del espectro
-        setup = SpecMeasureSetup(
+        return SpecMeasureSetup(
             startfreq=self._startfreq,
             incfreq=self._incfreq,
             steps=self._steps,
-            repeat=self._repeat
+            repeat=self._repeat,
+            observations=self._observations
         )
-        #Asigna los atributos comunes heredados del BaseMeasureSetupBuilder
-        setup.set_observations(self._observations)
-        
-        return setup

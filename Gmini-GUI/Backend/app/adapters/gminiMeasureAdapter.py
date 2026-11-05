@@ -1,77 +1,63 @@
 import json
 from app.adapters.iMeasureAdapter import IMeasureAdapter
-from app.models.calibrationSetup import CalibrationSetup
-from app.models.measureSetup import MeasureSetup, SingleMeasureSetup, SpecMeasureSetup, MultiMeasureSetup
+from app.models.measureSetup import (
+    MeasureSetup, SingleMeasureSetup, SpecMeasureSetup, MultiMeasureSetup
+)
 from app.models.measureResult import MeasureResult
 
-"""
-Adaptador concreto para realizar mediciones con la placa Guanaco Mini
-Traduce objetos del dominio a comandos de la consola de texto plano
-"""
+"""Adaptador concreto para codificar ejecuciones de medición y decodificar"""
 class GminiMeasureAdapter(IMeasureAdapter):
-    
-    def _get_rfb_index(self, rfb_value: float) -> int:
-        mapeo = {470.0: 0, 150.0: 1, 1000.0: 2}
-        return mapeo.get(rfb_value, 0)
-
     def encode_execution(self, setup: MeasureSetup) -> str:
         if isinstance(setup, SingleMeasureSetup):
-            return f"singlefreq {setup.freq} {setup.delay} {setup.count}\n"
-            
+            freq = setup.get_freq()
+            delay = setup.get_delay() if hasattr(setup, "get_delay") else getattr(setup, "_delay", 0)
+            count = (
+                setup.get_count() if hasattr(setup, "get_count")
+                else getattr(setup, "_count", getattr(setup, "_repeat", 1))
+            )
+            if delay > 0 or count > 1:
+                return f"singlefreq {freq} {delay} {count}\n"
+            return f"singlefreq {freq} {count}\n"
+
         elif isinstance(setup, SpecMeasureSetup):
-            return f"sweep {setup.startfreq} {setup.incfreq} {setup.steps} {setup.repeat}\n"
-            
+            return (
+                f"sweep {setup.get_start_freq()} "
+                f"{setup.get_inc_freq()} "
+                f"{setup.get_steps()} "
+                f"{setup.get_repeat()}\n"
+            )
+
         elif isinstance(setup, MultiMeasureSetup):
-            comandos = [f"singlefreq {freq} 0 1" for freq in setup.freq_list]
-            return "\n".join(comandos) + "\n"
-            
-        return "\n"
+            commands = [f"singlefreq {freq} 0 1" for freq in setup.get_freq_list()]
+            return "\n".join(commands) + "\n"
 
-    def decode(self, response: str) -> MeasureResult:
-        frequencies = []
-        amplitudes = []
-        phases = []
-        impedances = []
+        else:
+            raise ValueError(f"Tipo de MeasureSetup no soportado: {type(setup)}")
 
+    def decode(self, raw_data: str) -> MeasureResult:
         try:
-            # Procesamiento iterativo: como la multifrecuencia puede devolver múltiples
-            # respuestas u objetos JSON encadenados, iteramos sobre cada bloque válido.
-            partes = response.split('\n')
-            
-            for parte in partes:
-                parte = parte.strip()
-                if not parte:
-                    continue
-                #Si la placa devolvió JSON
-                if parte.startswith('{') and parte.endswith('}'):
-                    data = json.loads(parte)
-                    result_data = data.get("sweep", {}).get("result", data)
+            clean_str = raw_data.strip()
+            if clean_str.lower().startswith("json"):
+                clean_str = clean_str[4:].strip()
 
-                    #Si es una lista, la extendemos. Si es un valor unico, lo agregamos.
-                    if "frequency" in result_data:
-                        freq_data = result_data["frequency"]
-                        if isinstance(freq_data, list):
-                            frequencies.extend(freq_data)
-                        else:
-                            frequencies.append(freq_data)
+            data = json.loads(clean_str)
 
-                    #Verificamos si es una lista de magnitudes (sweep) o una sola (singlefreq)
-                    if "magnitude" in result_data:
-                        mag_data = result_data["magnitude"]
-                        if isinstance(mag_data[0], list):
-                            for mag in mag_data:
-                                impedances.append(complex(mag[0], mag[1]))
-                        else:
-                            impedances.append(complex(mag_data[0], mag_data[1]))
-                            
-                #Si la placa devolvió texto plano (comportamiento de singlefreq sin JSON)
-                elif " " in parte and "j" in parte.lower():
-                    # Esto ataja el caso donde singlefreq no formatea en JSON
-                    valores = parte.replace('j', '').replace('J', '').split()
-                    if len(valores) == 2:
-                        impedances.append(complex(float(valores[0]), float(valores[1])))
-                        
+            if "impedance" in data and "frequency" in data:
+                frequencies = [float(f) for f in data["frequency"]]
+                impedances = [complex(float(pair[0]), float(pair[1])) for pair in data["impedance"]]
+                return MeasureResult(frequencies=frequencies, impedances=impedances)
+
+            if "sweep" in data:
+                res_block = data["sweep"].get("result", {})
+                frequencies = [float(f) for f in res_block.get("frequency", [])]
+                impedances = [complex(float(pair[0]), float(pair[1])) for pair in res_block.get("magnitude", [])]
+                return MeasureResult(frequencies=frequencies, impedances=impedances)
+
+            frequencies = [float(f) for f in data.get("frequencies", [])]
+            reals = data.get("reals", [])
+            imags = data.get("imags", [])
+            impedances = [complex(float(r), float(i)) for r, i in zip(reals, imags)]
+            return MeasureResult(frequencies=frequencies, impedances=impedances)
+
         except Exception as e:
-            print(f"Error al decodificar la respuesta: {e}")
-
-        return MeasureResult(frequencies, amplitudes, phases, impedances)
+            raise ValueError(f"Error al decodificar la respuesta del hardware: {e}")
