@@ -8,11 +8,13 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMessageBox,
+    QMenu,
     QFormLayout,
     QPushButton,
     QRadioButton,
     QTabWidget,
     QToolBar,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -140,10 +142,38 @@ class MainWindow(QWidget):
         toolbar.addAction("Graficas", self.graficas)
         # toolbar.addAction("Calibracion", self.calibracion)
         toolbar.addAction("Analisis", self.analisis)
-        toolbar.addAction("Exportar", self.exportar)
-        toolbar.addAction("Importar", self.importar)
+        toolbar.addWidget(
+            self._create_toolbar_menu(
+                "Exportar",
+                (
+                    ("Exportar medicion", self.exportar_medicion),
+                    ("Exportar calibracion", self.exportar_calibracion),
+                    ("Exportar configuracion", self.exportar_configuracion),
+                ),
+            )
+        )
+        toolbar.addWidget(
+            self._create_toolbar_menu(
+                "Importar",
+                (
+                    ("Importar medicion", self.importar_medicion),
+                    ("Importar calibracion", self.importar_calibracion),
+                    ("Importar configuracion", self.importar_configuracion),
+                ),
+            )
+        )
         toolbar.addAction("Guardar", self.guardar)
         return toolbar
+
+    def _create_toolbar_menu(self, title, actions):
+        button = QToolButton()
+        button.setText(title)
+        button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        menu = QMenu(button)
+        for action_text, callback in actions:
+            menu.addAction(action_text, callback)
+        button.setMenu(menu)
+        return button
 
     def _create_main_widget(self):
         main_widget = QWidget()
@@ -263,25 +293,48 @@ class MainWindow(QWidget):
     def analisis(self):
         pass
 
-    def exportar(self):
-        if self.current_measure is not None:
-            exporter = self.local_service.export_measure_to_file
-            default_name = "measure.yaml"
-        elif self.current_calibration_setup is not None:
-            exporter = self.local_service.export_calibration_setup_to_file
-            default_name = "calibration_setup.yaml"
-        else:
-            try:
-                self.current_setup = self.get_measure_setup()
-            except ValueError as exc:
-                self._show_error("Exportar", str(exc))
-                return
-            exporter = self.local_service.export_setup_to_file
-            default_name = "measure_setup.yaml"
+    def exportar_medicion(self):
+        if self.current_measure is None:
+            self._show_error("Exportar medicion", "No hay una medicion para exportar")
+            return
+        self._export_to_file(
+            "Exportar medicion",
+            "medicion.yaml",
+            self.local_service.export_measure_to_file,
+            self.current_measure,
+        )
 
+    def exportar_calibracion(self):
+        if self.current_calibration_setup is None:
+            self._show_error(
+                "Exportar calibracion",
+                "No hay una calibracion para exportar",
+            )
+            return
+        self._export_to_file(
+            "Exportar calibracion",
+            "calibracion_config.yaml",
+            self.local_service.export_calibration_setup_to_file,
+            self.current_calibration_setup,
+        )
+
+    def exportar_configuracion(self):
+        try:
+            self.current_setup = self.get_measure_setup()
+        except ValueError as exc:
+            self._show_error("Exportar configuracion", str(exc))
+            return
+        self._export_to_file(
+            "Exportar configuracion",
+            "medicion_config.yaml",
+            self.local_service.export_setup_to_file,
+            self.current_setup,
+        )
+
+    def _export_to_file(self, title, default_name, exporter, value):
         path, _ = QFileDialog.getSaveFileName(
             self,
-            "Exportar configuración",
+            title,
             default_name,
             "Archivos YAML (*.yaml *.yml);;Todos los archivos (*)",
         )
@@ -289,20 +342,37 @@ class MainWindow(QWidget):
             return
 
         try:
-            exporter(path, self.current_measure
-                     if self.current_measure is not None
-                     else self.current_calibration_setup
-                     if self.current_calibration_setup is not None
-                     else self.current_setup)
-        except (OSError, ValueError, TypeError) as exc:
-            self._show_error("Exportar", f"No se pudo exportar el archivo:\n{exc}")
+            exporter(path, value)
+        except (OSError, ValueError, TypeError, yaml.YAMLError) as exc:
+            self._show_error(title, f"No se pudo exportar el archivo:\n{exc}")
             return
         self._show_status(f"Archivo exportado: {path}")
 
-    def importar(self):
+    def importar_medicion(self):
+        self._import_from_file(
+            "Importar medicion",
+            self.local_service.load_measure,
+            self._apply_imported_measure,
+        )
+
+    def importar_calibracion(self):
+        self._import_from_file(
+            "Importar calibracion",
+            self.local_service.load_calibration_setup,
+            self._apply_imported_calibration,
+        )
+
+    def importar_configuracion(self):
+        self._import_from_file(
+            "Importar configuracion",
+            self.local_service.load_setup,
+            self._apply_imported_setup,
+        )
+
+    def _import_from_file(self, title, importer, apply_import):
         path, _ = QFileDialog.getOpenFileName(
             self,
-            "Importar configuración",
+            title,
             "",
             "Archivos YAML (*.yaml *.yml);;Todos los archivos (*)",
         )
@@ -310,27 +380,28 @@ class MainWindow(QWidget):
             return
 
         try:
-            data = self._read_yaml_mapping(path)
-            if "device_id" in data and "measure_setup" in data:
-                self.current_measure = self.local_service.load_measure(path)
-                self.current_setup = self.current_measure.get_measure_setup()
-                self.current_calibration_setup = None
-                self._apply_measure_setup(self.current_setup)
-            elif self._is_calibration_mapping(data):
-                self.current_calibration_setup = (
-                    self.local_service.load_calibration_setup(path)
-                )
-                self.current_measure = None
-                self._show_status(f"Calibración importada: {path}")
-            else:
-                self.current_setup = self.local_service.load_setup(path)
-                self.current_measure = None
-                self.current_calibration_setup = None
-                self._apply_measure_setup(self.current_setup)
-        except (OSError, ValueError, TypeError, yaml.YAMLError) as exc:
-            self._show_error("Importar", f"No se pudo importar el archivo:\n{exc}")
+            value = importer(path)
+            apply_import(value)
+        except (OSError, ValueError, TypeError) as exc:
+            self._show_error(title, f"No se pudo importar el archivo:\n{exc}")
             return
         self._show_status(f"Archivo importado: {path}")
+
+    def _apply_imported_measure(self, measure):
+        self.current_measure = measure
+        self.current_setup = measure.get_measure_setup()
+        self.current_calibration_setup = None
+        self._apply_measure_setup(self.current_setup)
+
+    def _apply_imported_calibration(self, calibration_setup):
+        self.current_calibration_setup = calibration_setup
+        self.current_measure = None
+
+    def _apply_imported_setup(self, setup):
+        self.current_setup = setup
+        self.current_measure = None
+        self.current_calibration_setup = None
+        self._apply_measure_setup(setup)
 
     def guardar(self):
         pass
@@ -347,27 +418,6 @@ class MainWindow(QWidget):
     def open_user_profile(self):
         self.userProfileWindow = UserProfileWindow()
         self.userProfileWindow.show()
-
-    @staticmethod
-    def _read_yaml_mapping(path):
-        with open(path, "r", encoding="utf-8") as yaml_file:
-            data = yaml.safe_load(yaml_file)
-        if not isinstance(data, dict):
-            raise ValueError("El archivo YAML debe contener un mapa")
-        return data
-
-    @staticmethod
-    def _is_calibration_mapping(data):
-        return {
-            "channel",
-            "z_calc_value_real",
-            "z_calc_value_imag",
-            "exitation_voltage",
-            "gain",
-            "rfbvalue",
-            "settcycles",
-            "mux_channel",
-        }.issubset(data)
 
     def _apply_measure_setup(self, setup):
         self._applying_import = True
