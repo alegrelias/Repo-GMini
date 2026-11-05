@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMainWindow,
     QMessageBox,
     QMenu,
     QFormLayout,
@@ -98,7 +99,7 @@ class CollapseWidget(QWidget):
     def layout(self):
         return self.content_layout
 
-class MainWindow(QWidget):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.parameter_boxes = {}
@@ -119,11 +120,12 @@ class MainWindow(QWidget):
         self.setFixedSize(1280, 720)
         self.setWindowTitle("Pantalla Principal")
 
-        layout = QVBoxLayout()
-        layout.addWidget(self._create_title_widget())
-        layout.addWidget(self._create_toolbar())
-        layout.addWidget(self._create_main_widget())
-        self.setLayout(layout)
+        central_widget = QWidget()
+        central_layout = QVBoxLayout(central_widget)
+        central_layout.addWidget(self._create_title_widget())
+        central_layout.addWidget(self._create_main_widget())
+        self.setCentralWidget(central_widget)
+        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, self._create_toolbar())
 
     def _create_title_widget(self):
         title_widget = QWidget()
