@@ -22,6 +22,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 
 from gmini.Frontend.user_window.user_profile_window import UserProfileWindow
 from gmini.Backend.app.services.localServices import LocalService
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
 from gmini.Backend.app.models.measureSetup import (
     MeasureSetup,
     MultiMeasureSetup,
@@ -271,6 +272,9 @@ class MainWindow(QWidget):
         layout.addWidget(control_widget)
 
         calibration_widget = CollapseWidget("Calibracion")
+        calibration_widget.layout().addWidget(
+            self._create_calibration_parameters_widget()
+        )
         calibration_button = QPushButton("Iniciar Calibracion")
         calibration_button.clicked.connect(self.calibracion)
         calibration_widget.layout().addWidget(calibration_button)
@@ -288,7 +292,35 @@ class MainWindow(QWidget):
         pass
 
     def calibracion(self):
-        pass
+        try:
+            self.current_calibration_setup = self.get_calibration_setup()
+            self.current_measure = None
+        except ValueError as exc:
+            self._show_error("Calibracion", str(exc))
+
+    def _create_calibration_parameters_widget(self):
+        parameters_widget = QWidget()
+        self.calibration_parameter_layout = QFormLayout()
+        parameters_widget.setLayout(self.calibration_parameter_layout)
+        self.calibration_parameter_boxes = {}
+
+        parameters = (
+            ("channel", "Canal"),
+            ("z_calc_value_real", "Valor Z calculado real"),
+            ("z_calc_value_imag", "Valor Z calculado imaginario"),
+            ("exitation_voltage", "Voltaje de excitacion"),
+            ("gain", "Ganancia"),
+            ("rfbvalue", "Valor RFB"),
+            ("settcycles", "Ciclos de estabilizacion"),
+            ("mux_channel", "Canales MUX (separados por comas)"),
+            ("observations", "Observaciones"),
+        )
+        for name, label in parameters:
+            box = QLineEdit()
+            box.setStyleSheet("background-color: #45475a;")
+            self.calibration_parameter_layout.addRow(label, box)
+            self.calibration_parameter_boxes[name] = box
+        return parameters_widget
 
     def analisis(self):
         pass
@@ -305,11 +337,10 @@ class MainWindow(QWidget):
         )
 
     def exportar_calibracion(self):
-        if self.current_calibration_setup is None:
-            self._show_error(
-                "Exportar calibracion",
-                "No hay una calibracion para exportar",
-            )
+        try:
+            self.current_calibration_setup = self.get_calibration_setup()
+        except ValueError as exc:
+            self._show_error("Exportar calibracion", str(exc))
             return
         self._export_to_file(
             "Exportar calibracion",
@@ -396,12 +427,28 @@ class MainWindow(QWidget):
     def _apply_imported_calibration(self, calibration_setup):
         self.current_calibration_setup = calibration_setup
         self.current_measure = None
+        self._apply_calibration_setup(calibration_setup)
 
     def _apply_imported_setup(self, setup):
         self.current_setup = setup
         self.current_measure = None
         self.current_calibration_setup = None
         self._apply_measure_setup(setup)
+
+    def _apply_calibration_setup(self, setup):
+        values = {
+            "channel": setup.get_channel(),
+            "z_calc_value_real": setup.get_z_calc_value_real(),
+            "z_calc_value_imag": setup.get_z_calc_value_imag(),
+            "exitation_voltage": setup.get_exitation_voltage(),
+            "gain": setup.get_gain(),
+            "rfbvalue": setup.get_rfbvalue(),
+            "settcycles": setup.get_settcycles(),
+            "mux_channel": ", ".join(map(str, setup.get_mux_channel())),
+            "observations": setup.get_observations(),
+        }
+        for name, value in values.items():
+            self.calibration_parameter_boxes[name].setText(str(value))
 
     def guardar(self):
         pass
@@ -495,6 +542,56 @@ class MainWindow(QWidget):
             box.setStyleSheet("background-color: #45475a;")
             self.parameter_layout.addRow(label, box)
             self.parameter_boxes[name] = box
+
+    def get_calibration_setup(self) -> CalibrationSetup:
+        try:
+            channel = self.calibration_parameter_boxes["channel"].text().strip()
+            if not channel:
+                raise ValueError("El canal de calibracion no puede estar vacio")
+
+            mux_channels = [
+                int(value.strip())
+                for value in self.calibration_parameter_boxes["mux_channel"]
+                .text()
+                .split(",")
+                if value.strip()
+            ]
+            if not mux_channels:
+                raise ValueError("Debe indicar al menos un canal MUX")
+
+            setup = CalibrationSetup(
+                channel=channel,
+                z_calc_value_real=float(
+                    self.calibration_parameter_boxes["z_calc_value_real"].text()
+                ),
+                z_calc_value_imag=float(
+                    self.calibration_parameter_boxes["z_calc_value_imag"].text()
+                ),
+                exitation_voltage=float(
+                    self.calibration_parameter_boxes["exitation_voltage"].text()
+                ),
+                gain=float(self.calibration_parameter_boxes["gain"].text()),
+                rfbvalue=float(
+                    self.calibration_parameter_boxes["rfbvalue"].text()
+                ),
+                settcycles=int(
+                    self.calibration_parameter_boxes["settcycles"].text()
+                ),
+                mux_channel=mux_channels,
+            )
+            setup.set_observations(
+                self.calibration_parameter_boxes["observations"].text()
+            )
+            return setup
+        except ValueError as exc:
+            if str(exc) in {
+                "El canal de calibracion no puede estar vacio",
+                "Debe indicar al menos un canal MUX",
+            }:
+                raise
+            raise ValueError(
+                "Los parámetros de calibracion no son válidos"
+            ) from exc
 
     def get_measure_setup(self) -> MeasureSetup:
         selected_radio = next(
