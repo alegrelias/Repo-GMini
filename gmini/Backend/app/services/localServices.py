@@ -216,14 +216,96 @@ class LocalService:
     # def load_user_token(self, path: str) -> Token:
         # pass
 
-    def export_setup_to_file(self, path: str, setup: MeasureSetup):
-        pass
+    def export_setup_to_file(self, path: str, setup: MeasureSetup) -> None:
+        with open(path, "w", encoding="utf-8") as setup_file:
+            yaml.safe_dump(
+                self._setup_to_mapping(setup),
+                setup_file,
+                sort_keys=False,
+            )
 
-    def export_calibration_setup_to_file(self, path: str, setup: CalibrationSetup):
-        pass
+    def export_calibration_setup_to_file(
+        self, path: str, setup: CalibrationSetup
+    ) -> None:
+        data = {
+            "observations": setup.get_observations(),
+            "channel": setup.get_channel(),
+            "z_calc_value_real": setup.get_z_calc_value_real(),
+            "z_calc_value_imag": setup.get_z_calc_value_imag(),
+            "exitation_voltage": setup.get_exitation_voltage(),
+            "gain": setup.get_gain(),
+            "rfbvalue": setup.get_rfbvalue(),
+            "settcycles": setup.get_settcycles(),
+            "mux_channel": setup.get_mux_channel(),
+        }
+        if setup.get_id() is not None:
+            data["cal_setup_id"] = setup.get_id()
+        with open(path, "w", encoding="utf-8") as calibration_file:
+            yaml.safe_dump(data, calibration_file, sort_keys=False)
 
-    def export_measure_to_file(self, path: str, measure: Measure):
-        pass
+    def export_measure_to_file(self, path: str, measure: Measure) -> None:
+        data = {
+            "date": measure.get_date(),
+            "file_name": measure.get_file_name(),
+            "state": measure.get_state(),
+            "device_id": measure.get_device_id(),
+            "device_temp": measure.get_device_temp(),
+            "observations": measure.get_observations(),
+            "loop_group_id": measure.get_loop_group_id(),
+            "iteration_number": measure.get_iteration_number(),
+            "measure_setup": self._setup_to_mapping(measure.get_measure_setup()),
+        }
+        if measure.get_id() is not None:
+            data["measure_id"] = measure.get_id()
+
+        result = measure.get_measure_result()
+        if result is not None:
+            data["result"] = {
+                "frequencies": result.get_frequencies(),
+                "amplitudes": result.get_amplitudes(),
+                "phases": result.get_phases(),
+                "impedances": [
+                    [impedance.real, impedance.imag]
+                    for impedance in result.get_impedances()
+                ],
+            }
+            if result.get_id() is not None:
+                data["result"]["m_resul_id"] = result.get_id()
+
+        with open(path, "w", encoding="utf-8") as measure_file:
+            yaml.safe_dump(data, measure_file, sort_keys=False)
+
+    @staticmethod
+    def _setup_to_mapping(setup: MeasureSetup) -> dict[str, Any]:
+        data: dict[str, Any] = {
+            "observations": setup._observations,
+        }
+        if setup.get_id() is not None:
+            data["measure_setup_id"] = setup.get_id()
+        if isinstance(setup, SingleMeasureSetup):
+            data.update(
+                {
+                    "type": "single",
+                    "freq": setup.freq,
+                    "delay": setup.delay,
+                    "count": setup.count,
+                }
+            )
+        elif isinstance(setup, SpecMeasureSetup):
+            data.update(
+                {
+                    "type": "spectro",
+                    "startfreq": setup.startfreq,
+                    "incfreq": setup.incfreq,
+                    "steps": setup.steps,
+                    "repeat": setup.repeat,
+                }
+            )
+        elif isinstance(setup, MultiMeasureSetup):
+            data.update({"type": "multi", "freq_list": setup.freq_list})
+        else:
+            raise ValueError(f"Unsupported measure setup type: {type(setup).__name__}")
+        return data
 
     # def export_auto_sequence_to_file(self, path: str, sequence: AutoSequence):
         # pass
