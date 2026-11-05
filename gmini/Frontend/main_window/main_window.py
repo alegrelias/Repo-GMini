@@ -1,10 +1,13 @@
 from ast import main
 import os,sys
+import yaml
 from PyQt6.QtWidgets import (
     QApplication,
+    QFileDialog,
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QFormLayout,
     QPushButton,
     QRadioButton,
@@ -16,6 +19,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from gmini.Frontend.user_window.user_profile_window import UserProfileWindow
+from gmini.Backend.app.services.localServices import LocalService
 from gmini.Backend.app.models.measureSetup import (
     MeasureSetup,
     MultiMeasureSetup,
@@ -95,6 +99,12 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.parameter_boxes = {}
+        self.local_service = LocalService()
+        self.current_setup = None
+        self.current_measure = None
+        self.current_calibration_setup = None
+        self.status_label = None
+        self._applying_import = False
         self.setStyleSheet("""
             QWidget {
                 background-color: #1e1e2e; color: #cdd6f4;
@@ -107,18 +117,25 @@ class MainWindow(QWidget):
         self.setWindowTitle("Pantalla Principal")
 
         layout = QVBoxLayout()
-        titleWidget = QWidget()
+        layout.addWidget(self._create_title_widget())
+        layout.addWidget(self._create_toolbar())
+        layout.addWidget(self._create_main_widget())
+        self.setLayout(layout)
+
+    def _create_title_widget(self):
+        title_widget = QWidget()
+        title_layout = QHBoxLayout()
+        title_widget.setLayout(title_layout)
+        title_layout.addWidget(QLabel("GMini"))
+        title_layout.addStretch()
+
+        user_label = ClickableLabel("Perfil")
+        user_label.clicked.connect(self.open_user_profile)
+        title_layout.addWidget(user_label)
+        return title_widget
+
+    def _create_toolbar(self):
         toolbar = QToolBar()
-        mainWidget = QWidget()
-
-        titleWidget.setLayout(QHBoxLayout())
-        titleWidget.layout().addWidget(QLabel("GMini"))
-        titleWidget.layout().addStretch()
-        userLabel = ClickableLabel("Perfil")
-        userLabel.clicked.connect(self.open_user_profile)
-        titleWidget.layout().addWidget(userLabel)
-        layout.addWidget(titleWidget)
-
         toolbar.addAction("Nueva sesion", self.nueva_sesion)
         toolbar.addAction("Graficas", self.graficas)
         # toolbar.addAction("Calibracion", self.calibracion)
@@ -126,105 +143,113 @@ class MainWindow(QWidget):
         toolbar.addAction("Exportar", self.exportar)
         toolbar.addAction("Importar", self.importar)
         toolbar.addAction("Guardar", self.guardar)
+        return toolbar
 
-        layout.addWidget(toolbar)
-        layout.addWidget(mainWidget)
-        mainWidget.setLayout(QHBoxLayout())
+    def _create_main_widget(self):
+        main_widget = QWidget()
+        main_layout = QHBoxLayout()
+        main_widget.setLayout(main_layout)
 
-        leftWidget = QWidget()
-        leftWidget.setFixedWidth(320)
-        leftLayout = QVBoxLayout()
-        leftWidget.setLayout(leftLayout)
-
-        middleWidget = QWidget()
-        middleWidget.setStyleSheet("background-color: #313244;")
-        middleLayout = QVBoxLayout()
-        middleWidget.setLayout(middleLayout)
-
-        rightWidget = QWidget()
-        rightWidget.setFixedWidth(320)
-        rightLayout = QVBoxLayout()
-        rightWidget.setLayout(rightLayout)
-
-        mensaje = QLabel("¡Bienvenido a la Pantalla Principal!")
-        mensaje.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        middleLayout.addWidget(mensaje)
-
-        self.setLayout(layout)
-
-        mainWidget.layout().addWidget(leftWidget,1)
-        mainWidget.layout().addWidget(middleWidget,3)
-        mainWidget.layout().addWidget(rightWidget,1)
-
-        # Left widget
-        dispositivoWidget = CollapseWidget("Dispositivo")
-        dispositivoTab = QTabWidget()
-
-        bluetoothTab = QWidget()
-        bluetoothTab.setLayout(QVBoxLayout())
-        bluetoothTab.layout().addWidget(QLabel("Guanaco MINI"))
-        disconnectBtButton = QPushButton("Desconectar")
-        disconnectBtButton.clicked.connect(self.desconectar)
-        bluetoothTab.layout().addWidget(disconnectBtButton)
-
-        usbTab = QWidget()
-        usbTab.setLayout(QVBoxLayout())
-        usbTab.layout().addWidget(QLabel("Guanaco MINI"))
-
-        dispositivoTab.addTab(bluetoothTab, "Bluetooth")
-        dispositivoTab.addTab(usbTab, "USB")
-        dispositivoWidget.layout().addWidget(dispositivoTab)
-        leftLayout.addWidget(dispositivoWidget)
-
-        metodoWidget = CollapseWidget("Metodo de Medicion")
-        espectroRadio = QRadioButton("Espectroscopia")
-        espectroRadio.setChecked(True)
-        monofreqRadio = QRadioButton("Monofrecuencia (Dom. tiempo)")
-        multifreqTiempoRadio = QRadioButton("Multifrecuencia (Dom. tiempo)")
-        multifreqFrecuenciaRadio = QRadioButton("Multifrecuencia (Dom. frecuencia)")
-        metodoWidget.layout().addWidget(espectroRadio)
-        metodoWidget.layout().addWidget(monofreqRadio)
-        metodoWidget.layout().addWidget(multifreqTiempoRadio)
-        metodoWidget.layout().addWidget(multifreqFrecuenciaRadio)
-        leftLayout.addWidget(metodoWidget)
-
-        parametrosWidget = CollapseWidget("Parametros")
-        self.parameter_layout = QFormLayout()
-        parametrosWidget.layout().addLayout(self.parameter_layout)
-        self.measure_method_radios = (
-            espectroRadio,
-            monofreqRadio,
-            multifreqTiempoRadio,
-            multifreqFrecuenciaRadio,
+        left_widget, left_layout = self._create_panel(width=320)
+        middle_widget, middle_layout = self._create_panel(
+            style="background-color: #313244;"
         )
+        right_widget, right_layout = self._create_panel(width=320)
+
+        self.status_label = QLabel("¡Bienvenido a la Pantalla Principal!")
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        middle_layout.addWidget(self.status_label)
+
+        main_layout.addWidget(left_widget, 1)
+        main_layout.addWidget(middle_widget, 3)
+        main_layout.addWidget(right_widget, 1)
+
+        self._populate_left_panel(left_layout)
+        self._populate_right_panel(right_layout)
+        return main_widget
+
+    @staticmethod
+    def _create_panel(width=None, style=None):
+        panel = QWidget()
+        if width is not None:
+            panel.setFixedWidth(width)
+        if style is not None:
+            panel.setStyleSheet(style)
+        panel_layout = QVBoxLayout()
+        panel.setLayout(panel_layout)
+        return panel, panel_layout
+
+    def _populate_left_panel(self, layout):
+        layout.addWidget(self._create_device_widget())
+        layout.addWidget(self._create_measure_method_widget())
+        layout.addWidget(self._create_parameters_widget())
+        layout.addStretch()
+
+    def _create_device_widget(self):
+        device_widget = CollapseWidget("Dispositivo")
+        device_tabs = QTabWidget()
+
+        bluetooth_tab = QWidget()
+        bluetooth_layout = QVBoxLayout()
+        bluetooth_tab.setLayout(bluetooth_layout)
+        bluetooth_layout.addWidget(QLabel("Guanaco MINI"))
+        disconnect_button = QPushButton("Desconectar")
+        disconnect_button.clicked.connect(self.desconectar)
+        bluetooth_layout.addWidget(disconnect_button)
+
+        usb_tab = QWidget()
+        usb_layout = QVBoxLayout()
+        usb_tab.setLayout(usb_layout)
+        usb_layout.addWidget(QLabel("Guanaco MINI"))
+
+        device_tabs.addTab(bluetooth_tab, "Bluetooth")
+        device_tabs.addTab(usb_tab, "USB")
+        device_widget.layout().addWidget(device_tabs)
+        return device_widget
+
+    def _create_measure_method_widget(self):
+        method_widget = CollapseWidget("Metodo de Medicion")
+        radios = (
+            QRadioButton("Espectroscopia"),
+            QRadioButton("Monofrecuencia (Dom. tiempo)"),
+            QRadioButton("Multifrecuencia (Dom. tiempo)"),
+            QRadioButton("Multifrecuencia (Dom. frecuencia)"),
+        )
+        radios[0].setChecked(True)
+        for radio in radios:
+            method_widget.layout().addWidget(radio)
+        self.measure_method_radios = radios
+        return method_widget
+
+    def _create_parameters_widget(self):
+        parameters_widget = CollapseWidget("Parametros")
+        self.parameter_layout = QFormLayout()
+        parameters_widget.layout().addLayout(self.parameter_layout)
         for radio in self.measure_method_radios:
             radio.toggled.connect(self._update_measure_parameters)
         self._update_measure_parameters()
-        leftLayout.addWidget(parametrosWidget)
+        return parameters_widget
 
-        leftLayout.addStretch()
+    def _populate_right_panel(self, layout):
+        control_widget = CollapseWidget("Control")
+        start_button = QPushButton("Iniciar medicion")
+        start_button.clicked.connect(self.iniciar)
+        stop_button = QPushButton("Parar medicion")
+        stop_button.clicked.connect(self.parar)
+        control_widget.layout().addWidget(start_button)
+        control_widget.layout().addWidget(stop_button)
+        layout.addWidget(control_widget)
 
-        # Right widget
-        controlWidget = CollapseWidget("Control")
-        iniciarButton = QPushButton("Iniciar medicion")
-        iniciarButton.clicked.connect(self.iniciar)
-        pararButton = QPushButton("Parar medicion")
-        pararButton.clicked.connect(self.parar)
-        controlWidget.layout().addWidget(iniciarButton)
-        controlWidget.layout().addWidget(pararButton)
-        rightLayout.addWidget(controlWidget)
+        calibration_widget = CollapseWidget("Calibracion")
+        calibration_button = QPushButton("Iniciar Calibracion")
+        calibration_button.clicked.connect(self.calibracion)
+        calibration_widget.layout().addWidget(calibration_button)
+        layout.addWidget(calibration_widget)
 
-        calibracionWidget = CollapseWidget("Calibracion")
-        calibracionButton = QPushButton("Iniciar Calibracion")
-        calibracionButton.clicked.connect(self.calibracion)
-        calibracionWidget.layout().addWidget(calibracionButton)
-        rightLayout.addWidget(calibracionWidget)
-
-        historialWidget = CollapseWidget("Historial")
-        historialWidget.layout().addWidget(QLabel("Contenido de Historial"))
-        rightLayout.addWidget(historialWidget)
-        
-        rightLayout.addStretch()
+        history_widget = CollapseWidget("Historial")
+        history_widget.layout().addWidget(QLabel("Contenido de Historial"))
+        layout.addWidget(history_widget)
+        layout.addStretch()
 
     def nueva_sesion(self):
         pass
@@ -239,10 +264,73 @@ class MainWindow(QWidget):
         pass
 
     def exportar(self):
-        pass
+        if self.current_measure is not None:
+            exporter = self.local_service.export_measure_to_file
+            default_name = "measure.yaml"
+        elif self.current_calibration_setup is not None:
+            exporter = self.local_service.export_calibration_setup_to_file
+            default_name = "calibration_setup.yaml"
+        else:
+            try:
+                self.current_setup = self.get_measure_setup()
+            except ValueError as exc:
+                self._show_error("Exportar", str(exc))
+                return
+            exporter = self.local_service.export_setup_to_file
+            default_name = "measure_setup.yaml"
+
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Exportar configuración",
+            default_name,
+            "Archivos YAML (*.yaml *.yml);;Todos los archivos (*)",
+        )
+        if not path:
+            return
+
+        try:
+            exporter(path, self.current_measure
+                     if self.current_measure is not None
+                     else self.current_calibration_setup
+                     if self.current_calibration_setup is not None
+                     else self.current_setup)
+        except (OSError, ValueError, TypeError) as exc:
+            self._show_error("Exportar", f"No se pudo exportar el archivo:\n{exc}")
+            return
+        self._show_status(f"Archivo exportado: {path}")
 
     def importar(self):
-        pass
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Importar configuración",
+            "",
+            "Archivos YAML (*.yaml *.yml);;Todos los archivos (*)",
+        )
+        if not path:
+            return
+
+        try:
+            data = self._read_yaml_mapping(path)
+            if "device_id" in data and "measure_setup" in data:
+                self.current_measure = self.local_service.load_measure(path)
+                self.current_setup = self.current_measure.get_measure_setup()
+                self.current_calibration_setup = None
+                self._apply_measure_setup(self.current_setup)
+            elif self._is_calibration_mapping(data):
+                self.current_calibration_setup = (
+                    self.local_service.load_calibration_setup(path)
+                )
+                self.current_measure = None
+                self._show_status(f"Calibración importada: {path}")
+            else:
+                self.current_setup = self.local_service.load_setup(path)
+                self.current_measure = None
+                self.current_calibration_setup = None
+                self._apply_measure_setup(self.current_setup)
+        except (OSError, ValueError, TypeError, yaml.YAMLError) as exc:
+            self._show_error("Importar", f"No se pudo importar el archivo:\n{exc}")
+            return
+        self._show_status(f"Archivo importado: {path}")
 
     def guardar(self):
         pass
@@ -260,7 +348,69 @@ class MainWindow(QWidget):
         self.userProfileWindow = UserProfileWindow()
         self.userProfileWindow.show()
 
+    @staticmethod
+    def _read_yaml_mapping(path):
+        with open(path, "r", encoding="utf-8") as yaml_file:
+            data = yaml.safe_load(yaml_file)
+        if not isinstance(data, dict):
+            raise ValueError("El archivo YAML debe contener un mapa")
+        return data
+
+    @staticmethod
+    def _is_calibration_mapping(data):
+        return {
+            "channel",
+            "z_calc_value_real",
+            "z_calc_value_imag",
+            "exitation_voltage",
+            "gain",
+            "rfbvalue",
+            "settcycles",
+            "mux_channel",
+        }.issubset(data)
+
+    def _apply_measure_setup(self, setup):
+        self._applying_import = True
+        try:
+            if isinstance(setup, SpecMeasureSetup):
+                self.measure_method_radios[0].setChecked(True)
+                values = {
+                    "startfreq": setup.startfreq,
+                    "incfreq": setup.incfreq,
+                    "steps": setup.steps,
+                    "repeat": setup.repeat,
+                }
+            elif isinstance(setup, SingleMeasureSetup):
+                self.measure_method_radios[1].setChecked(True)
+                values = {
+                    "freq": setup.freq,
+                    "delay": setup.delay,
+                    "count": setup.count,
+                }
+            elif isinstance(setup, MultiMeasureSetup):
+                self.measure_method_radios[2].setChecked(True)
+                values = {"freq_list": ", ".join(map(str, setup.freq_list))}
+            else:
+                raise ValueError(
+                    f"Tipo de configuración no soportado: {type(setup).__name__}"
+                )
+
+            for name, value in values.items():
+                self.parameter_boxes[name].setText(str(value))
+        finally:
+            self._applying_import = False
+
+    def _show_status(self, message):
+        if self.status_label is not None:
+            self.status_label.setText(message)
+
+    def _show_error(self, title, message):
+        QMessageBox.critical(self, title, message)
+
     def _update_measure_parameters(self):
+        if not self._applying_import:
+            self.current_measure = None
+            self.current_calibration_setup = None
         selected_radio = next(
             (radio for radio in self.measure_method_radios if radio.isChecked()),
             None,
