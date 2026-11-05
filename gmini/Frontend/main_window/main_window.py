@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QFormLayout,
     QPushButton,
     QRadioButton,
     QTabWidget,
@@ -15,6 +16,12 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from gmini.Frontend.user_window.user_profile_window import UserProfileWindow
+from gmini.Backend.app.models.measureSetup import (
+    MeasureSetup,
+    MultiMeasureSetup,
+    SingleMeasureSetup,
+    SpecMeasureSetup,
+)
 
 
 class ClickableLabel(QLabel):
@@ -87,6 +94,7 @@ class CollapseWidget(QWidget):
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.parameter_boxes = {}
         self.setStyleSheet("""
             QWidget {
                 background-color: #1e1e2e; color: #cdd6f4;
@@ -181,8 +189,17 @@ class MainWindow(QWidget):
         leftLayout.addWidget(metodoWidget)
 
         parametrosWidget = CollapseWidget("Parametros")
-        for i in range(5):
-            parametrosWidget.layout().addWidget(TextBox(f"Parametro {i+1}"))
+        self.parameter_layout = QFormLayout()
+        parametrosWidget.layout().addLayout(self.parameter_layout)
+        self.measure_method_radios = (
+            espectroRadio,
+            monofreqRadio,
+            multifreqTiempoRadio,
+            multifreqFrecuenciaRadio,
+        )
+        for radio in self.measure_method_radios:
+            radio.toggled.connect(self._update_measure_parameters)
+        self._update_measure_parameters()
         leftLayout.addWidget(parametrosWidget)
 
         leftLayout.addStretch()
@@ -242,6 +259,75 @@ class MainWindow(QWidget):
     def open_user_profile(self):
         self.userProfileWindow = UserProfileWindow()
         self.userProfileWindow.show()
+
+    def _update_measure_parameters(self):
+        selected_radio = next(
+            (radio for radio in self.measure_method_radios if radio.isChecked()),
+            None,
+        )
+        if selected_radio is None:
+            return
+
+        if selected_radio.text() == "Espectroscopia":
+            parameters = (
+                ("startfreq", "Frecuencia inicial"),
+                ("incfreq", "Incremento de frecuencia"),
+                ("steps", "Pasos"),
+                ("repeat", "Repeticiones"),
+            )
+        elif selected_radio.text() == "Monofrecuencia (Dom. tiempo)":
+            parameters = (
+                ("freq", "Frecuencia"),
+                ("delay", "Retardo"),
+                ("count", "Repeticiones"),
+            )
+        else:
+            parameters = (("freq_list", "Frecuencias (separadas por comas)"),)
+
+        while self.parameter_layout.count():
+            item = self.parameter_layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+        self.parameter_boxes = {}
+        for name, label in parameters:
+            box = QLineEdit()
+            box.setStyleSheet("background-color: #45475a;")
+            self.parameter_layout.addRow(label, box)
+            self.parameter_boxes[name] = box
+
+    def get_measure_setup(self) -> MeasureSetup:
+        selected_radio = next(
+            (radio for radio in self.measure_method_radios if radio.isChecked()),
+            None,
+        )
+        if selected_radio is None:
+            raise ValueError("Debe seleccionar un método de medición")
+
+        try:
+            if selected_radio.text() == "Espectroscopia":
+                return SpecMeasureSetup(
+                    startfreq=float(self.parameter_boxes["startfreq"].text()),
+                    incfreq=float(self.parameter_boxes["incfreq"].text()),
+                    steps=int(self.parameter_boxes["steps"].text()),
+                    repeat=int(self.parameter_boxes["repeat"].text()),
+                )
+            if selected_radio.text() == "Monofrecuencia (Dom. tiempo)":
+                return SingleMeasureSetup(
+                    freq=float(self.parameter_boxes["freq"].text()),
+                    delay=int(self.parameter_boxes["delay"].text()),
+                    count=int(self.parameter_boxes["count"].text()),
+                )
+            frequencies = [
+                float(value.strip())
+                for value in self.parameter_boxes["freq_list"].text().split(",")
+                if value.strip()
+            ]
+            if not frequencies:
+                raise ValueError("La lista de frecuencias no puede estar vacía")
+            return MultiMeasureSetup(freq_list=frequencies)
+        except ValueError as exc:
+            raise ValueError("Los parámetros de medición no son válidos") from exc
 
 
 if __name__ == "__main__":
