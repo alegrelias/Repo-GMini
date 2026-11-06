@@ -215,6 +215,10 @@ class UserProfileWindow(QMainWindow):
 
     def logout(self):
         self.session_manager.clear_session()
+        from gmini.Frontend.login_register.login_window import Login
+
+        self.login_window = Login()
+        self.login_window.show()
         if self.main_window:
             self.main_window.close()
         self.close()
