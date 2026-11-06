@@ -201,6 +201,36 @@ class DataBaseService:
             conn.commit()
             return cursor.rowcount > 0
 
+    def update_user_name(self, user_id: int, user_name: str) -> bool:
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE USER SET user_name = ? WHERE user_id = ?",
+                (user_name, user_id),
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def update_user_email(self, user_id: int, email: str) -> bool:
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE USER SET email = ? WHERE user_id = ?",
+                (email, user_id),
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def update_user_password(self, user_id: int, password: str) -> bool:
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE USER SET password = ? WHERE user_id = ?",
+                (password, user_id),
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+
     def _row_to_user(self, row: sqlite3.Row) -> User:
         try:
             u = User(row["user_name"], row["email"], row["password"], row["root_directory"])
