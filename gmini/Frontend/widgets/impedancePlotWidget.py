@@ -4,7 +4,6 @@ from typing import Optional
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-
 from Backend.app.core.observer import IObserver, IObservable
 from Backend.app.models.measure import Measure
 from Backend.app.models.measureResult import MeasureResult
@@ -40,21 +39,27 @@ class ImpedancePlotWidget(QWidget, IObserver):
         self.ax.grid(True, linestyle="--", alpha=0.6)
         self.canvas.draw()
 
-    # Construcción del DataFrame con Pandas
     """Transforma un MeasureResult en un DataFrame de Pandas con las columnas:sample_index, frequency_hz, real_ohm, imag_ohm, magnitude_ohm, phase_rad"""
     @staticmethod
     def build_dataframe(result: MeasureResult) -> pd.DataFrame:
-        freqs = result.get_frequencies()
-        imps = result.get_impedances()
+        imp_array = np.asarray(result.get_impedances(), dtype=complex).ravel()
+        freq_array = np.asarray(result.get_frequencies(), dtype=float).ravel()
 
-        if len(freqs) == 1 and len(imps) > 1:
-            freqs = freqs * len(imps)
+        n_imps = len(imp_array)
+        n_freqs = len(freq_array)
 
-        imp_array = np.array(imps, dtype=complex)
+        if n_freqs == 1 and n_imps > 1:
+            freq_array = np.full(n_imps, freq_array[0], dtype=float)
+        elif n_freqs == 0 and n_imps > 0:
+            freq_array = np.zeros(n_imps, dtype=float)
+        elif n_freqs != n_imps:
+            min_len = min(n_freqs, n_imps)
+            freq_array = freq_array[:min_len]
+            imp_array = imp_array[:min_len]
 
         df = pd.DataFrame({
             "sample_index": np.arange(1, len(imp_array) + 1),
-            "frequency_hz": np.array(freqs, dtype=float),
+            "frequency_hz": freq_array,
             "real_ohm": imp_array.real,
             "imag_ohm": imp_array.imag,
             "magnitude_ohm": np.abs(imp_array),
@@ -67,13 +72,17 @@ class ImpedancePlotWidget(QWidget, IObserver):
         self._active_measure = measure
         result = measure.get_measure_result()
 
-        if not result or not result.get_impedances():
+        if not result or len(result.get_impedances()) == 0:
             self._draw_empty_axes()
             self.lbl_summary.setText("La medición seleccionada no contiene datos de impedancia.")
             return None
 
         df = self.build_dataframe(result)
         self._df_current = df
+
+        if df.empty:
+            self._draw_empty_axes()
+            return None
 
         self.ax.clear()
         title_name = measure.get_file_name() or "Medición Actual"
@@ -82,7 +91,7 @@ class ImpedancePlotWidget(QWidget, IObserver):
         is_single_freq = df["frequency_hz"].nunique() <= 1
 
         if is_single_freq:
-            freq_val = df["frequency_hz"].iloc[0] if not df.empty else 0.0
+            freq_val = float(df["frequency_hz"].iloc[0])
             self.ax.plot(
                 df["sample_index"],
                 df["magnitude_ohm"],
@@ -114,23 +123,17 @@ class ImpedancePlotWidget(QWidget, IObserver):
         self.figure.tight_layout()
         self.canvas.draw()
 
-        #Resumen rapido calculado con Pandas
-        mean_mod = df["magnitude_ohm"].mean()
-        max_mod = df["magnitude_ohm"].max()
-        min_mod = df["magnitude_ohm"].min()
         self.lbl_summary.setText(
-            f"<b>Puntos graficados:</b> {len(df)} | "
-            f"<b>|Z| Medio:</b> {mean_mod:.2f} Ω | "
-            f"<b>|Z| Mín:</b> {min_mod:.2f} Ω | "
-            f"<b>|Z| Máx:</b> {max_mod:.2f} Ω"
+            f"<b>Muestras:</b> {len(df)} | "
+            f"<b>|Z| Medio:</b> {df['magnitude_ohm'].mean():.2f} Ω | "
+            f"<b>|Z| Mín:</b> {df['magnitude_ohm'].min():.2f} Ω | "
+            f"<b>|Z| Máx:</b> {df['magnitude_ohm'].max():.2f} Ω"
         )
         return df
 
-    """Registra la medición en curso para graficarla apenas emita MEASURE_COMPLETED"""
-    def set_Watching_measure(self, measure: Measure) -> None:
+    def set_watching_measure(self, measure: Measure) -> None:
         self._active_measure = measure
 
-    """Escucha a MeasureService y grafica automáticamente al terminar sweep o singlefreq"""
     def update(self, observable: IObservable, event_info: str) -> None:
         if event_info == "MEASURE_COMPLETED" and self._active_measure:
             self.plot_from_measure(self._active_measure)
@@ -138,6 +141,5 @@ class ImpedancePlotWidget(QWidget, IObserver):
     def get_current_dataframe(self) -> Optional[pd.DataFrame]:
         return self._df_current
 
-    """Devuelve la figura de Matplotlib para poder pasarla a LocalService.export_plot()"""
     def get_figure(self) -> Figure:
         return self.figure
