@@ -1,206 +1,135 @@
-import sys  
-import os 
-from PyQt6.QtWidgets import (QApplication, QLabel, QWidget, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy) 
-from PyQt6.QtGui import QIcon 
-from PyQt6.QtCore import Qt 
+import os
+import sqlite3
+import sys
 
-class Register(QWidget):     
-    def __init__(self, ventana_login=None):         
-        super().__init__()         
-        self.ventana_login = ventana_login          
-        self.inicializar_ui()     
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
-    def inicializar_ui(self):         
-        self.setFixedSize(600, 520) # Ajustado un poco el alto para el mensaje de texto        
-        self.setWindowTitle("Registro - GMini")         
-        self.setStyleSheet("""             
-            QWidget {                 
-                background-color: #2b2e33;                  
-                color: white;             
-            }             
-            QLabel {                 
-                font-size: 16px;             
-            }             
-            QLineEdit {                 
-                background-color: #2b2e33;                 
-                border: 1px solid #5a6b7d;                 
-                border-radius: 10px;                 
-                padding: 8px;                 
-                font-size: 14px;             }             
-            QPushButton#btnPrincipal {                 
-                background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #3a6085, stop:1 #223850);                 
-                border: 1px solid #1c2e42;                 
-                border-radius: 10px;                 
-                padding: 10px;                 
-                font-size: 16px;                 
-                font-weight: bold;             }             
-            QPushButton#btnPrincipal:hover {                 
-                background-color: #4a7aa8;             }             
-            QPushButton#btnSecundario {                 
-                background-color: transparent;                 
-                border: 1px solid #5a6b7d;                 
-                border-radius: 10px;                 
-                padding: 10px;                 
-                font-size: 16px;             }             
-            QPushButton#btnSecundario:hover {                 
-                background-color: #383c42;             }         
-        """)         
-        self.generar_formulario()         
-        self.show()     
+from gmini.Backend.app.db.databaseService import DataBaseService
+from gmini.Backend.app.models.user import User
 
-    def generar_formulario(self):         
-        main_layout = QVBoxLayout()         
-        main_layout.setContentsMargins(40, 20, 40, 40)         
-        main_layout.setSpacing(15)         
 
-        # --- ENCABEZADO VISUAL UNIFICADO (GMini / LEAB) ---
-        top_layout = QHBoxLayout()
-        title_label = QLabel("GMini")
-        title_label.setStyleSheet("font-size: 28px; font-weight: bold; color: #D8DEE9;")
-        owner_label = QLabel("LEAB")
-        owner_label.setStyleSheet("font-size: 28px; font-weight: bold; color: #D8DEE9;")
-        
-        top_layout.addWidget(title_label)
-        top_layout.addStretch()
-        top_layout.addWidget(owner_label)
-        main_layout.addLayout(top_layout)
-        
-        main_layout.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed))         
+class Register(QWidget):
+    def __init__(self, ventana_login=None):
+        super().__init__()
+        self.ventana_login = ventana_login
+        self.db_service = getattr(ventana_login, "db_service", None) or DataBaseService()
+        self.password_visible_1 = False
+        self.password_visible_2 = False
+        self.inicializar_ui()
 
-        titulo_label = QLabel("Crear cuenta")         
-        titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)         
-        titulo_label.setStyleSheet("font-size: 22px; font-weight: bold; margin-bottom: 5px;")         
-        main_layout.addWidget(titulo_label)         
+    def inicializar_ui(self):
+        self.setFixedSize(600, 500)
+        self.setWindowTitle("Registro - GMini")
+        self.setStyleSheet("""
+            QWidget { background-color: #2b2e33; color: white; }
+            QLabel { font-size: 16px; }
+            QLineEdit {
+                background-color: #2b2e33; border: 1px solid #5a6b7d;
+                border-radius: 10px; padding: 8px; font-size: 14px;
+            }
+            QPushButton {
+                border: 1px solid #5a6b7d; border-radius: 10px;
+                padding: 10px; font-size: 16px;
+            }
+            QPushButton#btnPrincipal {
+                background-color: #2f5275; font-weight: bold;
+            }
+        """)
+        layout = QVBoxLayout(self)
+        title = QLabel("GMini                                      LEAB")
+        title.setStyleSheet("font-size: 28px; font-weight: bold; color: #D8DEE9;")
+        layout.addWidget(title)
 
-        # Etiqueta para mostrar errores en la interfaz en color rojo
+        heading = QLabel("Crear cuenta")
+        heading.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        heading.setStyleSheet("font-size: 22px; font-weight: bold;")
+        layout.addWidget(heading)
         self.label_error = QLabel("")
         self.label_error.setStyleSheet("color: #ff5555; font-size: 14px;")
         self.label_error.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(self.label_error)
+        layout.addWidget(self.label_error)
 
-        user_layout = QHBoxLayout()         
-        user_label = QLabel("Usuario")         
-        user_label.setFixedWidth(170)         
-        self.user_input = QLineEdit()         
-        user_layout.addWidget(user_label)         
-        user_layout.addWidget(self.user_input)         
-        main_layout.addLayout(user_layout)         
+        self.user_input = self._add_field(layout, "Usuario")
+        self.email_input = self._add_field(layout, "Email")
+        self.password_input_1 = self._add_password_field(layout, "Contraseña", 1)
+        self.password_input_2 = self._add_password_field(layout, "Reingrese la Contraseña", 2)
 
-        email_layout = QHBoxLayout()         
-        email_label = QLabel("Email")         
-        email_label.setFixedWidth(170)         
-        self.email_input = QLineEdit()         
-        email_layout.addWidget(email_label)         
-        email_layout.addWidget(self.email_input)         
-        main_layout.addLayout(email_layout)         
+        self.register_button = QPushButton("Registrarse")
+        self.register_button.setObjectName("btnPrincipal")
+        self.register_button.clicked.connect(self.iniciar_main_view)
+        layout.addWidget(self.register_button)
+        self.cancel_button = QPushButton("Volver al Inicio Sesion")
+        self.cancel_button.clicked.connect(self.cerrar_registro)
+        layout.addWidget(self.cancel_button)
+        self.show()
 
-        ruta_script = os.path.dirname(os.path.abspath(__file__))         
-        ruta_imagenes = os.path.abspath(os.path.join(ruta_script, "..", "..", "Resources"))         
-        
-        password_layout_1 = QHBoxLayout()         
-        password_label_1 = QLabel("Contraseña")         
-        password_label_1.setFixedWidth(170)         
-        self.password_input_1 = QLineEdit()         
-        self.password_input_1.setEchoMode(QLineEdit.EchoMode.Password)                  
-        
-        self.icono_ojo_cerrado1 = QIcon(os.path.join(ruta_imagenes, "ojo_cerrado.jpg"))         
-        self.icono_ojo_abierto1 = QIcon(os.path.join(ruta_imagenes, "ojo_abierto.jpg"))                  
-        self.action_ver_password_1 = self.password_input_1.addAction(             
-            self.icono_ojo_cerrado1, QLineEdit.ActionPosition.TrailingPosition         
-        )         
-        self.action_ver_password_1.triggered.connect(self.alternar_contrasena_1)         
-        self.password_visible_1 = False         
-        password_layout_1.addWidget(password_label_1)         
-        password_layout_1.addWidget(self.password_input_1)         
-        main_layout.addLayout(password_layout_1)         
+    def _add_field(self, layout, label):
+        row = QHBoxLayout()
+        row.addWidget(QLabel(label))
+        field = QLineEdit()
+        row.addWidget(field)
+        layout.addLayout(row)
+        return field
 
-        password_layout_2 = QHBoxLayout()         
-        password_label_2 = QLabel("Reingrese la Contraseña")         
-        password_label_2.setFixedWidth(170)                  
-        self.password_input_2 = QLineEdit()         
-        self.password_input_2.setEchoMode(QLineEdit.EchoMode.Password)                          
-        
-        self.icono_ojo_cerrado2 = QIcon(os.path.join(ruta_imagenes, "ojo_cerrado.jpg"))         
-        self.icono_ojo_abierto2 = QIcon(os.path.join(ruta_imagenes, "ojo_abierto.jpg"))                          
-        self.action_ver_password_2 = self.password_input_2.addAction(             
-            self.icono_ojo_cerrado2, QLineEdit.ActionPosition.TrailingPosition         
-        )         
-        self.action_ver_password_2.triggered.connect(self.alternar_contrasena_2)         
-        self.password_visible_2 = False                  
-        password_layout_2.addWidget(password_label_2)         
-        password_layout_2.addWidget(self.password_input_2)         
-        main_layout.addLayout(password_layout_2)         
+    def _add_password_field(self, layout, label, number):
+        field = self._add_field(layout, label)
+        field.setEchoMode(QLineEdit.EchoMode.Password)
+        resources = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Resources"))
+        closed = QIcon(os.path.join(resources, "ojo_cerrado.jpg"))
+        opened = QIcon(os.path.join(resources, "ojo_abierto.jpg"))
+        action = field.addAction(closed, QLineEdit.ActionPosition.TrailingPosition)
+        action.triggered.connect(lambda: self.alternar_contrasena(number, field, action, closed, opened))
+        return field
 
-        main_layout.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed))         
-        
-        self.register_button = QPushButton("Registrarse")         
-        self.register_button.setObjectName("btnPrincipal")         
-        main_layout.addWidget(self.register_button)         
-        self.register_button.clicked.connect(self.iniciar_main_view)         
+    def alternar_contrasena(self, number, field, action, closed, opened):
+        visible = not getattr(self, f"password_visible_{number}")
+        setattr(self, f"password_visible_{number}", visible)
+        field.setEchoMode(QLineEdit.EchoMode.Normal if visible else QLineEdit.EchoMode.Password)
+        action.setIcon(opened if visible else closed)
 
-        self.cancel_button = QPushButton("Volver al Inicio Sesion")         
-        self.cancel_button.setObjectName("btnSecundario")         
-        main_layout.addWidget(self.cancel_button)         
-        self.cancel_button.clicked.connect(self.cerrar_registro)         
-        
-        self.setLayout(main_layout)     
+    def iniciar_main_view(self):
+        usuario = self.user_input.text().strip()
+        email = self.email_input.text().strip()
+        password1 = self.password_input_1.text()
+        password2 = self.password_input_2.text()
+        if not usuario or not email or not password1 or not password2:
+            self.label_error.setText("Ingrese usuario, email y contraseña")
+        elif password1 != password2:
+            self.label_error.setText("Las contraseñas no coinciden")
+        else:
+            try:
+                if self.db_service.get_user_by_name(usuario) is not None:
+                    self.label_error.setText("El usuario ya existe")
+                    return
+                if self.db_service.get_user_by_email(email) is not None:
+                    self.label_error.setText("El email ya está registrado")
+                    return
+                self.db_service.save_user(User(usuario, email, password1))
+                self.cerrar_registro()
+            except sqlite3.IntegrityError:
+                self.label_error.setText("El usuario o email ya está registrado")
+            except sqlite3.Error:
+                self.label_error.setText("No se pudo acceder a la base de datos")
+            except Exception as error:
+                self.label_error.setText(f"Error en servidor: {error}")
 
-    def alternar_contrasena_1(self):         
-        self.password_visible_1 = not self.password_visible_1         
-        if self.password_visible_1:             
-            self.password_input_1.setEchoMode(QLineEdit.EchoMode.Normal)             
-            self.action_ver_password_1.setIcon(self.icono_ojo_abierto1)         
-        else:             
-            self.password_input_1.setEchoMode(QLineEdit.EchoMode.Password)             
-            self.action_ver_password_1.setIcon(self.icono_ojo_cerrado1)     
+    def cerrar_registro(self):
+        if self.ventana_login:
+            self.ventana_login.show()
+        self.close()
 
-    def alternar_contrasena_2(self):         
-        self.password_visible_2 = not self.password_visible_2         
-        if self.password_visible_2:             
-            self.password_input_2.setEchoMode(QLineEdit.EchoMode.Normal)             
-            self.action_ver_password_2.setIcon(self.icono_ojo_abierto2)         
-        else:             
-            self.password_input_2.setEchoMode(QLineEdit.EchoMode.Password)             
-            self.action_ver_password_2.setIcon(self.icono_ojo_cerrado2)     
 
-    # A modificar a futuro     
-    def iniciar_main_view(self):         
-        user_path = 'usuario.txt'         
-        usuario = self.user_input.text()         
-        password1 = self.password_input_1.text()         
-        password2 = self.password_input_2.text()         
-
-        if password1 == '' or password2 == '' or usuario == '':             
-            self.label_error.setText("Ingrese datos validos") # Reemplazado MessageBox por texto en pantalla
-        elif password1 != password2:             
-            self.label_error.setText("Las contraseñas no coinciden") # Reemplazado MessageBox por texto en pantalla
-        else:             
-            try:                 
-                with open(user_path, 'a+') as f:                     
-                    f.write(f"{usuario},{password1}\n")                 
-                
-                # Éxito: Se elimina el cartel y se redirige directo
-                # Éxito: Volver al login
-                self.cerrar_registro()         
-            except FileNotFoundError as e:                 
-                self.label_error.setText(f"La base de datos no existe: {e}") # Reemplazado MessageBox por texto en pantalla
-          
-    def cerrar_registro(self):         
-        if self.ventana_login:             
-            self.ventana_login.show()         
-        self.close()     
-
-    def open_main_window(self):         
-        import sys         
-        import os                  
-        ruta_raiz = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))         
-        if ruta_raiz not in sys.path:             
-            sys.path.append(ruta_raiz)                      
-        from main_window.main_window import Mainwindow                  
-        self.main_window_instance = Mainwindow()         
-        self.main_window_instance.show() 
-
-if __name__ == '__main__':     
-    app = QApplication(sys.argv)     
-    ventana_registro = Register()     
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ventana_registro = Register()
     sys.exit(app.exec())

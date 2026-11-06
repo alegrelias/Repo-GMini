@@ -1,5 +1,6 @@
 import sqlite3
 import json
+from pathlib import Path
 from datetime import datetime
 from typing import List, Optional
 from gmini.Backend.app.models.user import User
@@ -14,8 +15,9 @@ from gmini.Backend.app.builders.multiFreqSetupBuilder import MultiFreqSetupBuild
 
 
 class DataBaseService:
-    def __init__(self, db_root: str = "gmini_database.db"):
-        self._db_root = db_root
+    def __init__(self, db_root: Optional[str] = None):
+        project_root = Path(__file__).resolve().parents[4]
+        self._db_root = db_root or str(project_root / "gmini_database.db")
         self._init_db()
 
     def _get_connection(self) -> sqlite3.Connection:
