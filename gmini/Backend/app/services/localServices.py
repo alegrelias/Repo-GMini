@@ -277,34 +277,41 @@ class LocalService:
 
     @staticmethod
     def _setup_to_mapping(setup: MeasureSetup) -> dict[str, Any]:
+        # Manejo seguro de observaciones
+        observaciones = setup.get_observations() if hasattr(setup, 'get_observations') else ""
+        
         data: dict[str, Any] = {
-            "observations": setup._observations,
+            "observations": observaciones,
         }
+        
         if setup.get_id() is not None:
             data["measure_setup_id"] = setup.get_id()
+
+        # Usamos getters en lugar de acceder a las variables privadas
         if isinstance(setup, SingleMeasureSetup):
             data.update(
                 {
                     "type": "single",
-                    "freq": setup.freq,
-                    "delay": setup.delay,
-                    "count": setup.count,
+                    "freq": setup.get_freq(),
+                    "delay": setup.get_delay(),
+                    "count": setup.get_count(),
                 }
             )
         elif isinstance(setup, SpecMeasureSetup):
             data.update(
                 {
                     "type": "spectro",
-                    "startfreq": setup.startfreq,
-                    "incfreq": setup.incfreq,
-                    "steps": setup.steps,
-                    "repeat": setup.repeat,
+                    "startfreq": setup.get_start_freq(),
+                    "incfreq": setup.get_inc_freq(),
+                    "steps": setup.get_steps(),
+                    "repeat": setup.get_repeat(),
                 }
             )
         elif isinstance(setup, MultiMeasureSetup):
-            data.update({"type": "multi", "freq_list": setup.freq_list})
+            data.update({"type": "multi", "freq_list": setup.get_freq_list()})
         else:
             raise ValueError(f"Unsupported measure setup type: {type(setup).__name__}")
+            
         return data
 
     # def export_auto_sequence_to_file(self, path: str, sequence: AutoSequence):

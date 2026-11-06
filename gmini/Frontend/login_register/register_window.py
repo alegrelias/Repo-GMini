@@ -180,8 +180,8 @@ class Register(QWidget):
                     f.write(f"{usuario},{password1}\n")                 
                 
                 # Éxito: Se elimina el cartel y se redirige directo
-                self.open_main_window()                  
-                self.hide()             
+                # Éxito: Volver al login
+                self.cerrar_registro()         
             except FileNotFoundError as e:                 
                 self.label_error.setText(f"La base de datos no existe: {e}") # Reemplazado MessageBox por texto en pantalla
           

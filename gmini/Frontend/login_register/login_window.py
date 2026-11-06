@@ -3,12 +3,15 @@ import sys
 from PyQt6.QtWidgets import (QApplication, QLabel, QWidget, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy) 
 from PyQt6.QtGui import QFont, QPixmap, QIcon 
 from PyQt6.QtCore import Qt 
-from register_window import Register 
+from gmini.Frontend.login_register.register_window import Register
 from gmini.Frontend.main_window.main_window import MainWindow
+from gmini.Backend.app.services.sessionManager import SessionManager
+from gmini.Backend.app.models.user import User
 
 class Login(QWidget):     
     def __init__(self):         
-        super().__init__()         
+        super().__init__()    
+        self.session_manager = SessionManager() # Instancia global/local según tu diseño     
         self.inializacion_ui()     
 
     def inializacion_ui(self):         
@@ -143,7 +146,15 @@ class Login(QWidget):
                     users.append(linea.strip("\n"))             
             login_informacion = f"{self.user_input.text()},{self.password_input.text()}"             
             if login_informacion in users:                 
-                self.is_logget = True                 
+                self.is_logget = True
+                logged_user = User(
+                    user_id=1, 
+                    user_name=self.user_input.text(), 
+                    email="correo@falso.com", 
+                    password=self.password_input.text()
+                )
+                session_manager = SessionManager()
+                session_manager.set_current_user(logged_user)               
                 self.open_main_window()                 
                 self.close()                              
             else:                 
@@ -159,7 +170,7 @@ class Login(QWidget):
         self.hide()     
 
     def open_main_window(self):         
-        self.main_window = Mainwindow()         
+        self.main_window = MainWindow()         
         self.main_window.show() 
 
 if __name__ == '__main__':     

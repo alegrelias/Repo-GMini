@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from app.models.measureSetup import MeasureSetup
-from app.models.measureResult import MeasureResult
+from gmini.Backend.app.models.measureSetup import MeasureSetup
+from gmini.Backend.app.models.measureResult import MeasureResult
 
 #Interfaz para los adaptadores de medicion
 class IMeasureAdapter(ABC):

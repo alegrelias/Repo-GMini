@@ -1,6 +1,7 @@
 from ast import main
 import os,sys
 import yaml
+import pyqtgraph as pg
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -18,9 +19,22 @@ from PyQt6.QtWidgets import (
     QToolButton,
     QVBoxLayout,
     QWidget,
+    QTableWidget, 
+    QTableWidgetItem,
+    QHeaderView
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 
+from gmini.Backend.app.services.connectionService import ConnectionService
+from gmini.Backend.app.services.calibrationService import CalibrationService
+from gmini.Backend.app.services.measureService import MeasureService
+from gmini.Backend.app.models.device import Device
+from gmini.Backend.app.core.mock_connection import MockWire
+from gmini.Backend.app.services.sessionManager import SessionManager
+from gmini.Backend.app.adapters.gminiMeasureAdapter import GminiMeasureAdapter
+from gmini.Backend.app.adapters.gminiCalibrationAdapter import GminiCalibrationAdapter
+from gmini.Backend.app.db.databaseService import DataBaseService
+from gmini.Backend.app.services.analyticsService import AnalyticsService # Tu nuevo servicio
 from gmini.Frontend.user_window.user_profile_window import UserProfileWindow
 from gmini.Backend.app.services.localServices import LocalService
 from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
@@ -104,6 +118,33 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.parameter_boxes = {}
         self.local_service = LocalService()
+        
+        # 1. dispositivo
+        self.device = Device(device_id=1)
+        
+        # 2. Servicios base 
+        self.analytics_service = AnalyticsService()
+        self.connection_service = ConnectionService()
+        self.session_manager = SessionManager()
+        self.db_service = DataBaseService()
+        
+        # 3. Instanciar los adaptadores que faltaban
+        self.measure_adapter = GminiMeasureAdapter()
+        self.calibration_adapter = GminiCalibrationAdapter()
+        
+        # 4. Servicios complejos ( dependencias inyectadas)
+        self.calibration_service = CalibrationService(
+            connection_service=self.connection_service, 
+            adapter=self.calibration_adapter,           
+            session_manager=self.session_manager
+        )
+        
+        self.measure_service = MeasureService(
+            connection_service=self.connection_service, 
+            adapter=self.measure_adapter,               
+            session_manager=self.session_manager,
+            db_service=self.db_service
+        )
         self.current_setup = None
         self.current_measure = None
         self.current_calibration_setup = None
@@ -195,10 +236,40 @@ class MainWindow(QMainWindow):
         )
         right_widget, right_layout = self._create_panel(width=320)
 
-        self.status_label = QLabel("¡Bienvenido a la Pantalla Principal!")
+        self.status_label = QLabel("Bienvenido a la Pantalla Principal!")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        middle_layout.addWidget(self.status_label)
+        self.status_label.setFixedHeight(35)
+        self.status_label.setStyleSheet("background-color: #45475a; border-radius: 5px; font-weight: bold;")
+        
+        # --- NUEVO: CONTENEDOR DE PESTAÑAS (TABS) ---
+        self.results_tabs = QTabWidget()
+        self.results_tabs.hide() # Lo ocultamos hasta medir
+        self.results_tabs.setStyleSheet("QTabWidget::pane { border: 1px solid #45475a; }")
 
+        # 1. Pestaña del Gráfico
+        tab_grafico = QWidget()
+        layout_grafico = QVBoxLayout(tab_grafico)
+        layout_grafico.setContentsMargins(0, 0, 0, 0)
+        
+        self.plot_widget = pg.PlotWidget()
+        self.plot_widget.setBackground('#1e1e2e')
+        layout_grafico.addWidget(self.plot_widget)
+        self.results_tabs.addTab(tab_grafico, "Gráfico (Nyquist)")
+
+        # 2. Pestaña de la Tabla de Datos
+        tab_tabla = QWidget()
+        layout_tabla = QVBoxLayout(tab_tabla)
+        layout_tabla.setContentsMargins(0, 0, 0, 0)
+        
+        self.data_table = QTableWidget()
+        self.data_table.setStyleSheet("background-color: #1e1e2e; gridline-color: #45475a;")
+        self.data_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        layout_tabla.addWidget(self.data_table)
+        self.results_tabs.addTab(tab_tabla, "Datos Crudos")
+
+        # Agregamos al layout central
+        middle_layout.addWidget(self.status_label)
+        middle_layout.addWidget(self.results_tabs)
         main_layout.addWidget(left_widget, 1)
         main_layout.addWidget(middle_widget, 3)
         main_layout.addWidget(right_widget, 1)
@@ -232,9 +303,9 @@ class MainWindow(QMainWindow):
         bluetooth_layout = QVBoxLayout()
         bluetooth_tab.setLayout(bluetooth_layout)
         bluetooth_layout.addWidget(QLabel("Guanaco MINI"))
-        disconnect_button = QPushButton("Desconectar")
-        disconnect_button.clicked.connect(self.desconectar)
-        bluetooth_layout.addWidget(disconnect_button)
+        self.btn_conectar_desconectar = QPushButton("Conectar")
+        self.btn_conectar_desconectar.clicked.connect(self.desconectar)
+        bluetooth_layout.addWidget(self.btn_conectar_desconectar)
 
         usb_tab = QWidget()
         usb_layout = QVBoxLayout()
@@ -300,11 +371,25 @@ class MainWindow(QMainWindow):
         pass
 
     def calibracion(self):
+        # Verificamos si hay conexión antes de intentar calibrar
+        if not self.connection_service.active_connections.get(self.device.get_id()):
+            self._show_error("Error", "Debe conectar el dispositivo primero.")
+            return
+
         try:
             self.current_calibration_setup = self.get_calibration_setup()
             self.current_measure = None
+            
+            # Llamamos al servicio para ejecutar la calibración en el hardware simulado
+            self.calibration_service.calibrate_device(self.device, self.current_calibration_setup)
+            
+            # El estado interno del 'device' pasará a CalibratedState.
+            self._show_status("Placa calibrada correctamente.")
+            
         except ValueError as exc:
             self._show_error("Calibracion", str(exc))
+        except Exception as e:
+            self._show_error("Error de Hardware", f"Fallo al calibrar: {str(e)}")
 
     def _create_calibration_parameters_widget(self):
         parameters_widget = QWidget()
@@ -320,7 +405,7 @@ class MainWindow(QMainWindow):
             ("gain", "Ganancia"),
             ("rfbvalue", "Valor RFB"),
             ("settcycles", "Ciclos de estabilizacion"),
-            ("mux_channel", "Canales MUX (separados por comas)"),
+            ("mux_channel", "Canales MUX"),
             ("observations", "Observaciones"),
         )
         for name, label in parameters:
@@ -462,18 +547,78 @@ class MainWindow(QMainWindow):
         pass
 
     def iniciar(self):
-        pass
+        # La Vista solo verifica que exista el enlace de comunicación
+        if not self.connection_service.active_connections.get(self.device.get_id()):
+            self._show_error("Error", "Debe conectar el dispositivo primero.")
+            return
+            
+        try:
+            # 1. Recolectar datos de la GUI
+            setup = self.get_measure_setup()
+            
+            # 2. Envolver el setup en la entidad Measure (importación y creación correctas)
+            from gmini.Backend.app.models.measure import Measure
+            
+            # Instanciamos usando los nombres exactos que pide tu clase
+            nueva_medicion = Measure(measure_setup=setup, device_id=self.device.device_id)
+            
+            self._show_status("Delegando medición al servicio...")
+            
+            # 3. Llamamos al orquestador
+            self.measure_service.execute_measure(self.device, nueva_medicion)
+            
+            self._show_status("Medición ejecutada y finalizada correctamente.")
+
+            # --- NUEVA LÓGICA DE GRÁFICOS Y TABLAS ---
+            self.results_tabs.show() # Mostramos las solapas
+            
+            datos_de_prueba = [[185, -1830], [634, -1717]] 
+            
+            # 1. Actualizamos el gráfico
+            self.analytics_service.plot_debye(datos_de_prueba, self.plot_widget)
+            
+            # 2. Actualizamos la tabla
+            self._actualizar_tabla_datos(datos_de_prueba)
+            # ---------------------------------------------
+            
+        except ValueError as exc:
+            self._show_error("Error de configuración", str(exc))
+        except RuntimeError as exc:
+            # Atrapa el bloqueo de "No calibrado" que lanza el MeasureService
+            self._show_error("Bloqueo de Seguridad", str(exc))
+        except PermissionError as exc:
+            # Atrapa el bloqueo de "Sin sesión" que lanza el MeasureService
+            self._show_error("Error de Sesión", str(exc))
+        except Exception as e:
+            self._show_error("Error Interno", str(e))
 
     def parar(self):
         pass
 
     def desconectar(self):
-        pass
+    # Esta funcion actuara como "Toggle" (Conectar/Desconectar)
+        if not self.connection_service.active_connections.get(self.device.get_id()):
+            # Conectar usando el MockWire simulado
+            mock_wire = MockWire()
+            self.connection_service.connect(self.device, mock_wire)
+        
+            # Cambiar texto del boton a "Desconectar"
+            self.btn_conectar_desconectar.setText("Desconectar")
+        
+            self._show_status("Conectado exitosamente al simulador ESP32.")
+        else:
+            # Desconectar
+            self.connection_service.disconnect(self.device)
+        
+            # Cambiar texto del boton a "Conectar"
+            self.btn_conectar_desconectar.setText("Conectar")
+        
+            self._show_status("Dispositivo desconectado.")
 
     def open_user_profile(self):
-        self.userProfileWindow = UserProfileWindow()
-        self.userProfileWindow.show()
-        self.close()
+        self.profile_window = UserProfileWindow(self) 
+        self.profile_window.show()
+        self.hide() 
 
     def _apply_measure_setup(self, setup):
         self._applying_import = True
@@ -481,10 +626,10 @@ class MainWindow(QMainWindow):
             if isinstance(setup, SpecMeasureSetup):
                 self.measure_method_radios[0].setChecked(True)
                 values = {
-                    "startfreq": setup.startfreq,
-                    "incfreq": setup.incfreq,
-                    "steps": setup.steps,
-                    "repeat": setup.repeat,
+                    "startfreq": str(setup.get_start_freq()),
+                    "incfreq": str(setup.get_inc_freq()),
+                    "steps": str(setup.get_steps()),
+                    "repeat": str(setup.get_repeat()),
                 }
             elif isinstance(setup, SingleMeasureSetup):
                 self.measure_method_radios[1].setChecked(True)
@@ -557,41 +702,27 @@ class MainWindow(QMainWindow):
             channel = self.calibration_parameter_boxes["channel"].text().strip()
             if not channel:
                 raise ValueError("El canal de calibracion no puede estar vacio")
-
-            mux_channels = [
-                int(value.strip())
-                for value in self.calibration_parameter_boxes["mux_channel"]
-                .text()
-                .split(",")
-                if value.strip()
-            ]
-            if not mux_channels:
-                raise ValueError("Debe indicar al menos un canal MUX")
+            
+            # --- NUEVA LÓGICA ---
+            mux_channel_str = self.calibration_parameter_boxes["mux_channel"].text().strip()
+            if not mux_channel_str:
+                raise ValueError("Debe indicar el canal MUX")
+            mux_channel_int = int(mux_channel_str)
+            # ---------------------------------------
 
             setup = CalibrationSetup(
                 channel=channel,
-                z_calc_value_real=float(
-                    self.calibration_parameter_boxes["z_calc_value_real"].text()
-                ),
-                z_calc_value_imag=float(
-                    self.calibration_parameter_boxes["z_calc_value_imag"].text()
-                ),
-                exitation_voltage=float(
-                    self.calibration_parameter_boxes["exitation_voltage"].text()
-                ),
+                z_calc_value_real=float(self.calibration_parameter_boxes["z_calc_value_real"].text()),
+                z_calc_value_imag=float(self.calibration_parameter_boxes["z_calc_value_imag"].text()),
+                exitation_voltage=float(self.calibration_parameter_boxes["exitation_voltage"].text()),
                 gain=float(self.calibration_parameter_boxes["gain"].text()),
-                rfbvalue=float(
-                    self.calibration_parameter_boxes["rfbvalue"].text()
-                ),
-                settcycles=int(
-                    self.calibration_parameter_boxes["settcycles"].text()
-                ),
-                mux_channel=mux_channels,
+                rfbvalue=float(self.calibration_parameter_boxes["rfbvalue"].text()),
+                settcycles=int(self.calibration_parameter_boxes["settcycles"].text()),
+                mux_channel=mux_channel_int, # <--- Pasamos el entero directo
             )
-            setup.set_observations(
-                self.calibration_parameter_boxes["observations"].text()
-            )
+            setup.set_observations(self.calibration_parameter_boxes["observations"].text())
             return setup
+        
         except ValueError as exc:
             if str(exc) in {
                 "El canal de calibracion no puede estar vacio",
@@ -634,6 +765,23 @@ class MainWindow(QMainWindow):
             return MultiMeasureSetup(freq_list=frequencies)
         except ValueError as exc:
             raise ValueError("Los parámetros de medición no son válidos") from exc
+
+    def _actualizar_tabla_datos(self, datos):
+        # Configuramos filas y columnas
+        self.data_table.setRowCount(len(datos))
+        self.data_table.setColumnCount(2)
+        self.data_table.setHorizontalHeaderLabels(["Parte Real (Ω)", "Parte Imaginaria (Ω)"])
+        
+        # Llenamos la tabla iterando sobre la lista
+        for fila, punto in enumerate(datos):
+            real_item = QTableWidgetItem(str(punto[0]))
+            real_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            
+            imag_item = QTableWidgetItem(str(punto[1]))
+            imag_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            
+            self.data_table.setItem(fila, 0, real_item)
+            self.data_table.setItem(fila, 1, imag_item)
 
 
 if __name__ == "__main__":

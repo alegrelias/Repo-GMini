@@ -1,0 +1,6 @@
+observations: ''
+type: spectro
+startfreq: 100.0
+incfreq: 10.0
+steps: 5
+repeat: 2

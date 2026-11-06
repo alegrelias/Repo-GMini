@@ -16,8 +16,9 @@ from PyQt6.QtGui import QPixmap
 
 
 class UserProfileWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, main_window=None):
         super().__init__()
+        self.main_window = main_window
         self.setObjectName("UserProfileWindow")
         self.setStyleSheet("background-color: #1e1e2e; color: #cdd6f4;")
         self.inicializar_ui()
@@ -45,6 +46,15 @@ class UserProfileWindow(QMainWindow):
 
         titleLabel = QLabel("GMini")
         ownerLabel = QLabel("LEAB")
+
+        self.btn_volver = QPushButton("< Volver")
+        self.btn_volver.setStyleSheet("background-color: transparent; font-weight: bold; border: 1px solid #5a6b7d; border-radius: 5px; padding: 5px 15px;")
+        self.btn_volver.clicked.connect(self.volver_main)
+
+        topLayout.addWidget(self.btn_volver)
+        topLayout.addWidget(titleLabel)
+        topLayout.addStretch()
+        topLayout.addWidget(ownerLabel)
 
         topLayout.addWidget(titleLabel)
         topLayout.addStretch()
@@ -188,6 +198,13 @@ class UserProfileWindow(QMainWindow):
         bottomLayout.addWidget(changePasswordFrame)
 
         central_layout.addStretch()
+
+
+
+    def volver_main(self):
+        if self.main_window:
+            self.main_window.show() # Muestra la ventana principal
+        self.close()                # Cierra la ventana de perfil
 
 
     def logout(self):

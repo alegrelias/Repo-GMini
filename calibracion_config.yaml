@@ -1,0 +1,9 @@
+observations: p4
+channel: '0'
+z_calc_value_real: 1000.0
+z_calc_value_imag: 50.0
+exitation_voltage: 400.0
+gain: 1.0
+rfbvalue: 1000.0
+settcycles: 15
+mux_channel: 1
