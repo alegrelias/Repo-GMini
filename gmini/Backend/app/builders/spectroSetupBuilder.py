@@ -1,5 +1,5 @@
-from app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
-from app.models.measureSetup import SpecMeasureSetup
+from gmini.Backend.app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
+from gmini.Backend.app.models.measureSetup import SpecMeasureSetup
 
 #constructor concreto para mediciones por Espectroscopia (Barrido espectral)
 class SpectroSetupBuilder(BaseMeasureSetupBuilder):

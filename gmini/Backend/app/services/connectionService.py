@@ -1,7 +1,7 @@
 from typing import Dict, List, Any
-from app.core.observer import IObservable, IObserver
-from app.models.device import Device
-from app.states.deviceState import DeviceErrorState
+from gmini.Backend.app.core.observer import IObservable, IObserver
+from gmini.Backend.app.models.device import Device
+from gmini.Backend.app.states.deviceState import DeviceErrorState
 
 """Servicio encargado de gestionar los enlaces fisicos (puerto serial / bluetooth) con los dispositivos Guanaco Mini"""
 class ConnectionService(IObservable, IObserver):

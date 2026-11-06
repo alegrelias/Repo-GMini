@@ -1,6 +1,6 @@
 from typing import List
-from app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
-from app.models.measureSetup import MultiMeasureSetup
+from gmini.Backend.app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
+from gmini.Backend.app.models.measureSetup import MultiMeasureSetup
 
 #Constructor concreto para mediciones de Multifrecuencia
 class MultiFreqSetupBuilder(BaseMeasureSetupBuilder):

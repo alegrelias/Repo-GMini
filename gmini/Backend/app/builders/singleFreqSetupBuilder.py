@@ -1,5 +1,5 @@
-from app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
-from app.models.measureSetup import SingleMeasureSetup
+from gmini.Backend.app.builders.baseMeasureSetupBuilder import BaseMeasureSetupBuilder
+from gmini.Backend.app.models.measureSetup import SingleMeasureSetup
 
 class SingleFreqSetupBuilder(BaseMeasureSetupBuilder):
     """Constructor concreto para mediciones de Monofrecuencia."""

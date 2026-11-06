@@ -1,7 +1,7 @@
 from typing import List, Optional
-from app.core.observer import IObservable, IObserver
-from app.models.user import User
-from app.models.token import Token
+from gmini.Backend.app.core.observer import IObservable, IObserver
+from gmini.Backend.app.models.user import User
+from gmini.Backend.app.models.token import Token
 
 
 class SessionManager(IObservable):

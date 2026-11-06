@@ -2,18 +2,18 @@
 import pytest
 from unittest.mock import MagicMock
 
-from app.models.device import Device
-from app.models.user import User
-from app.models.calibrationSetup import CalibrationSetup
-from app.models.measureSetup import SingleMeasureSetup, SpecMeasureSetup, MultiMeasureSetup
-from app.states.deviceState import CalibratedState, UncalibratedState, DeviceErrorState
-from app.builders.singleFreqSetupBuilder import SingleFreqSetupBuilder
-from app.builders.spectroSetupBuilder import SpectroSetupBuilder
-from app.builders.multiFreqSetupBuilder import MultiFreqSetupBuilder
-from app.builders.measureSetupBuilderFactory import MeasureSetupBuilderFactory
-from app.adapters.gminiCalibrationAdapter import GminiCalibrationAdapter
-from app.services.calibrationService import CalibrationService
-from app.services.sessionManager import SessionManager
+from gmini.Backend.app.models.device import Device
+from gmini.Backend.app.models.user import User
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Backend.app.models.measureSetup import SingleMeasureSetup, SpecMeasureSetup, MultiMeasureSetup
+from gmini.Backend.app.states.deviceState import CalibratedState, UncalibratedState, DeviceErrorState
+from gmini.Backend.app.builders.singleFreqSetupBuilder import SingleFreqSetupBuilder
+from gmini.Backend.app.builders.spectroSetupBuilder import SpectroSetupBuilder
+from gmini.Backend.app.builders.multiFreqSetupBuilder import MultiFreqSetupBuilder
+from gmini.Backend.app.builders.measureSetupBuilderFactory import MeasureSetupBuilderFactory
+from gmini.Backend.app.adapters.gminiCalibrationAdapter import GminiCalibrationAdapter
+from gmini.Backend.app.services.calibrationService import CalibrationService
+from gmini.Backend.app.services.sessionManager import SessionManager
 
 
 # =====================================================================

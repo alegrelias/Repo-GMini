@@ -1,15 +1,15 @@
 import time
 import uuid
 from typing import List, Optional, Any
-from app.core.observer import IObservable, IObserver
-from app.models.device import Device
-from app.models.measure import Measure
-from app.models.measureSetup import MeasureSetup
-from app.models.measureResult import MeasureResult
-from app.states.deviceState import MeasuringState, CalibratedState, DeviceErrorState
-from app.adapters.iMeasureAdapter import IMeasureAdapter
-from app.services.connectionService import ConnectionService
-from app.services.sessionManager import SessionManager
+from gmini.Backend.app.core.observer import IObservable, IObserver
+from gmini.Backend.app.models.device import Device
+from gmini.Backend.app.models.measure import Measure
+from gmini.Backend.app.models.measureSetup import MeasureSetup
+from gmini.Backend.app.models.measureResult import MeasureResult
+from gmini.Backend.app.states.deviceState import MeasuringState, CalibratedState, DeviceErrorState
+from gmini.Backend.app.adapters.iMeasureAdapter import IMeasureAdapter
+from gmini.Backend.app.services.connectionService import ConnectionService
+from gmini.Backend.app.services.sessionManager import SessionManager
 
 """Servicio principal para la ejecución de mediciones.Los datos de configuración viajan empaquetados directamente dentro de Measure"""
 class MeasureService(IObservable, IObserver):

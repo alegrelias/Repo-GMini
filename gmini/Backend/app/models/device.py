@@ -1,5 +1,5 @@
 from typing import Optional
-from app.states.deviceState import DeviceState, UncalibratedState
+from gmini.Backend.app.states.deviceState import DeviceState, UncalibratedState
 
 class Device:
     def __init__(self, device_id: int, device_name: str = "Guanaco Mini"):

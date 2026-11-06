@@ -1,9 +1,9 @@
-from app.models.device import Device
-from app.models.calibrationSetup import CalibrationSetup
-from app.states.deviceState import CalibratedState, UncalibratedState, DeviceErrorState
-from app.adapters.iCalibrationAdapter import ICalibrationAdapter
-from app.services.connectionService import ConnectionService
-from app.services.sessionManager import SessionManager
+from gmini.Backend.app.models.device import Device
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Backend.app.states.deviceState import CalibratedState, UncalibratedState, DeviceErrorState
+from gmini.Backend.app.adapters.iCalibrationAdapter import ICalibrationAdapter
+from gmini.Backend.app.services.connectionService import ConnectionService
+from gmini.Backend.app.services.sessionManager import SessionManager
 
 """Servicio encargado de orquestar la calibración electrónica del equipo"""
 class CalibrationService:

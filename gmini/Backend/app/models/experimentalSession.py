@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from app.models.measure import Measure
+from gmini.Backend.app.models.measure import Measure
 
 
 class ExperimentalSession:

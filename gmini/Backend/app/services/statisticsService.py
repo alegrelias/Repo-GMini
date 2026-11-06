@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Dict, Any, Optional
-from app.models.measure import Measure
+from gmini.Backend.app.models.measure import Measure
 
 """Servicio de dominio encargado de realizar todos los cálculos analíticos y estadísticos sobre los resultados brutos de las mediciones de bioimpedancia"""
 class StatisticsService:

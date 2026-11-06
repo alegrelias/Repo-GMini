@@ -1,9 +1,9 @@
 import json
-from app.adapters.iMeasureAdapter import IMeasureAdapter
-from app.models.measureSetup import (
+from gmini.Backend.app.adapters.iMeasureAdapter import IMeasureAdapter
+from gmini.Backend.app.models.measureSetup import (
     MeasureSetup, SingleMeasureSetup, SpecMeasureSetup, MultiMeasureSetup
 )
-from app.models.measureResult import MeasureResult
+from gmini.Backend.app.models.measureResult import MeasureResult
 
 """Adaptador concreto para codificar ejecuciones de medición y decodificar"""
 class GminiMeasureAdapter(IMeasureAdapter):

@@ -2,15 +2,15 @@ import sqlite3
 import json
 from datetime import datetime
 from typing import List, Optional
-from app.models.user import User
-from app.models.measure import Measure
-from app.models.measureResult import MeasureResult
-from app.models.calibrationSetup import CalibrationSetup
-from app.models.measureSetup import (MeasureSetup, SpecMeasureSetup, SingleMeasureSetup, MultiMeasureSetup)
-from app.models.experimentalSession import ExperimentalSession
-from app.builders.spectroSetupBuilder import SpectroSetupBuilder
-from app.builders.singleFreqSetupBuilder import SingleFreqSetupBuilder
-from app.builders.multiFreqSetupBuilder import MultiFreqSetupBuilder
+from gmini.Backend.app.models.user import User
+from gmini.Backend.app.models.measure import Measure
+from gmini.Backend.app.models.measureResult import MeasureResult
+from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Backend.app.models.measureSetup import (MeasureSetup, SpecMeasureSetup, SingleMeasureSetup, MultiMeasureSetup)
+from gmini.Backend.app.models.experimentalSession import ExperimentalSession
+from gmini.Backend.app.builders.spectroSetupBuilder import SpectroSetupBuilder
+from gmini.Backend.app.builders.singleFreqSetupBuilder import SingleFreqSetupBuilder
+from gmini.Backend.app.builders.multiFreqSetupBuilder import MultiFreqSetupBuilder
 
 
 class DataBaseService:
