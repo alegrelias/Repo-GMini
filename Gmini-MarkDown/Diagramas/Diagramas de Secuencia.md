@@ -2,7 +2,7 @@
 
 #### Módulo 1: Conectividad y Estado
 
-##### Establecer conexion con la placa
+##### Establecer conexion con el dispositivo
 
 ```mermaid
 
@@ -56,7 +56,7 @@ end
 
 #### Modulo 2: Calibración del Dispositivo
 
-##### Configurar setups de calibracion
+##### Configurar calibración electrónica
 
 ```mermaid
 
