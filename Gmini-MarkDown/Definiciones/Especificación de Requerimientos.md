@@ -145,6 +145,11 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                         |
 | **Descripción** | El sistema debe permitir definir la cantidad de repeticiones de un método y establecer tiempos de pausa (delays) entre mediciones o etapas de la secuencia. |
 
+| **MED-14**      | Mostrar resultados intermedios                                                                                                 |
+| :-------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                            |
+| **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición ciclicos. |
+
 #### Módulo 2: Graficos y Estadisticos
 
 | **GYE-01**      | Renderizar gráficas a partir de los resultados                                                                   |
@@ -299,17 +304,12 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                            |
 | **Descripción** | El sistema debe resaltar automáticamente en la gráfica el punto o la curva que el usuario haya seleccionado en la tabla de datos, y viceversa. |
 
-| **AYV-07**      | Mostrar resultados intermedios                                                                                                 |
-| :-------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                            |
-| **Descripción** | El sistema debe proporcionar en pantalla los datos de mediciones intermedias realizadas durante procesos de medición ciclicos. |
-
-| **AYV-08**      | Calcular estadísticos descriptivos básicos                                                                                |
+| **AYV-07**      | Calcular estadísticos descriptivos básicos                                                                                |
 | :-------------- | :------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                                       |
 | **Descripción** | El sistema debe ser capaz de calcular estadísticos descriptivos a partir de los datos crudos obtenidos en las mediciones. |
 
-| **AYV-09**      | Presentar estadísticos descriptivos básicos                                                                |
+| **AYV-08**      | Presentar estadísticos descriptivos básicos                                                                |
 | :-------------- | :--------------------------------------------------------------------------------------------------------- |
 | **Usuarios**    | Usuario Registrado.                                                                                        |
 | **Descripción** | El sistema debe ser capaz de presentar métricas estadísticas básicas a partir de los resultados obtenidos. |
