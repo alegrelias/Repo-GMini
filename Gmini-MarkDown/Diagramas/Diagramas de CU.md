@@ -177,7 +177,7 @@ user --> CU_C2
 
 #### Subsistema 4: Entorno de Ejecución y Plataforma
 
-##### Módulo 1: Interfaz y Trazabilidad
+##### Módulo 2: Interfaz y Trazabilidad
 
 ```mermaid
 usecase-beta
