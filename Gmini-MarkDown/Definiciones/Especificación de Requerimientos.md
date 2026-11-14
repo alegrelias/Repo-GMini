@@ -145,16 +145,6 @@
 | **Usuarios**    | Usuario Registrado.                                                                                                                                         |
 | **Descripción** | El sistema debe permitir definir la cantidad de repeticiones de un método y establecer tiempos de pausa (delays) entre mediciones o etapas de la secuencia. |
 
-| **MED-15**      | Exportar secuencias automáticas                                                                                                        |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
-| **Usuarios**    | Usuario Registrado.                                                                                                                    |
-| **Descripción** | El sistema debe permitir al usuario exportar y guardar las secuencias de automatización en archivos dentro de su almacenamiento local. |
-
-| **MED-16**      | Importar secuencias automáticas                                                                                                 |
-| :-------------- | :------------------------------------------------------------------------------------------------------------------------------ |
-| **Usuarios**    | Usuario Registrado.                                                                                                             |
-| **Descripción** | El sistema debe permitir al usuario cargar secuencias de automatización previamente configuradas desde su almacenamiento local. |
-
 #### Módulo 2: Graficos y Estadisticos
 
 | **GYE-01**      | Renderizar gráficas a partir de los resultados                                                                   |
@@ -265,6 +255,17 @@
 | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Usuarios**    | Usuario Registrado.                                                                                                                                                 |
 | **Descripción** | El sistema debe proveer una interfaz o explorador para seleccionar y cargar una sesión histórica en el Workspace, restaurando todos sus datos y gráficos asociados. |
+
+| **SET-19**      | Exportar secuencias automáticas                                                                                                        |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------------- |
+| **Usuarios**    | Usuario Registrado.                                                                                                                    |
+| **Descripción** | El sistema debe permitir al usuario exportar y guardar las secuencias de automatización en archivos dentro de su almacenamiento local. |
+
+| **SET-20**      | Importar secuencias automáticas                                                                                                 |
+| :-------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| **Usuarios**    | Usuario Registrado.                                                                                                             |
+| **Descripción** | El sistema debe permitir al usuario cargar secuencias de automatización previamente configuradas desde su almacenamiento local. |
+
 
 #### Módulo 2: Análisis y Visualización (Workspace)
 
