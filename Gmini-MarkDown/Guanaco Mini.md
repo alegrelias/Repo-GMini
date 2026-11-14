@@ -4780,7 +4780,7 @@ G-->>U: Setup de medición guardado con éxito
 
 #### Pantalla Principal
 
-![[pantalla_principal.png]]
+![](pantallas/pantalla_principal.png)
 #### Pantalla de Mediciones y Setups de Usuario
 
 ![](pantallas/pantalla_mediciones_y_setups.png)
