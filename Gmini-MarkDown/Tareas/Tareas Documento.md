@@ -6,6 +6,8 @@ kanban-plugin: board
 
 ## Pendientes
 
+- [ ] MED-15 y MED-16 no deberían ir en el subsistema 2
+- [ ] AYV-07 no tiene sentido
 - [ ] Verificar con Antonio si la gráfica debe actualizarse en vivo a medida que ocurre un barrido o un bucle o si solo se grafica al final.
 - [ ] Agregar definiciones
 - [ ] Justificar Patrones de Diseño
