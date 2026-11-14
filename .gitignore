@@ -1,7 +1,0 @@
-.obsidian/
-.vscode/
-.venv/
-.pytest_cache/
-**/__pycache__/
-*.pyc
-gmini_database.db
