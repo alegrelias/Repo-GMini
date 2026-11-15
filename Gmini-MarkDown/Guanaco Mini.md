@@ -50,9 +50,9 @@ Vargas Da Silva, Eliam Joaquin**
       - Pantalla de Perfil de Usuario
 - [**CRONOGRAMA DE TRABAJO**](#cronograma-de-trabajo)
   - Visión general
-  - Cronograma por requerimientos
 - [**METODOLOGÍA DE DESARROLLO**](#metodología-de-desarrollo)
   - Resumen de la metodología elegida
+  - Adecuación a la metodología
 - [**HERRAMIENTAS UTILIZADAS**](#herramientas-utilizadas)
   - Diagrama de Arquitectura de Software
     - Diagrama de Contexto
@@ -4788,6 +4788,58 @@ G-->>U: Setup de medición guardado con éxito
 #### Pantalla de Perfil de Usuario
 
 ![](pantallas/pantalla_perfil_de_usuario.png)
+
+## CRONOGRAMA DE TRABAJO
+
+### Visión general
+
+```mermaid
+gantt
+    title Desarrollo del proyecto GMini GUI
+    dateFormat YYYY-MM-DD
+    axisFormat %d/%m
+
+    section Def. del tema del trabajo
+        Definición del tema             :done, def_tema, 2026-08-10, 15d
+
+    section Requerimientos
+        Elicitación                     :done, elicitacion, after def_tema, 5d
+        Especificación                  :done, especificacion, after elicitacion, 28d
+
+    section Análisis y diseño
+        D. de casos de uso              :done, d_cu, 2026-09-18, 30d
+        Especificación de casos de uso  :done, esp_cu, 2026-09-20, 33d
+        D. de arquitectura              :done, d_arq, 2026-09-23, 17d
+        D. de clases                    :done, d_clases, 2026-09-23, 25d
+        D. de entidad relación          :done, d_er, 2026-09-25, 31d
+        Diseño de pantallas             :done, dis_pantallas, 2026-10-08, 12d
+        D. de secuencia                 :done, d_sec, 2026-10-16, 10d
+
+    section Desarrollo y codificación
+        Frontend                        :done, frontend, 2026-10-23, 22d
+        Testing                         :done, testing, 2026-11-03, 11d
+        Despliegue de BD                :done, bd, 2026-11-03, 11d
+        Backend                         :done, backend, 2026-11-04, 10d
+
+    section Validación
+        Validación de requerimientos    :done, val_req, 2026-08-26, 54d
+        Validación de pantallas         :done, val_pant, 2026-10-13, 6d
+
+    section Entrega
+        1er sprint                  :milestone, done, sprint1, 2026-10-09, 0d
+        2do sprint                  :milestone, done, sprint2, 2026-10-23, 0d
+        Demo funcional                  :milestone, done, demo, 2026-11-17, 0d
+```
+
+## METODOLOGÍA DE DESARROLLO
+
+### Resumen de la metodología elegida
+El desarrollo del proyecto GMini GUI sigue una metodología híbrida Cascada-Iterativo (conocida en la industria como _Water-Scrum-Fall_), fundamentada en los pilares del Proceso Unificado (UP/RUP adaptado). A nivel macro, la planificación se organiza de forma secuencial en fases bien delimitadas —Definición del tema, Requerimientos, Análisis y Diseño, y Codificación y Testing, pero articula sus entregas parciales mediante hitos de control (_1er sprint_, _2do sprint_ y _Demo funcional_).
+El enfoque se caracterizó por ser dirigido por casos de uso y centrado en la arquitectura. Durante los primeros dos meses y medio se priorizó un diseño previo exhaustivo, trazando los requisitos funcionales hacia los casos de uso, un modelo relacional y una arquitectura desacoplada en capas sustentada en patrones de diseño clásicos (_State_, _Builder_, _Factory Method_, _Adapter_ y _Observer_). Aunque la codificación se concentró en el tramo final del cronograma, la etapa de diseño operó de manera iterativa e incremental sobre los modelos: los diagramas de clases, secuencia, entidad-relación y prototipos de pantalla se solaparon y auditaron continuamente para garantizar consistencia técnica en firmas, atributos y flujos de datos.
+Como balance metodológico, este esquema asegura una base estructural sólida y alta trazabilidad antes de escribir código, minimizando errores de acoplamiento.
+
+### Adecuación de la metodología
+La adopción de un enfoque híbrido respondió bidireccionalmente a la composición y las restricciones del equipo de cuatro estudiantes. Dado que los integrantes afrontaban altas cargas académicas, empleos paralelos y una disponibilidad horaria intermitente, el proceso se adecuó centralizando la elicitación con el cliente, la especificación y el modelado UML en los perfiles con mayor afinidad analítica, mientras los integrantes orientados exclusivamente a la programación mantuvieron una participación reducida durante las primeras semanas. Para sostener esta dinámica de trabajo asincrónica, la coordinación interna se apoyó en Discord, WhatsApp, Google Docs, Google Drive y Git/GitHub. En sentido inverso, la metodología estructuró el trabajo grupal al traducir el dominio del problema en artefactos técnicos precisos —diagramas de clases, secuencia y entidad-relación—. Esta base documental permitió que, al iniciar la etapa de codificación, los desarrolladores pudieran implementar módulos de forma ordenada y desacoplada sin haber participado activamente en el análisis previo.
 
 ## HERRAMIENTAS UTILIZADAS
 
