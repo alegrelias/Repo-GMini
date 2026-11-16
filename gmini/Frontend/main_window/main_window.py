@@ -38,6 +38,7 @@ from gmini.Backend.app.services.analyticsService import AnalyticsService # Tu nu
 from gmini.Frontend.user_window.user_profile_window import UserProfileWindow
 from gmini.Backend.app.services.localServices import LocalService
 from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Frontend.widgets.consoleWidget import ConsoleWidget
 from gmini.Backend.app.models.measureSetup import (
     MeasureSetup,
     MultiMeasureSetup,
@@ -83,18 +84,25 @@ class CollapseWidget(QWidget):
     def __init__(self, title, parent=None):
         super().__init__(parent)
         self.title = title
-        self.is_collapsed = False 
-        self.setStyleSheet("background-color: #313244;")
+        
+        # 1. Indica que el estado inicial es "colapsado" (cerrado)
+        self.is_collapsed = True 
 
+        self.setStyleSheet("background-color: #313244;")
         self.toggle_button = QPushButton(text=self.title)
         self.toggle_button.setStyleSheet("background-color: #313244;")
         self.toggle_button.setCheckable(True)
-        self.toggle_button.setChecked(True)
+        
+        # 2. El botón inicia desmarcado
+        self.toggle_button.setChecked(False) 
         self.toggle_button.clicked.connect(self.toggle)
 
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout()
         self.content_widget.setLayout(self.content_layout)
+        
+        # 3. Oculta el contenedor visualmente desde el inicio
+        self.content_widget.hide() 
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.toggle_button)
@@ -362,6 +370,21 @@ class MainWindow(QMainWindow):
         history_widget = CollapseWidget("Historial")
         history_widget.layout().addWidget(QLabel("Contenido de Historial"))
         layout.addWidget(history_widget)
+
+        # --- NUEVO: Consola de Diagnóstico ---
+        console_collapse = CollapseWidget("Consola de Diagnostico")
+        self.console_widget = ConsoleWidget(
+            connection_service=self.connection_service, 
+            device=self.device
+        )
+        console_collapse.layout().addWidget(self.console_widget)
+        layout.addWidget(console_collapse)
+        
+        # consola como observador a los servicios correspondientes
+        self.measure_service.attach(self.console_widget)
+        self.connection_service.attach(self.console_widget)
+        # --------------------------------------------------------
+
         layout.addStretch()
 
     def nueva_sesion(self):

@@ -25,7 +25,19 @@ class MockWire:
         
         cmd = self.last_command.lower().strip()
         
-        if "singlefreq" in cmd:
+        # --- NUEVOS COMANDOS DE DIAGNÓSTICO (CONSOLA) ---
+        if cmd == "about":
+            response = '{"name":"AD5933-GUANACO-MINI","date":"Aug 31 2026","version":"2.0"}\nad5933> '
+            
+        elif cmd == "temperature":
+            # Simulamos el sensor de temperatura interno (ej. 24°C)
+            response = '24\nad5933> '
+            
+        elif cmd == "help" or cmd == "?":
+            response = 'Lista de comandos:\nabout\ntemperature\nreset\nsweep\nsinglefreq\ncalibrate\nmeasure\nad5933> '
+            
+        # --- COMANDOS EXISTENTES DE MEDICIÓN Y CALIBRACIÓN (INTACTOS) ---
+        elif "singlefreq" in cmd:
             real_val = -15610 + random.randint(-500, 500)
             imag_val = -1335 + random.randint(-150, 150)
             response = f"{real_val} {imag_val}j\nad5933> "
@@ -36,7 +48,7 @@ class MockWire:
             
         else:
             # BLOQUE DE REASEGURO (SWEEP / FALLBACK):
-            # Si el adaptador envía cualquier otro comando (o sweep/start), respondemos con el JSON completo.
+            # Si el adaptador envía cualquier otro comando (o sweep/start), responde con el JSON completo.
             sweep_data = {
                 "sweep": {
                     "result": {
