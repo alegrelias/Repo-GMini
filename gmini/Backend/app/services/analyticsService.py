@@ -6,13 +6,21 @@ from gmini.Backend.app.models.measure import Measure
 class AnalyticsService:
     def plot_debye(self, result_data: list, plot_widget: pg.PlotWidget):
         """
-        Recibe una lista de números complejos (impedancias)
-        y grafica un diagrama de Nyquist/Debye (Real vs -Imag).
-        Se divide por 1000 para normalizar la escala a kOhms.
+        Recibe una lista de impedancias (puede venir como lista de listas desde la placa 
+        o como objetos complex desde la Base de Datos) y grafica un diagrama de Nyquist.
         """
-        # CORRECCIÓN: Uso .real e .imag en lugar de índices [0] y [1]
-        real_values = [punto.real / 1000.0 for punto in result_data]
-        imag_values = [-punto.imag / 1000.0 for punto in result_data] 
+        real_values = []
+        imag_values = []
+
+        for punto in result_data:
+            if isinstance(punto, complex):
+                # Formato proveniente del historial de la Base de Datos
+                real_values.append(punto.real / 1000.0)
+                imag_values.append(-punto.imag / 1000.0)
+            else:
+                # Formato proveniente de la medición en vivo (Mock/Placa)
+                real_values.append(punto[0] / 1000.0)
+                imag_values.append(-punto[1] / 1000.0)
                  
         plot_widget.clear()
         plot_widget.setLabel('left', '-Imaginario', units='kΩ')
