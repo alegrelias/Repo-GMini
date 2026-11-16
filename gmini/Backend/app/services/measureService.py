@@ -10,6 +10,7 @@ from gmini.Backend.app.states.deviceState import MeasuringState, CalibratedState
 from gmini.Backend.app.adapters.iMeasureAdapter import IMeasureAdapter
 from gmini.Backend.app.services.connectionService import ConnectionService
 from gmini.Backend.app.services.sessionManager import SessionManager
+from gmini.Backend.app.models.autosequences import AutoSequence 
 
 """Servicio principal para la ejecución de mediciones.Los datos de configuración viajan empaquetados directamente dentro de Measure"""
 class MeasureService(IObservable, IObserver):
@@ -75,30 +76,30 @@ class MeasureService(IObservable, IObserver):
         finally:
             self._current_measure = None
 
-    """Ejecuta mediciones continuas en bucle a través del tiempo """
-    def execute_loop(self, device: Device, base_setup: MeasureSetup, 
-                     iterations: int, delay: float) -> List[Measure]:
-        group_id = uuid.uuid4().hex
-        completed_measures: List[Measure] = []
+    ##"""Ejecuta mediciones continuas en bucle a través del tiempo (Lo deje asi por las dudas)"""
+    ##def execute_loop(self, device: Device, base_setup: MeasureSetup, 
+    ##                 iterations: int, delay: float) -> List[Measure]:
+    ##    group_id = uuid.uuid4().hex
+    ##    completed_measures: List[Measure] = []
 
-        for i in range(1, iterations + 1):
-            measure = Measure(measure_setup=base_setup, device_id=device.device_id)
-            measure._loop_group_id = group_id
-            measure.set_iteration_number(i)
+    ##    for i in range(1, iterations + 1):
+    ##        measure = Measure(measure_setup=base_setup, device_id=device.device_id)
+    ##        measure._loop_group_id = group_id
+    ##        measure.set_iteration_number(i)
 
-            self._update_progress(f"LOOP_ITERATION_{i}_OF_{iterations}")
-            success = self.execute_measure(device, measure)
-            completed_measures.append(measure)
+    ##        self._update_progress(f"LOOP_ITERATION_{i}_OF_{iterations}")
+    ##       success = self.execute_measure(device, measure)
+    ##        completed_measures.append(measure)
 
-            if not success:
-                break
+    ##        if not success:
+    ##            break
 
-            self._update_progress(f"INTERMEDIATE_RESULT_READY:{i}")
+    ##        self._update_progress(f"INTERMEDIATE_RESULT_READY:{i}")
 
-            if i < iterations and delay > 0:
-                time.sleep(delay)
+    ##        if i < iterations and delay > 0:
+    ##            time.sleep(delay)
 
-        return completed_measures
+    ##    return completed_measures
 
     def finish_measure(self) -> List[MeasureResult]:
         """Devuelve la lista de resultados recolectados y limpia el buffer temporal"""
@@ -137,3 +138,48 @@ class MeasureService(IObservable, IObserver):
     def notify(self, event_info: str = "") -> None:
         for observer in self._observers:
             observer.update(self, event_info)
+
+    def execute_sequence(self, device: Device, sequence: 'AutoSequence') -> List[Measure]:
+        import uuid
+        import time
+        
+        group_id = uuid.uuid4().hex
+        completed_measures: List[Measure] = []
+        
+        setups = sequence.get_setups()
+        repeats = sequence.get_repeat()
+        delay = sequence.get_delay()
+        
+        total_iterations = len(setups) * repeats
+        current_iteration = 1
+
+        self._update_progress("SEQUENCE_STARTED")
+
+        # bucle externo: cantidad de repeticiones de la secuencia completa
+        for _ in range(repeats):
+            # bucle interno: cada configuración dentro de la secuencia
+            for setup in setups:
+                self._update_progress(f"SEQUENCE_MEASURE_ITERATION_{current_iteration}_OF_{total_iterations}")
+                
+                # el setup en una entidad Measure
+                measure = Measure(measure_setup=setup, device_id=device.device_id)
+                measure._loop_group_id = group_id
+                measure.set_iteration_number(current_iteration)
+
+                # base que maneja la comunicación con la placa
+                success = self.execute_measure(device, measure)
+                completed_measures.append(measure)
+
+                if not success:
+                    self._update_progress("SEQUENCE_ABORTED_BY_ERROR")
+                    return completed_measures
+                
+                # aplica el delay si no es la ultima iteración total
+                if current_iteration < total_iterations and delay > 0:
+                    self._update_progress(f"SEQUENCE_DELAY_{delay}S")
+                    time.sleep(delay)
+                    
+                current_iteration += 1
+
+        self._update_progress("SEQUENCE_COMPLETED")
+        return completed_measures
