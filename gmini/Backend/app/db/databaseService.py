@@ -340,7 +340,10 @@ class DataBaseService:
                 m_setup._measure_setup_id = setup_id
             return setup_id
 
-    def save_measure(self, user_id: int, measure: Measure) -> int:
+    from typing import Optional
+
+    # Agregamos session_id a la firma del método con un valor por defecto
+    def save_measure(self, user_id: int, measure: Measure, session_id: Optional[int] = None) -> int:
         result = measure.get_measure_result()
         result_id = None
 
@@ -350,9 +353,24 @@ class DataBaseService:
             if result and result.get_impedances():
                 freqs = result.get_frequencies()
                 imps = result.get_impedances()
-                reals = [z.real for z in imps]
-                imags = [z.imag for z in imps]
-                amps = [abs(z) for z in imps]
+                
+                reals = []
+                imags = []
+                amps = []
+                
+                # Bucle tolerante a fallos: soporta la placa real (complex) y el Mock (listas)
+                for z in imps:
+                    if isinstance(z, complex):
+                        reals.append(z.real)
+                        imags.append(z.imag)
+                        amps.append(abs(z))
+                    else:
+                        real_val = z[0]
+                        imag_val = z[1]
+                        reals.append(real_val)
+                        imags.append(imag_val)
+                        amps.append(abs(complex(real_val, imag_val)))
+
                 phases = getattr(result, "_phases", [])
 
                 cursor.execute("""
@@ -377,7 +395,9 @@ class DataBaseService:
 
             date_val = getattr(measure, "_date", datetime.now())
             date_str = date_val.isoformat() if hasattr(date_val, "isoformat") else str(date_val)
-            session_id = getattr(measure, "_experimental_session_id", None)
+            
+            # Priorizamos el parámetro explícito de la sesión, con fallback al atributo de la clase
+            session_final_id = getattr(measure, "_experimental_session_id", session_id)
 
             cursor.execute("""
                 INSERT INTO MEASURE (
@@ -386,7 +406,7 @@ class DataBaseService:
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 user_id,
-                session_id,
+                session_final_id,
                 setup_id,
                 result_id,
                 measure.get_device_id(),
@@ -400,10 +420,12 @@ class DataBaseService:
             ))
             conn.commit()
             measure_id = cursor.lastrowid
+            
             if hasattr(measure, "set_measure_id"):
                 measure.set_measure_id(measure_id)
             else:
                 measure._measure_id = measure_id
+                
             return measure_id
         
     """Recupera una Measure puntual desde la BD para poder abrirla y graficarla"""

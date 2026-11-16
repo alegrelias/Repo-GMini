@@ -564,21 +564,29 @@ class MainWindow(QMainWindow):
             
             self._show_status("Delegando medición al servicio...")
             
-            # 3. Llamamos al orquestador
-            self.measure_service.execute_measure(self.device, nueva_medicion)
+            exito = self.measure_service.execute_measure(self.device, nueva_medicion)
             
+            # Si el servicio falla (ej. el Mock devuelve basura o se desconecta)
+            if not exito:
+                raise ValueError("Fallo en la comunicación con la placa. El adaptador no obtuvo resultados.")
+                
             self._show_status("Medición ejecutada y finalizada correctamente.")
 
             # --- NUEVA LÓGICA DE GRÁFICOS Y TABLAS ---
             self.results_tabs.show() # Mostramos las solapas
             
-            datos_de_prueba = [[185, -1830], [634, -1717]] 
-            
+            # Obtenemos el objeto de resultado validado
+            resultado = nueva_medicion.get_measure_result()
+            if not resultado:
+                raise ValueError("La medición terminó, pero no se registraron datos.")
+                
+            resultado_real = resultado.get_impedances()
+
             # 1. Actualizamos el gráfico
-            self.analytics_service.plot_debye(datos_de_prueba, self.plot_widget)
+            self.analytics_service.plot_debye(resultado_real, self.plot_widget)
             
             # 2. Actualizamos la tabla
-            self._actualizar_tabla_datos(datos_de_prueba)
+            self._actualizar_tabla_datos(resultado_real)
             # ---------------------------------------------
             
         except ValueError as exc:
@@ -774,12 +782,20 @@ class MainWindow(QMainWindow):
         
         # Llenamos la tabla iterando sobre la lista
         for fila, punto in enumerate(datos):
-            real_item = QTableWidgetItem(str(punto[0]))
+            # Verificamos si es complejo y extraemos .real e .imag
+            if isinstance(punto, complex):
+                real_val = punto.real
+                imag_val = punto.imag
+            else:
+                real_val = punto[0]
+                imag_val = punto[1]
+
+            real_item = QTableWidgetItem(str(real_val))
             real_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            
-            imag_item = QTableWidgetItem(str(punto[1]))
+                         
+            imag_item = QTableWidgetItem(str(imag_val))
             imag_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            
+
             self.data_table.setItem(fila, 0, real_item)
             self.data_table.setItem(fila, 1, imag_item)
 
