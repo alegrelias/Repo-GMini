@@ -3,6 +3,8 @@ from gmini.Backend.app.core.observer import IObservable, IObserver
 from gmini.Backend.app.models.device import Device
 from gmini.Backend.app.states.deviceState import DeviceErrorState
 
+import time
+
 """Servicio encargado de gestionar los enlaces fisicos (puerto serial / bluetooth) con los dispositivos Guanaco Mini"""
 class ConnectionService(IObservable, IObserver):
     def __init__(self):
@@ -22,6 +24,48 @@ class ConnectionService(IObservable, IObserver):
             self.notify(f"CONNECTION_ERROR: {e}")
             return False
 
+    def send_console_command(self, device: Device, command: str) -> str:
+        """
+        Envía un comando crudo a la placa, espera la respuesta acumulativa 
+        y limpia el prompt. Exclusivo para la consola de diagnóstico.
+        """
+        conn = self.active_connections.get(device.device_id)
+        if not conn:
+            raise ConnectionError("El dispositivo no tiene una conexión activa.")
+        
+        # 1. El hardware exige un salto de linea \n al final del comando
+        clean_command = command.strip()
+        if not clean_command.endswith('\n'):
+            clean_command += '\n'
+            
+        try:
+            conn.send(clean_command)
+            
+            response_str = ""
+            import time
+            timeout = time.time() + 3.0  # Timeout de seguridad de 3 segundos
+            
+            # 2. Acumulala respuesta usando  receive()
+            while time.time() < timeout:
+                chunk = conn.receive()
+                if chunk:
+                    # Dependiendo de tu adapter, chunk puede ser bytes o str
+                    if isinstance(chunk, bytes):
+                        chunk = chunk.decode('utf-8', errors='ignore')
+                    response_str += chunk
+                
+                # El hardware devuelve ad5933> cuando el comando finaliza
+                if "ad5933>" in response_str:
+                    break
+                time.sleep(0.05)
+            
+            # 3. Limpieza para la UI
+            cleaned_response = response_str.replace("ad5933>", "").strip()
+            return cleaned_response
+            
+        except Exception as e:
+            raise RuntimeError(f"Fallo en la comunicación serial: {str(e)}")
+        
     def disconnect(self, device: Device) -> None:
         conn = self.active_connections.pop(device.device_id, None)
         if conn:
