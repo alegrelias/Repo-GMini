@@ -26,9 +26,9 @@ observations: setup notes
 
     assert isinstance(setup, SingleMeasureSetup)
     assert setup.get_id() == 4
-    assert setup.freq == 1000.0
-    assert setup.delay == 10
-    assert setup.count == 4
+    assert setup.get_freq() == 1000.0
+    assert setup.get_delay() == 10
+    assert setup.get_count() == 4
     assert setup._observations == "setup notes"
 
 
@@ -79,7 +79,7 @@ measure_setup:
     setup = LocalService().load_setup(str(setup_file))
 
     assert isinstance(setup, SingleMeasureSetup)
-    assert setup.freq == 2000.0
+    assert setup.get_freq() == 2000.0
 
 
 def test_load_setup_rejects_non_mapping_yaml(tmp_path):

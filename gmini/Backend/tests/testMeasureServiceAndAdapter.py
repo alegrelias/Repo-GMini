@@ -57,6 +57,8 @@ def test_measure_adapter_decode_datasheet_json():
     assert isinstance(result, MeasureResult)
     assert result.get_frequencies() == [10000.0, 30000.0]
     assert result.get_impedances() == [complex(38713, -39507), complex(84984, -42604)]
+    assert result.get_amplitudes() == []
+    assert result.get_phases() == []
 
 
 

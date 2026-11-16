@@ -55,9 +55,9 @@ result:
 
     assert isinstance(setup, SingleMeasureSetup)
     assert setup.get_id() == 4
-    assert setup.freq == 1000.0
-    assert setup.delay == 10
-    assert setup.count == 4
+    assert setup.get_freq() == 1000.0
+    assert setup.get_delay() == 10
+    assert setup.get_count() == 4
     assert setup._observations == "setup notes"
 
     assert isinstance(result, MeasureResult)
