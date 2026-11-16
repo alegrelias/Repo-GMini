@@ -38,6 +38,7 @@ from gmini.Backend.app.services.analyticsService import AnalyticsService # Tu nu
 from gmini.Frontend.user_window.user_profile_window import UserProfileWindow
 from gmini.Backend.app.services.localServices import LocalService
 from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
+from gmini.Frontend.widgets.consoleWidget import ConsoleWidget
 from gmini.Backend.app.models.measureSetup import (
     MeasureSetup,
     MultiMeasureSetup,
@@ -362,6 +363,21 @@ class MainWindow(QMainWindow):
         history_widget = CollapseWidget("Historial")
         history_widget.layout().addWidget(QLabel("Contenido de Historial"))
         layout.addWidget(history_widget)
+
+        # --- NUEVO: Consola de Diagnóstico ---
+        console_collapse = CollapseWidget("Consola de Diagnostico")
+        self.console_widget = ConsoleWidget(
+            connection_service=self.connection_service, 
+            device=self.device
+        )
+        console_collapse.layout().addWidget(self.console_widget)
+        layout.addWidget(console_collapse)
+        
+        # consola como observador a los servicios correspondientes
+        self.measure_service.attach(self.console_widget)
+        self.connection_service.attach(self.console_widget)
+        # --------------------------------------------------------
+
         layout.addStretch()
 
     def nueva_sesion(self):
