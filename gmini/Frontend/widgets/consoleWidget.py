@@ -8,7 +8,7 @@ from gmini.Backend.app.states.deviceState import MeasuringState
 from gmini.Backend.app.models.device import Device
 from gmini.Backend.app.services.connectionService import ConnectionService
 
-class ConsoleWidget(QWidget, IObserver):
+class ConsoleWidget(QWidget):
     def __init__(self, connection_service: ConnectionService, device: Device, parent=None):
         super().__init__(parent)
         self.connection_service = connection_service

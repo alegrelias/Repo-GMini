@@ -84,18 +84,25 @@ class CollapseWidget(QWidget):
     def __init__(self, title, parent=None):
         super().__init__(parent)
         self.title = title
-        self.is_collapsed = False 
-        self.setStyleSheet("background-color: #313244;")
+        
+        # 1. Indica que el estado inicial es "colapsado" (cerrado)
+        self.is_collapsed = True 
 
+        self.setStyleSheet("background-color: #313244;")
         self.toggle_button = QPushButton(text=self.title)
         self.toggle_button.setStyleSheet("background-color: #313244;")
         self.toggle_button.setCheckable(True)
-        self.toggle_button.setChecked(True)
+        
+        # 2. El botón inicia desmarcado
+        self.toggle_button.setChecked(False) 
         self.toggle_button.clicked.connect(self.toggle)
 
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout()
         self.content_widget.setLayout(self.content_layout)
+        
+        # 3. Oculta el contenedor visualmente desde el inicio
+        self.content_widget.hide() 
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.toggle_button)
