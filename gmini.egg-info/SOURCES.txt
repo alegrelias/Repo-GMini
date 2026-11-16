@@ -35,7 +35,7 @@ gmini/Backend/app/services/connectionService.py
 gmini/Backend/app/services/localServices.py
 gmini/Backend/app/services/measureService.py
 gmini/Backend/app/services/sessionManager.py
-gmini/Backend/app/services/statisticsService.py
+gmini/Backend/app/services/analyticsService.py
 gmini/Backend/app/states/deviceState.py
 gmini/Backend/tests/__init__.py
 gmini/Backend/tests/testCalibrationAndBuilders.py

@@ -12,7 +12,7 @@ from gmini.Backend.app.builders.singleFreqSetupBuilder import SingleFreqSetupBui
 from gmini.Backend.app.builders.spectroSetupBuilder import SpectroSetupBuilder
 from gmini.Backend.app.adapters.gminiMeasureAdapter import GminiMeasureAdapter
 from gmini.Backend.app.services.measureService import MeasureService
-from gmini.Backend.app.services.statisticsService import StatisticsService
+from gmini.Backend.app.services.analyticsService import AnalyticsService
 from gmini.Backend.app.services.sessionManager import SessionManager
 
 
@@ -113,8 +113,8 @@ def test_execute_measure_success_and_statistics():
     assert isinstance(device.get_state(), CalibratedState)
 
 
-    # Validar StatisticsService sobre medición COMPLETE (MED-11)
-    stats = StatisticsService.calculate_basic_stats(measure)
+    # Validar AnalyticsService sobre medición COMPLETE (MED-11)
+    stats = AnalyticsService.calculate_basic_stats(measure)
     assert "error" not in stats
     assert stats["imp_real_mean"] == 450.0
     assert stats["imp_imag_mean"] == -75.0

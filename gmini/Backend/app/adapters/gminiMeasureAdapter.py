@@ -36,28 +36,47 @@ class GminiMeasureAdapter(IMeasureAdapter):
 
     def decode(self, raw_data: str) -> MeasureResult:
         try:
-            clean_str = raw_data.strip()
+            # 1. Limpiamos la basura de la terminal serial
+            clean_str = raw_data.replace("ad5933>", "").strip()
+            
             if clean_str.lower().startswith("json"):
                 clean_str = clean_str[4:].strip()
 
-            data = json.loads(clean_str)
+            # 2. Intentamos leerlo como JSON
+            try:
+                data = json.loads(clean_str)
 
-            if "impedance" in data and "frequency" in data:
-                frequencies = [float(f) for f in data["frequency"]]
-                impedances = [complex(float(pair[0]), float(pair[1])) for pair in data["impedance"]]
-                return MeasureResult(frequencies=frequencies, impedances=impedances)
+                if "impedance" in data and "frequency" in data:
+                    frequencies = [float(f) for f in data["frequency"]]
+                    impedances = [complex(float(pair[0]), float(pair[1])) for pair in data["impedance"]]
+                    # CORRECCIÓN: Se agregan amplitudes y phases vacíos
+                    return MeasureResult(frequencies=frequencies, amplitudes=[], phases=[], impedances=impedances)
 
-            if "sweep" in data:
-                res_block = data["sweep"].get("result", {})
-                frequencies = [float(f) for f in res_block.get("frequency", [])]
-                impedances = [complex(float(pair[0]), float(pair[1])) for pair in res_block.get("magnitude", [])]
-                return MeasureResult(frequencies=frequencies, impedances=impedances)
+                if "sweep" in data:
+                    res_block = data["sweep"].get("result", {})
+                    frequencies = [float(f) for f in res_block.get("frequency", [])]
+                    impedances = [complex(float(pair[0]), float(pair[1])) for pair in res_block.get("magnitude", [])]
+                    # CORRECCIÓN: Se agregan amplitudes y phases vacíos
+                    return MeasureResult(frequencies=frequencies, amplitudes=[], phases=[], impedances=impedances)
 
-            frequencies = [float(f) for f in data.get("frequencies", [])]
-            reals = data.get("reals", [])
-            imags = data.get("imags", [])
-            impedances = [complex(float(r), float(i)) for r, i in zip(reals, imags)]
-            return MeasureResult(frequencies=frequencies, impedances=impedances)
+                frequencies = [float(f) for f in data.get("frequencies", [])]
+                reals = data.get("reals", [])
+                imags = data.get("imags", [])
+                impedances = [complex(float(r), float(i)) for r, i in zip(reals, imags)]
+                # CORRECCIÓN: Se agregan amplitudes y phases vacíos
+                return MeasureResult(frequencies=frequencies, amplitudes=[], phases=[], impedances=impedances)
+                
+            except json.JSONDecodeError:
+                # 3. Si falla el JSON, es una lectura de SingleFreq en texto plano
+                partes = clean_str.replace("j", "").split()
+                if len(partes) >= 2:
+                    real_val = float(partes[0])
+                    imag_val = float(partes[1])
+                    # CORRECCIÓN: Se agregan amplitudes y phases vacíos
+                    return MeasureResult(frequencies=[0.0], amplitudes=[], phases=[], impedances=[complex(real_val, imag_val)])
+                else:
+                    return None
 
         except Exception as e:
-            raise ValueError(f"Error al decodificar la respuesta del hardware: {e}")
+            print(f"Error decodificando en el Adapter: {e}")
+            return None
