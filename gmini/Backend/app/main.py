@@ -14,7 +14,7 @@ def main():
     # 1. Inicializar la aplicación base de Qt (Obligatorio en PyQt6)
     app = QApplication(sys.argv)
     
-    # 2. Inicializar servicios base (Opcional, pero recomendado según tu arquitectura)
+    # 2. Inicializar servicios base
     # db_service = DataBaseService()
     # session_manager = SessionManager() # Singleton
     
