@@ -28,34 +28,73 @@ class Register(QWidget):
         self.inicializar_ui()
 
     def inicializar_ui(self):
-        self.setFixedSize(600, 500)
+        self.setFixedSize(560, 520)
         self.setWindowTitle("Registro - GMini")
         self.setStyleSheet("""
-            QWidget { background-color: #2b2e33; color: white; }
-            QLabel { font-size: 16px; }
+            QWidget { 
+                background-color: #1e2229; 
+                color: white; 
+                font-family: Arial, sans-serif;
+            }
+            QLabel { 
+                font-size: 15px; 
+            }
             QLineEdit {
-                background-color: #2b2e33; border: 1px solid #5a6b7d;
-                border-radius: 10px; padding: 8px; font-size: 14px;
+                background-color: #282c34; 
+                border: 1px solid #4f5b66;
+                border-radius: 8px; 
+                padding: 8px; 
+                font-size: 14px;
+                min-width: 250px;
+                max-width: 250px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #61afef;
             }
             QPushButton {
-                border: 1px solid #5a6b7d; border-radius: 10px;
-                padding: 10px; font-size: 16px;
+                background-color: #3b4252;
+                border: 1px solid #4f5b66; 
+                border-radius: 8px;
+                padding: 10px; 
+                font-size: 15px;
+                color: white;
+            }
+            QPushButton:hover {
+                background-color: #434c5e;
             }
             QPushButton#btnPrincipal {
-                background-color: #2f5275; font-weight: bold;
+                background-color: #2f5275; 
+                font-weight: bold;
+            }
+            QPushButton#btnPrincipal:hover {
+                background-color: #3b648f;
             }
         """)
         layout = QVBoxLayout(self)
-        title = QLabel("GMini                                      LEAB")
-        title.setStyleSheet("font-size: 28px; font-weight: bold; color: #D8DEE9;")
-        layout.addWidget(title)
+        layout.setContentsMargins(35, 25, 35, 25)
+        layout.setSpacing(12)
+
+        # Fila superior con Título GMini y LEAB perfectamente alineados
+        top_layout = QHBoxLayout()
+        title = QLabel("GMini")
+        title.setStyleSheet("font-size: 26px; font-weight: bold; color: #D8DEE9;")
+        
+        label_leab = QLabel("LEAB")
+        label_leab.setStyleSheet("font-size: 20px; font-weight: bold; color: #D8DEE9;")
+        label_leab.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        
+        top_layout.addWidget(title)
+        top_layout.addStretch()
+        top_layout.addWidget(label_leab)
+        layout.addLayout(top_layout)
 
         heading = QLabel("Crear cuenta")
         heading.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        heading.setStyleSheet("font-size: 22px; font-weight: bold;")
+        heading.setStyleSheet("font-size: 20px; font-weight: bold; color: #E5E9F0; margin-bottom: 5px;")
         layout.addWidget(heading)
+        
         self.label_error = QLabel("")
-        self.label_error.setStyleSheet("color: #ff5555; font-size: 14px;")
+        self.label_error.setStyleSheet("color: #ff5555; font-size: 13px;")
         self.label_error.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.label_error)
 
@@ -64,19 +103,34 @@ class Register(QWidget):
         self.password_input_1 = self._add_password_field(layout, "Contraseña", 1)
         self.password_input_2 = self._add_password_field(layout, "Reingrese la Contraseña", 2)
 
+        btn_layout = QVBoxLayout()
+        btn_layout.setSpacing(10)
+        
         self.register_button = QPushButton("Registrarse")
         self.register_button.setObjectName("btnPrincipal")
         self.register_button.clicked.connect(self.iniciar_main_view)
-        layout.addWidget(self.register_button)
+        btn_layout.addWidget(self.register_button)
+        
         self.cancel_button = QPushButton("Volver al Inicio Sesion")
         self.cancel_button.clicked.connect(self.cerrar_registro)
-        layout.addWidget(self.cancel_button)
+        btn_layout.addWidget(self.cancel_button)
+        
+        layout.addLayout(btn_layout)
+
+        # Navegación por Enter
+        self.user_input.returnPressed.connect(self.email_input.setFocus)
+        self.email_input.returnPressed.connect(self.password_input_1.setFocus)
+        self.password_input_1.returnPressed.connect(self.password_input_2.setFocus)
+        self.password_input_2.returnPressed.connect(self.iniciar_main_view)
+
         self.show()
 
     def _add_field(self, layout, label):
         row = QHBoxLayout()
-        row.addWidget(QLabel(label))
+        lbl = QLabel(label)
+        lbl.setFixedSize(180, 30) # Ancho fijo para las etiquetas de texto de la izquierda para perfecta simetría
         field = QLineEdit()
+        row.addWidget(lbl)
         row.addWidget(field)
         layout.addLayout(row)
         return field
@@ -127,9 +181,3 @@ class Register(QWidget):
         if self.ventana_login:
             self.ventana_login.show()
         self.close()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ventana_registro = Register()
-    sys.exit(app.exec())
