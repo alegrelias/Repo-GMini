@@ -42,6 +42,9 @@ from gmini.Backend.app.services.localServices import LocalService
 from gmini.Backend.app.models.calibrationSetup import CalibrationSetup
 from gmini.Frontend.widgets.consoleWidget import ConsoleWidget
 from gmini.Frontend.setups_and_measures_window.user_measures_and_setups import UserMeasuresAndSetups
+from gmini.Frontend.widgets.newSessionDialog import NewSessionDialog
+from gmini.Backend.app.models.experimentalSession import ExperimentalSession
+from gmini.Frontend.widgets.loadSessionDialog import LoadSessionDialog
 from gmini.Backend.app.models.measureSetup import (
     MeasureSetup,
     MultiMeasureSetup,
@@ -189,7 +192,14 @@ class MainWindow(QMainWindow):
 
     def _create_toolbar(self):
         toolbar = QToolBar()
-        toolbar.addAction("Nueva sesion", self.nueva_sesion)
+        btn_sesion = QToolButton()
+        btn_sesion.setText("Sesion Experimental")
+        btn_sesion.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        menu_sesion = QMenu(btn_sesion)
+        menu_sesion.addAction("Nueva Sesión", self.nueva_sesion)
+        menu_sesion.addAction("Cargar Sesión", self.cargar_sesion) # Llamará al nuevo método
+        btn_sesion.setMenu(menu_sesion)
+        toolbar.addWidget(btn_sesion)
         toolbar.addAction("Graficas", self.graficas)
         toolbar.addAction("Analisis", self.analisis)
         toolbar.addWidget(
@@ -392,6 +402,18 @@ class MainWindow(QMainWindow):
         return parameters_widget
 
     def _populate_right_panel(self, layout):
+        # --- NUEVO: Indicador de Sesión Activa ---
+        session_widget = QWidget()
+        session_layout = QVBoxLayout(session_widget)
+        session_layout.setContentsMargins(0, 0, 0, 10)
+        
+        self.lbl_active_session = QLabel("Sesión Activa: Ninguna")
+        self.lbl_active_session.setStyleSheet("color: #a6e3a1; font-weight: bold; font-size: 14px;")
+        self.lbl_active_session.setAlignment(Qt.AlignmentFlag.AlignCenter) # Para que quede centrado y prolijo
+        
+        session_layout.addWidget(self.lbl_active_session)
+        layout.addWidget(session_widget)
+
         control_widget = CollapseWidget("Control")
         start_button = QPushButton("Iniciar medicion")
         start_button.clicked.connect(self.iniciar)
@@ -437,7 +459,60 @@ class MainWindow(QMainWindow):
         self.historial_window.show()
 
     def nueva_sesion(self):
-        pass
+        user = self.session_manager.get_current_user()
+        if not user:
+            self._show_error("Error", "Debe iniciar sesión para crear una sesión experimental.")
+            return
+
+        # Instanciamos y mostramos el cuadro de diálogo
+        dialog = NewSessionDialog(self)
+        
+        if dialog.exec():  # Si el usuario hace clic en 'Ok'
+            name, obs = dialog.get_data()
+            if not name:
+                self._show_error("Error", "El nombre de la sesión no puede estar vacío.")
+                return
+            
+            try:
+                new_session = ExperimentalSession(
+                    user_id=user.get_id(), 
+                    name=name, 
+                    observations=obs
+                )
+                
+                # Guardar en Base de Datos
+                session_id = self.db_service.save_experimental_session(new_session) 
+                new_session.set_id(session_id)
+                
+                # Establecer como activa usando el nuevo método de tu SessionManager
+                self.session_manager.set_active_ExpSession(new_session)
+                
+                # Actualizar la UI
+                self.lbl_active_session.setText(f"Sesión Activa: {new_session.get_name()}")
+                self._show_status(f"Nueva sesión '{new_session.get_name()}' creada exitosamente.")
+                
+            except Exception as e:
+                self._show_error("Error de Base de Datos", f"No se pudo crear la sesión: {e}")
+                
+    def cargar_sesion(self):
+        user = self.session_manager.get_current_user()
+        if not user:
+            self._show_error("Error", "Debe iniciar sesión para cargar una sesión experimental.")
+            return
+            
+        self._show_status("Abriendo explorador de sesiones...")
+        
+        dialog = LoadSessionDialog(self.db_service, user.get_id(), self)
+        
+        if dialog.exec():
+            selected_session = dialog.get_selected_session()
+            if selected_session:
+                # 1. Establecemos la sesión en el manager
+                self.session_manager.set_active_ExpSession(selected_session)
+                
+                # 2. Actualizamos la UI
+                self.lbl_active_session.setText(f"Sesión Activa: {selected_session.get_name()}")
+                self._show_status(f"Sesión '{selected_session.get_name()}' cargada correctamente.")
 
     def graficas(self):
         pass

@@ -550,3 +550,36 @@ class DataBaseService:
         else:
             setup_obj._measure_setup_id = setup_id
         return setup_obj
+
+    def get_sessions_by_user(self, user_id: int) -> List[ExperimentalSession]:
+        sessions: List[ExperimentalSession] = []
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+            # Ordena por fecha descendente para ver las más recientes primero
+            cursor.execute("""
+                SELECT * FROM EXPERIMENTAL_SESSION 
+                WHERE user_id = ? 
+                ORDER BY date DESC
+            """, (user_id,))
+            
+            for row in cursor.fetchall():
+                # 1. Instancia el objeto usando constructor
+                session = ExperimentalSession(
+                    user_id=row["user_id"],
+                    name=row["name"],
+                    observations=row["observations"] or ""
+                )
+                
+                # 2. ID
+                session.set_id(row["session_id"])
+                
+                # 3. Restaura la fecha original parsando el ISO
+                if row["date"]:
+                    try:
+                        session._date = datetime.fromisoformat(row["date"])
+                    except ValueError:
+                        pass # Si hay un error de formato, conserva la fecha actual del constructor
+                
+                sessions.append(session)
+                
+        return sessions

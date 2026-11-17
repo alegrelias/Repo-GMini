@@ -2,12 +2,14 @@ from typing import List, Optional
 from gmini.Backend.app.core.observer import IObservable, IObserver
 from gmini.Backend.app.models.user import User
 from gmini.Backend.app.models.token import Token
+from gmini.Backend.app.models.experimentalSession import ExperimentalSession 
 
 
 class SessionManager(IObservable):
     _instance: Optional['SessionManager'] = None
     _current_user: Optional[User]
     _active_token: Optional[Token]
+    _active_ExpSession: Optional[ExperimentalSession]  # NUEVO ATRIBUTO
     _observers: List[IObserver]
 
     def __new__(cls) -> 'SessionManager':
@@ -15,10 +17,11 @@ class SessionManager(IObservable):
             cls._instance = super(SessionManager, cls).__new__(cls)
             cls._instance._current_user = None
             cls._instance._active_token = None
+            cls._instance._active_ExpSession = None  # Inicialización
             cls._instance._observers = []
         return cls._instance
 
-    #Getters y setters
+    # Getters y setters
     def get_current_user(self) -> Optional[User]:
         return self._current_user
 
@@ -32,10 +35,19 @@ class SessionManager(IObservable):
     def set_active_token(self, token: Optional[Token]) -> None:
         self._active_token = token
 
+    # --- MÉTODOS DE SESIÓN EXPERIMENTAL ---
+    def get_active_ExpSession(self) -> Optional[ExperimentalSession]:
+        return self._active_ExpSession
+
+    def set_active_ExpSession(self, exp_session: Optional[ExperimentalSession]) -> None:
+        self._active_ExpSession = exp_session
+        self.notify("EXPERIMENTAL_SESSION_CHANGED")
+
     def clear_session(self) -> None:
         """Limpia los datos al cerrar sesión (logout)."""
         self._current_user = None
         self._active_token = None
+        self._active_ExpSession = None
         self.notify("SESSION_CLOSED")
 
     # --- Patrón Observer ---
