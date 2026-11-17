@@ -1,0 +1,35 @@
+date: 2026-11-17 15:44:57.390686
+file_name: MED_20261117T154457
+state: COMPLETE
+device_id: 1
+device_temp: 0.0
+observations: ''
+loop_group_id: 2aeff5fd0dfb4d7aa2f5807f4082ccd2
+iteration_number: 1
+measure_setup:
+  observations: ''
+  type: spectro
+  startfreq: 100.0
+  incfreq: 10.0
+  steps: 5
+  repeat: 2
+result:
+  frequencies:
+  - 10000.0
+  - 30000.0
+  - 50000.0
+  - 70000.0
+  - 90000.0
+  amplitudes: []
+  phases: []
+  impedances:
+  - - 175.0
+    - -1822.0
+  - - 652.0
+    - -1744.0
+  - - 998.0
+    - -1474.0
+  - - 1337.0
+    - -1235.0
+  - - 1602.0
+    - -848.0

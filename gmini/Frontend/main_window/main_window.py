@@ -896,7 +896,7 @@ class MainWindow(QMainWindow):
                 raise ValueError("La lista de frecuencias no puede estar vacía")
             return MultiMeasureSetup(freq_list=frequencies)
         except ValueError as exc:
-            raise ValueError("Los parámetros de medición não são válidos") from exc
+            raise ValueError("Los parámetros de medición no son válidos") from exc
 
     def _actualizar_tabla_datos(self, datos):
         self.data_table.setRowCount(len(datos))
