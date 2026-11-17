@@ -29,44 +29,91 @@ class Login(QWidget):
         self.inicializacion_ui()
 
     def inicializacion_ui(self):
-        self.setFixedSize(400, 400)
-        self.setWindowTitle("GMini GUI")
+        self.setFixedSize(500, 420)
+        self.setWindowTitle("GMini GUI - Iniciar Sesión")
+        
+        # Fondo unificado exacto con el tono del Main (#1e2229) y campos de texto alineados
         self.setStyleSheet("""
-            QWidget { background-color: #2b2e33; color: white; }
-            QLabel { font-size: 16px; }
+            QWidget { 
+                background-color: #1e2229; 
+                color: white; 
+                font-family: Arial, sans-serif;
+            }
+            QLabel { 
+                font-size: 15px; 
+            }
             QLineEdit {
-                background-color: #2b2e33; border: 1px solid #5a6b7d;
-                border-radius: 10px; padding: 8px; font-size: 14px;
+                background-color: #282c34; 
+                border: 1px solid #4f5b66;
+                border-radius: 8px; 
+                padding: 8px; 
+                font-size: 14px;
+                min-width: 240px;
+                max-width: 240px;
+            }
+            QLineEdit:focus {
+                border: 1px solid #61afef;
             }
             QPushButton {
-                border: 1px solid #5a6b7d; border-radius: 10px;
-                padding: 10px; font-size: 16px;
+                background-color: #3b4252;
+                border: 1px solid #4f5b66; 
+                border-radius: 8px;
+                padding: 10px; 
+                font-size: 15px;
+                color: white;
+            }
+            QPushButton:hover {
+                background-color: #434c5e;
             }
             QPushButton#btnLogin {
-                background-color: #2f5275; font-weight: bold;
+                background-color: #2f5275; 
+                font-weight: bold;
+            }
+            QPushButton#btnLogin:hover {
+                background-color: #3b648f;
             }
         """)
 
         layout = QVBoxLayout(self)
-        title = QLabel("GMini                                      LEAB")
+        layout.setContentsMargins(35, 25, 35, 25)
+        layout.setSpacing(15)
+
+        # Fila superior con Título GMini y etiqueta LEAB alineada a la derecha
+        top_layout = QHBoxLayout()
+        title = QLabel("GMini")
         title.setStyleSheet("font-size: 26px; font-weight: bold; color: #D8DEE9;")
-        layout.addWidget(title)
+        
+        label_leab = QLabel("LEAB")
+        label_leab.setStyleSheet("font-size: 20px; font-weight: bold; color: #D8DEE9;")
+        label_leab.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        
+        top_layout.addWidget(title)
+        top_layout.addStretch()
+        top_layout.addWidget(label_leab)
+        layout.addLayout(top_layout)
 
         self.label_error = QLabel("")
-        self.label_error.setStyleSheet("color: #ff5555; font-size: 14px;")
+        self.label_error.setStyleSheet("color: #ff5555; font-size: 13px;")
         self.label_error.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(self.label_error)
 
+        # Campos distribuidos uniformemente para perfecta alineación visual
         user_layout = QHBoxLayout()
-        user_layout.addWidget(QLabel("Usuario"))
+        lbl_user = QLabel("Usuario")
+        lbl_user.setFixedSize(90, 30)
         self.user_input = QLineEdit()
+        self.user_input.setPlaceholderText("Ingrese usuario")
+        user_layout.addWidget(lbl_user)
         user_layout.addWidget(self.user_input)
         layout.addLayout(user_layout)
 
         password_layout = QHBoxLayout()
-        password_layout.addWidget(QLabel("Contraseña"))
+        lbl_pass = QLabel("Contraseña")
+        lbl_pass.setFixedSize(90, 30)
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.password_input.setPlaceholderText("Ingrese contraseña")
+        password_layout.addWidget(lbl_pass)
         password_layout.addWidget(self.password_input)
         layout.addLayout(password_layout)
 
@@ -78,14 +125,24 @@ class Login(QWidget):
         )
         self.action_ver_password.triggered.connect(self.alternar_contrasena)
 
+        btn_layout = QVBoxLayout()
+        btn_layout.setSpacing(10)
+        
         self.login_button = QPushButton("Iniciar Sesión")
         self.login_button.setObjectName("btnLogin")
         self.login_button.clicked.connect(self.iniciar_main_view)
-        layout.addWidget(self.login_button)
+        btn_layout.addWidget(self.login_button)
 
         self.register_button = QPushButton("Registrarse")
         self.register_button.clicked.connect(self.iniciar_register)
-        layout.addWidget(self.register_button)
+        btn_layout.addWidget(self.register_button)
+        
+        layout.addLayout(btn_layout)
+
+        # Tecla Enter
+        self.user_input.returnPressed.connect(self.password_input.setFocus)
+        self.password_input.returnPressed.connect(self.iniciar_main_view)
+
         self.show()
 
     def alternar_contrasena(self):
