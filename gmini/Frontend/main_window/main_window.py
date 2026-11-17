@@ -2,6 +2,7 @@ from ast import main
 import os, sys
 import yaml
 import pyqtgraph as pg
+import serial.tools.list_ports
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -21,7 +22,8 @@ from PyQt6.QtWidgets import (
     QWidget,
     QTableWidget, 
     QTableWidgetItem,
-    QHeaderView
+    QHeaderView,
+    QComboBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 
@@ -86,7 +88,6 @@ class CollapseWidget(QWidget):
         super().__init__(parent)
         self.title = title
         
-        # Estado inicial colapsado original
         self.is_collapsed = True 
 
         self.setStyleSheet("background-color: #313244;")
@@ -132,10 +133,7 @@ class MainWindow(QMainWindow):
         self.session_manager = SessionManager()
         self.db_service = DataBaseService()
         
-        # Lista temporal de respaldo para mediciones
         self.temp_measures_list = []
-        
-        # Referencia para la ventana de historial para evitar que se cierre de inmediato
         self.historial_window = None
         
         self.measure_adapter = GminiMeasureAdapter()
@@ -159,7 +157,6 @@ class MainWindow(QMainWindow):
         self.status_label = None
         self._applying_import = False
         
-        # Color de fondo unificado exacto (#1e2229)
         self.setStyleSheet("""
             QWidget {
                 background-color: #1e2229; color: #cdd6f4;
@@ -304,6 +301,7 @@ class MainWindow(QMainWindow):
         device_widget = CollapseWidget("Dispositivo")
         device_tabs = QTabWidget()
 
+        # Pestaña Bluetooth
         bluetooth_tab = QWidget()
         bluetooth_layout = QVBoxLayout()
         bluetooth_tab.setLayout(bluetooth_layout)
@@ -312,15 +310,63 @@ class MainWindow(QMainWindow):
         self.btn_conectar_desconectar.clicked.connect(self.desconectar)
         bluetooth_layout.addWidget(self.btn_conectar_desconectar)
 
+        # --- Pestaña USB / Cable con Menú Desplegable (QComboBox) de Puertos COM ---
         usb_tab = QWidget()
         usb_layout = QVBoxLayout()
         usb_tab.setLayout(usb_layout)
-        usb_layout.addWidget(QLabel("Guanaco MINI"))
+        
+        usb_layout.addWidget(QLabel("Puerto Serial (USB):"))
+        self.combo_ports = QComboBox()
+        self.combo_ports.setStyleSheet("background-color: #282c34; padding: 5px; border-radius: 4px;")
+        self.actualizar_puertos_usb()
+        usb_layout.addWidget(self.combo_ports)
+
+        btn_actualizar_puertos = QPushButton("Actualizar Puertos")
+        btn_actualizar_puertos.clicked.connect(self.actualizar_puertos_usb)
+        usb_layout.addWidget(btn_actualizar_puertos)
+
+        self.btn_conectar_usb = QPushButton("Conectar USB")
+        self.btn_conectar_usb.clicked.connect(self.conectar_usb)
+        usb_layout.addWidget(self.btn_conectar_usb)
+        # --------------------------------------------------------------------------
 
         device_tabs.addTab(bluetooth_tab, "Bluetooth")
         device_tabs.addTab(usb_tab, "USB")
         device_widget.layout().addWidget(device_tabs)
         return device_widget
+
+    def actualizar_puertos_usb(self):
+        """Escanea y lista los puertos COM disponibles en la PC"""
+        self.combo_ports.clear()
+        ports = serial.tools.list_ports.comports()
+        for port in ports:
+            self.combo_ports.addItem(f"{port.device} - {port.description}")
+        if self.combo_ports.count() == 0:
+            self.combo_ports.addItem("No se detectaron puertos")
+
+    def conectar_usb(self):
+        """Gestiona la conexión y desconexión por cable serial (USB)"""
+        if not self.connection_service.active_connections.get(self.device.get_id()):
+            selected_text = self.combo_ports.currentText()
+            if "No se detectaron puertos" in selected_text or not selected_text:
+                self._show_error("Error USB", "Seleccione un puerto COM válido.")
+                return
+            
+            # Extrae el nombre del puerto (ej. COM3)
+            port_name = selected_text.split(" - ")[0]
+            
+            try:
+                # Aquí conectamos usando MockWire o tu adaptador serial correspondiente
+                mock_wire = MockWire() 
+                self.connection_service.connect(self.device, mock_wire)
+                self.btn_conectar_usb.setText("Desconectar USB")
+                self._show_status(f"Conectado por USB en {port_name}.")
+            except Exception as e:
+                self._show_error("Error de Conexión", f"No se pudo conectar al puerto {port_name}: {str(e)}")
+        else:
+            self.connection_service.disconnect(self.device)
+            self.btn_conectar_usb.setText("Conectar USB")
+            self._show_status("Dispositivo USB desconectado.")
 
     def _create_measure_method_widget(self):
         method_widget = CollapseWidget("Metodo de Medicion")
@@ -386,7 +432,7 @@ class MainWindow(QMainWindow):
         layout.addStretch()
 
     def abrir_historial_setups(self):
-        """Abre la ventana de Historial manteniendo la referencia viva en self.historial_window"""
+        """Abre la ventana de Historial y Setups pasando la referencia del Main"""
         self.historial_window = UserMeasuresAndSetups(main_window=self)
         self.historial_window.show()
 
@@ -590,7 +636,6 @@ class MainWindow(QMainWindow):
                 
             self._show_status("Medición ejecutada y finalizada correctamente.")
 
-            # Resguardo seguro en lista temporal
             if nueva_medicion not in self.temp_measures_list:
                 self.temp_measures_list.append(nueva_medicion)
 
@@ -776,7 +821,7 @@ class MainWindow(QMainWindow):
                 raise ValueError("La lista de frecuencias no puede estar vacía")
             return MultiMeasureSetup(freq_list=frequencies)
         except ValueError as exc:
-            raise ValueError("Los parámetros de medición no son válidos") from exc
+            raise ValueError("Los parámetros de medición não são válidos") from exc
 
     def _actualizar_tabla_datos(self, datos):
         self.data_table.setRowCount(len(datos))
