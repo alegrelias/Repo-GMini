@@ -1,5 +1,5 @@
 from ast import main
-import os,sys
+import os, sys
 import yaml
 import pyqtgraph as pg
 from PyQt6.QtWidgets import (
@@ -86,6 +86,7 @@ class CollapseWidget(QWidget):
         super().__init__(parent)
         self.title = title
         
+        # Estado inicial colapsado original
         self.is_collapsed = True 
 
         self.setStyleSheet("background-color: #313244;")
@@ -130,6 +131,12 @@ class MainWindow(QMainWindow):
         self.connection_service = ConnectionService()
         self.session_manager = SessionManager()
         self.db_service = DataBaseService()
+        
+        # Lista temporal de respaldo para mediciones
+        self.temp_measures_list = []
+        
+        # Referencia para la ventana de historial para evitar que se cierre de inmediato
+        self.historial_window = None
         
         self.measure_adapter = GminiMeasureAdapter()
         self.calibration_adapter = GminiCalibrationAdapter()
@@ -359,10 +366,9 @@ class MainWindow(QMainWindow):
 
         history_widget = CollapseWidget("Historial")
         
-        # --- BOTÓN VINCULADO PARA ABRIR LA PESTAÑA DE HISTORIAL Y SETUPS ---
-        btn_contenido_historial = QPushButton("Contenido de Historial")
-        btn_contenido_historial.clicked.connect(self.abrir_historial_setups)
-        history_widget.layout().addWidget(btn_contenido_historial)
+        self.btn_contenido_historial = QPushButton("Contenido de Historial")
+        self.btn_contenido_historial.clicked.connect(self.abrir_historial_setups)
+        history_widget.layout().addWidget(self.btn_contenido_historial)
         
         layout.addWidget(history_widget)
 
@@ -380,8 +386,8 @@ class MainWindow(QMainWindow):
         layout.addStretch()
 
     def abrir_historial_setups(self):
-        """Abre la ventana de Historial y Setups con sus tres pestañas"""
-        self.historial_window = UserMeasuresAndSetups()
+        """Abre la ventana de Historial manteniendo la referencia viva en self.historial_window"""
+        self.historial_window = UserMeasuresAndSetups(main_window=self)
         self.historial_window.show()
 
     def nueva_sesion(self):
@@ -573,6 +579,7 @@ class MainWindow(QMainWindow):
             from gmini.Backend.app.models.measure import Measure
             
             nueva_medicion = Measure(measure_setup=setup, device_id=self.device.device_id)
+            self.current_measure = nueva_medicion
             
             self._show_status("Delegando medición al servicio...")
             
@@ -582,6 +589,10 @@ class MainWindow(QMainWindow):
                 raise ValueError("Fallo en la comunicación con la placa. El adaptador no obtuvo resultados.")
                 
             self._show_status("Medición ejecutada y finalizada correctamente.")
+
+            # Resguardo seguro en lista temporal
+            if nueva_medicion not in self.temp_measures_list:
+                self.temp_measures_list.append(nueva_medicion)
 
             self.results_tabs.show() 
             
@@ -748,7 +759,7 @@ class MainWindow(QMainWindow):
                     startfreq=float(self.parameter_boxes["startfreq"].text()),
                     incfreq=float(self.parameter_boxes["incfreq"].text()),
                     steps=int(self.parameter_boxes["steps"].text()),
-                    repeat=int(self.parameter_boxes["repeat"].text()),
+                    repeat=float(self.parameter_boxes["repeat"].text()),
                 )
             if selected_radio.text() == "Monofrecuencia (Dom. tiempo)":
                 return SingleMeasureSetup(

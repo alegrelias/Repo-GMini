@@ -15,8 +15,9 @@ from PyQt6.QtWidgets import (
 
 
 class UserMeasuresAndSetups(QWidget):
-    def __init__(self):
+    def __init__(self, main_window=None):
         super().__init__()
+        self.main_window = main_window
         self.inicializar_ui()
 
     def inicializar_ui(self):
@@ -79,7 +80,7 @@ class UserMeasuresAndSetups(QWidget):
 
         # Encabezado superior con título y LEAB
         top_layout = QHBoxLayout()
-        title_label = QLabel("GMini GUI")
+        title_label = QLabel("GMini GUI - Historial de Mediciones")
         title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #D8DEE9;")
         
         self.label_leab = QLabel("LEAB")
@@ -92,14 +93,14 @@ class UserMeasuresAndSetups(QWidget):
         top_layout.addWidget(self.label_leab)
         main_layout.addLayout(top_layout)
 
-        # Pestañas de Historial (Mediciones, Setup Calibraciones, Setup Mediciones)
+        # Pestañas de Historial
         self.tabs = QTabWidget()
         
         self.tab_mediciones = self.crear_tabla_mediciones()
         self.tab_setup_calibraciones = self.crear_tabla_calibraciones()
         self.tab_setup_mediciones = self.crear_tabla_setups_medicion()
 
-        self.tabs.addTab(self.tab_mediciones, "Mediciones")
+        self.tabs.addTab(self.tab_mediciones, "Mediciones Realizadas")
         self.tabs.addTab(self.tab_setup_calibraciones, "Setup Calibraciones")
         self.tabs.addTab(self.tab_setup_mediciones, "Setup Mediciones")
 
@@ -111,105 +112,107 @@ class UserMeasuresAndSetups(QWidget):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        table = QTableWidget()
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Nombre / Descripción", "Fecha de creación", "Estado", "Acciones"])
+        self.table_mediciones = QTableWidget()
+        self.table_mediciones.setColumnCount(4)
+        self.table_mediciones.setHorizontalHeaderLabels(["Nombre / Descripción", "Fecha de ejecución", "Estado", "Acciones"])
         
-        header = table.horizontalHeader()
+        header = self.table_mediciones.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
 
-        mock_mediciones = [
-            {"nombre": "Medición #145 - Espectroscopia de prueba", "fecha": "08/10/2026 14:15", "estado": "Completado"},
-            {"nombre": "Medición #144 - Muestra A", "fecha": "07/10/2026 18:30", "estado": "Completado"},
-            {"nombre": "Medición #143 - Muestra B", "fecha": "07/10/2026 09:32", "estado": "Guardado"},
-            {"nombre": "Medición #142 - Espectroscopia de calibración", "fecha": "06/10/2026 16:48", "estado": "Completado"},
-            {"nombre": "Medición #141 - Muestra C", "fecha": "05/10/2026 12:10", "estado": "Completado"},
-            {"nombre": "Medición #140 - Espectroscopia de prueba 2", "fecha": "05/10/2026 10:15", "estado": "Guardado"},
-            {"nombre": "Medición #139 - Análisis de ruido", "fecha": "04/10/2026 15:44", "estado": "Completado"},
-            {"nombre": "Medición #138 - Muestra D", "fecha": "03/10/2026 11:20", "estado": "Guardado"}
-        ]
+        self.cargar_datos_mediciones()
 
-        table.setRowCount(len(mock_mediciones))
-        for row_idx, item in enumerate(mock_mediciones):
-            table.setItem(row_idx, 0, QTableWidgetItem(item["nombre"]))
-            table.setItem(row_idx, 1, QTableWidgetItem(item["fecha"]))
-            table.setItem(row_idx, 2, QTableWidgetItem(item["estado"]))
+        layout.addWidget(self.table_mediciones)
+        return widget
+
+    def cargar_datos_mediciones(self):
+        """Recupera las mediciones guardadas desde la lista temporal o la actual de la MainWindow"""
+        mediciones_guardadas = []
+        if self.main_window:
+            # Consultamos directamente la lista temporal de respaldo de la MainWindow
+            if hasattr(self.main_window, "temp_measures_list"):
+                mediciones_guardadas = self.main_window.temp_measures_list
             
+            # Si está vacía pero hay una medición actual, la añadimos
+            if not mediciones_guardadas and getattr(self.main_window, "current_measure", None):
+                mediciones_guardadas = [self.main_window.current_measure]
+
+        self.table_mediciones.setRowCount(len(mediciones_guardadas))
+        
+        if not mediciones_guardadas:
+            return
+
+        for row_idx, medida in enumerate(mediciones_guardadas):
+            nombre = f"Medición #{row_idx + 1} - Ejecutada con Mock"
+            fecha = "Sesión actual"
+            estado = "Completado"
+
+            self.table_mediciones.setItem(row_idx, 0, QTableWidgetItem(nombre))
+            self.table_mediciones.setItem(row_idx, 1, QTableWidgetItem(fecha))
+            self.table_mediciones.setItem(row_idx, 2, QTableWidgetItem(estado))
+            
+            # Botones de acción funcional por fila (Abrir / Borrar)
             btn_widget = QWidget()
             btn_layout = QHBoxLayout(btn_widget)
             btn_layout.setContentsMargins(4, 2, 4, 2)
             
             btn_load = QPushButton("📁")
-            btn_load.setToolTip("Cargar al Workspace")
+            btn_load.setToolTip("Abrir y ver gráfico en el Main")
+            btn_load.clicked.connect(lambda checked, m=medida: self.abrir_medicion_en_main(m))
+            
             btn_delete = QPushButton("🗑")
-            btn_delete.setToolTip("Eliminar registro")
+            btn_delete.setToolTip("Eliminar medición")
+            btn_delete.clicked.connect(lambda checked, idx=row_idx, m=medida: self.eliminar_medicion(idx, m))
             
             btn_layout.addWidget(btn_load)
             btn_layout.addWidget(btn_delete)
             btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
             
-            table.setCellWidget(row_idx, 3, btn_widget)
+            self.table_mediciones.setCellWidget(row_idx, 3, btn_widget)
 
-        layout.addWidget(table)
-        return widget
+    def abrir_medicion_en_main(self, medida):
+        """Carga la medición seleccionada de vuelta en la MainWindow y plotea su gráfico"""
+        if self.main_window:
+            self.main_window.current_measure = medida
+            resultado = medida.get_measure_result()
+            if resultado:
+                resultado_real = resultado.get_impedances()
+                self.main_window.results_tabs.show()
+                self.main_window.analytics_service.plot_debye(resultado_real, self.main_window.plot_widget)
+                self.main_window._actualizar_tabla_datos(resultado_real)
+                self.main_window._show_status("Medición del historial cargada correctamente.")
+                self.close()
+
+    def eliminar_medicion(self, row_idx, medida):
+        """Borra la medición de la lista de respaldo y actualiza la tabla"""
+        if self.main_window and hasattr(self.main_window, "temp_measures_list"):
+            try:
+                self.main_window.temp_measures_list.remove(medida)
+            except ValueError:
+                pass
+            if getattr(self.main_window, "current_measure", None) == medida:
+                self.main_window.current_measure = None
+                
+        self.table_mediciones.removeRow(row_idx)
 
     def crear_tabla_calibraciones(self):
         widget = QWidget()
         layout = QVBoxLayout(widget)
-
         table = QTableWidget()
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Configuración Calibración", "Fecha", "Canal / Z_Cal", "Estado"])
-        
-        header = table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        
-        mock_calibs = [
-            {"nombre": "Calibración R_CAL_1 (470 Ω)", "fecha": "08/10/2026 10:00", "canal": "R_CAL_1", "estado": "Activo"},
-            {"nombre": "Calibración R_CAL_2 (1 kΩ)", "fecha": "01/10/2026 09:15", "canal": "R_CAL_2", "estado": "Guardado"},
-        ]
-
-        table.setRowCount(len(mock_calibs))
-        for row_idx, item in enumerate(mock_calibs):
-            table.setItem(row_idx, 0, QTableWidgetItem(item["nombre"]))
-            table.setItem(row_idx, 1, QTableWidgetItem(item["fecha"]))
-            table.setItem(row_idx, 2, QTableWidgetItem(item["canal"]))
-            table.setItem(row_idx, 3, QTableWidgetItem(item["estado"]))
-
+        table.setColumnCount(3)
+        table.setHorizontalHeaderLabels(["Configuración Calibración", "Canal", "Estado"])
+        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         layout.addWidget(table)
         return widget
 
     def crear_tabla_setups_medicion(self):
         widget = QWidget()
         layout = QVBoxLayout(widget)
-
         table = QTableWidget()
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["Nombre Setup", "Tipo", "Parámetros Principales", "Fecha"])
-        
-        header = table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-
-        mock_setups = [
-            {"nombre": "Setup Espectroscopia Estándar", "tipo": "Espectroscopia", "params": "100Hz - 50kHz (Steps: 5)", "fecha": "07/10/2026"},
-            {"nombre": "Setup Monofrecuencia 1kHz", "tipo": "Monofrecuencia", "params": "Freq: 1000 Hz, Delay: 1s", "fecha": "05/10/2026"},
-        ]
-
-        table.setRowCount(len(mock_setups))
-        for row_idx, item in enumerate(mock_setups):
-            table.setItem(row_idx, 0, QTableWidgetItem(item["nombre"]))
-            table.setItem(row_idx, 1, QTableWidgetItem(item["tipo"]))
-            table.setItem(row_idx, 2, QTableWidgetItem(item["params"]))
-            table.setItem(row_idx, 3, QTableWidgetItem(item["fecha"]))
-
+        table.setColumnCount(3)
+        table.setHorizontalHeaderLabels(["Nombre Setup", "Tipo", "Parámetros"])
+        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         layout.addWidget(table)
         return widget
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = UserMeasuresAndSetups()
-    sys.exit(app.exec())
